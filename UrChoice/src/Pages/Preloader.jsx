@@ -24,20 +24,20 @@ function Loading() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <img src={UrChoiceLogo} className="logo UrChoice" alt="React logo" />
+      <img src={UrChoiceLogo} className="logo UrChoice mb-15" alt="React logo" />
       <div className="w-full space-y-2 relative">
         <div className="w-full h-3.5">
           <div
-            className="absolute left-0 top-0 bg-blue-500 h-3.5 transition-all duration-100"
+            className="absolute left-0 top-0 bg-cyan-300 h-9.5 transition-all duration-100"
             style={{ width: `${progress / 2}%` }}
           ></div>
           <div
-            className="absolute right-0 top-0 bg-red-500 h-3.5 transition-all duration-100"
+            className="absolute right-0 top-0 bg-red-500 h-9.5 transition-all duration-100"
             style={{ width: `${progress / 2}%` }}
           ></div>
         </div>
-        <div className="absolute w-full text-center text-xl font-bold z-10 " style={{ top: '-10%', transform: 'translateY(-50%)' }}>
-          <p className='w-auto bg-red-500'>{progress}%</p>
+        <div className="absolute left-1/2 transform -translate-x-1/2 text-center text-xl font-bold z-10 " style={{ top: '-10%', transform: 'translateY(-50%)' }}>
+          <p className='bg-black p-10 rounded-2xl mt-10'>{progress}%</p>
         </div>  
       </div>
     </div>
