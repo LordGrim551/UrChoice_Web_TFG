@@ -10,7 +10,7 @@
 
 
 .logo {
-    height: 25em;
+    height: 18em;
     padding: 1.5em;
     will-change: filter;
     transition: filter 300ms;
@@ -52,9 +52,18 @@
 
 
 #trapezium {
-    width: 150px; /* Base superior del trapecio */
+    width: 25em; /* Base superior del trapecio */
     height: 0;
     border-left: 50px solid transparent; /* Lado izquierdo inclinado */
     border-right: 50px solid transparent; /* Lado derecho inclinado */
-    border-bottom: 80px solid #ec3504; /* Altura del trapecio y su color */
+    border-bottom: 60px solid #00e1ff; /* Altura del trapecio y su color */
+}
+#trapezium-rotate {
+    width: 25em; /* Base superior del trapecio */
+    height: 0;
+    border-left: 50px solid transparent; /* Lado izquierdo inclinado */
+    border-right: 50px solid transparent; /* Lado derecho inclinado */
+    border-bottom: 60px solid #ff0000; /* Altura del trapecio y su color */
+    margin-top: 2em;
+    rotate: calc(180deg);
 }

@@ -53,3 +53,12 @@
 button{
     background-color: transparent;
 }
+
+a {
+    color: white; /* Cambia el color del enlace a blanco */
+    text-decoration: none; /* Quita el subrayado del enlace */
+  }
+
+  a:hover {
+    color: #f0f0f0; /* Cambia el color del enlace cuando se pasa el ratón por encima */
+  }

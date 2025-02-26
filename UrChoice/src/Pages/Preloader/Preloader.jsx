@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import UrChoiceLogo from '../Preloader/LogoTodoSVG.svg';
 import '../Preloader/Preloader.css'; // Asegúrate de importar Tailwind CSS
-import TapToStart from '../TapToStart/TapToStart';  
+import { Link } from 'react-router-dom';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-function Loading() {
+const Loading = () => {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
 
@@ -60,16 +60,5 @@ function Loading() {
   );
 }
 
+export default Loading;
 
-function Preloader() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Loading />} />
-        <Route path="/Tap_to_start" element={<TapToStart />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default Preloader;

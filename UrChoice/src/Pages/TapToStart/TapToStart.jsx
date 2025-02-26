@@ -5,14 +5,10 @@ import '../TapToStart/TapToStart.css'; // Asegúrate de importar Tailwind CSS
 import InitialPage from '../InitialPage/InitialPage';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-
+import { Link } from 'react-router-dom';
 
 function TapToStart() {
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        navigate(InitialPage); // Asegúrate de que la ruta sea correcta
-    };
+  
         
 
     return (
@@ -37,7 +33,11 @@ function TapToStart() {
                     ></div>
                 </div>
                 <div className="absolute left-1/2 transform -translate-x-1/2 text-center text-l font-bold z-10" style={{ top: '0%', transform: 'translateY(-0%)' }}>
-                    <button onClick={handleClick} className='mt-5 bg-transparent'>CLICK HERE TO START</button>
+                    <button className='mt-5 bg-transparent'>
+
+                        <Link to="/InitialPage" className="nav-link text-white" element={<InitialPage />}>CLICK TO START</Link>
+
+                    </button>
                 </div>
             </div>
 
