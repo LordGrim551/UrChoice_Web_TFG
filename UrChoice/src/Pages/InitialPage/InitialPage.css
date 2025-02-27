@@ -67,3 +67,12 @@
     margin-top: 2em;
     rotate: calc(180deg);
 }
+#trapezium-Test {
+    width: 25em; /* Base superior del trapecio */
+    height: 0;
+    border-left: 0px solid transparent; /* Lado izquierdo inclinado */
+    border-right: 0px solid transparent; /* Lado derecho inclinado */
+    border-bottom: 60px solid #54ff05; /* Altura del trapecio y su color */
+    margin-top: 2em;
+
+}

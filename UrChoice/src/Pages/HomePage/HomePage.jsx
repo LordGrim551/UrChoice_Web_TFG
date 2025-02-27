@@ -6,25 +6,21 @@ import '../InitialPage/InitialPage.css'; // Asegúrate de importar Tailwind CSS
 import { Link } from 'react-router-dom';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-function InitialPage() {
+function HomePage() {
     return (
         <div className="flex flex-col items-center justify-center mb-10">
             <DotLottieReact className='absolute h-full w-screen' src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
             <DotLottieReact className='absolute h-full w-screen rotate-180' src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
             <img src={UrChoiceLogo} className="logo UrChoice" alt="React logo" />
             <div id="trapeziums-group">
-                <div id="trapezium">
-                    <p className='text-l font-bold z-10 text-center pt-5'>LOG IN</p>
-                </div>
+                
                 <div id="trapezium-Test">
-                    <p className='text-l font-bold z-10 text-center pt-5'>RAILWAY CONNECTION TEST</p>
+                    <p className='text-l font-bold z-10 text-center pt-5'>BIENVENIDO YA ESTAS DENTRO</p>
                 </div>
-                <div id="trapezium-rotate">
-                    <p className='rotate-180 text-l font-bold z-10 text-center pb-5'>SIGN IN</p>
-                </div>
+                
             </div>
         </div>
     );
 }
 
-export default InitialPage;
+export default HomePage;
