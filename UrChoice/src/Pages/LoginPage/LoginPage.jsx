@@ -1,9 +1,59 @@
+import { useState } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../LoginPage/LoginPage.css';
 import UrChoiceLogo from '../LoginPage/LogoTodoSVG.svg';
 
 function LogInPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); 
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+  
+    console.log('Datos enviados:', { email, password });  // Asegúrate de que los datos sean correctos
+  
+    try {
+      const response = await fetch('https://railwayserver-production-7692.up.railway.app/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: email,  // Asegúrate de que las claves estén bien escritas
+            contra: password,  // Asegúrate de que las claves coincidan con el backend
+        }),
+      
+      });
+     
+      const data = await response.json();
+  
+      if (response.ok) {
+        
+        console.log('Conexión exitosa. Usuario autenticado:', data);
+        localStorage.setItem('token', data.token); 
+        localStorage.setItem('user', JSON.stringify(data));
+
+        navigate("/HomePage");
+        // Redirigir o manejar los datos del usuario aquí
+      } else {
+        // El servidor devolvió un error 401 o algún otro código
+        console.log('Error de autenticación', data);
+        setError(data.message || 'Error al iniciar sesión');
+      }
+    } catch (err) {
+      console.error('Error de conexión', err);
+      setError('Hubo un error al conectarse al servidor');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       {/* Animaciones de fondo */}
@@ -17,15 +67,31 @@ function LogInPage() {
       <div className="w-full max-w-md p-5 rounded-lg bg-black bg-opacity-60 backdrop-blur-md z-10">
         <h2 className="text-xl font-bold text-white text-center mb-4">Iniciar Sesión</h2>
         
-        <form className="space-y-3">
+        <form className="space-y-3" onSubmit={handleLogin}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
-            <input type="email" id="email" className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white" placeholder="nombre@ejemplo.com" />
+            <input
+              type="email"
+              id="email"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+              placeholder="nombre@ejemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Contraseña</label>
-            <input type="password" id="password" className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white" placeholder="••••••••" />
+            <input
+              type="password"
+              id="password"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
           
           <div className="flex items-center justify-between">
@@ -36,18 +102,25 @@ function LogInPage() {
             <a href="#" className="text-sm font-medium text-cyan-500 hover:text-cyan-400">¿Olvidaste tu contraseña?</a>
           </div>
           
-          <button type="button" className="w-full flex justify-center py-2 px-4 border-0 rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300">
-            Iniciar Sesión
+          <button
+            type="submit"
+            className="w-full flex justify-center py-2 px-4 border-0 rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300"
+            disabled={loading}
+          >
+            {loading ? 'Cargando...' : 'Iniciar Sesión'}
           </button>
         </form>
+
+        {error && <div className="mt-4 text-center text-sm text-red-500">{error}</div>}
         
         <div className="flex items-center mt-4">
           <div className="flex-1 h-px bg-gray-700"></div>
           <p className="mx-3 text-sm text-gray-400">O</p>
           <div className="flex-1 h-px bg-gray-700"></div>
         </div>
-        
+
         <div className="mt-4 grid grid-cols-2 gap-3">
+          {/* Botones sociales */}
           <button type="button" className="flex w-full items-center justify-center gap-2 rounded-md bg-white py-2 px-3 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-100">
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.787-1.676-4.188-2.707-6.735-2.707-5.523 0-10 4.477-10 10s4.477 10 10 10c8.396 0 10.201-7.835 9.685-11.696l-9.685-0.001z" />
@@ -61,7 +134,7 @@ function LogInPage() {
             Facebook
           </button>
         </div>
-        
+
         <p className="mt-4 text-center text-sm text-gray-400">
           ¿No tienes una cuenta?{' '}
           <a href="#" className="font-medium text-cyan-500 hover:text-cyan-400">Regístrate</a>

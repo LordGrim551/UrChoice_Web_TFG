@@ -4,7 +4,7 @@ import InitialPage from '../src/Pages/InitialPage/InitialPage';
 import LogInPage from '../src/Pages/LoginPage/LoginPage';
 import RegisterPage from '../src/Pages/RegisterPage/RegisterPage';
 import HomePage from '../src/Pages/HomePage/HomePage';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes,  } from 'react-router-dom';
 
 
 function App() {
