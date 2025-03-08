@@ -35,7 +35,7 @@ function TapToStart() {
                 <div className="absolute left-1/2 transform -translate-x-1/2 text-center text-l font-bold z-10" style={{ top: '0%', transform: 'translateY(-0%)' }}>
                     <button className='mt-5 bg-transparent'>
 
-                        <Link to="/InitialPage" className="nav-link text-white" element={<InitialPage />}>CLICK TO START</Link>
+                        <Link to="/InitialPage" className="text-white" element={<InitialPage />}>CLICK TO START</Link>
 
                     </button>
                 </div>

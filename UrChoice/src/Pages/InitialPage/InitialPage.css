@@ -76,3 +76,7 @@
     margin-top: 2em;
 
 }
+
+.z-negative {
+    z-index: -1;
+}
