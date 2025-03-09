@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../LoginPage/LoginPage.css';
 import UrChoiceLogo from '../LoginPage/LogoTodoSVG.svg';
 
+
 function LogInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,11 +44,14 @@ function LogInPage() {
       } else {
         // El servidor devolvió un error 401 o algún otro código
         console.log('Error de autenticación', data);
+        navigate("/*", { state: { errorCode: response.status } }); 
         setError(data.message || 'Error al iniciar sesión');
       }
     } catch (err) {
+      
       console.error('Error de conexión', err);
       setError('Hubo un error al conectarse al servidor');
+      navigate("/*", { state: { errorCode } }); 
     } finally {
       setLoading(false);
     }

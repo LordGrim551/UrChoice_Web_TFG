@@ -4,7 +4,10 @@ import InitialPage from '../src/Pages/InitialPage/InitialPage';
 import LogInPage from '../src/Pages/LoginPage/LoginPage';
 import RegisterPage from '../src/Pages/RegisterPage/RegisterPage';
 import HomePage from '../src/Pages/HomePage/HomePage';
+import Error from '../src/Pages/Error/Error';
 import { BrowserRouter as Router, Route, Routes,  } from 'react-router-dom';
+
+
 
 
 function App() {
@@ -18,6 +21,7 @@ function App() {
         <Route path="/LogInPage" element={<LogInPage />} />
         <Route path="/RegisterPage" element={<RegisterPage />} />
         <Route path="/HomePage" element={<HomePage />} />
+        <Route path="/*" element={<Error />} />
       </Routes>
     </Router>
   )
