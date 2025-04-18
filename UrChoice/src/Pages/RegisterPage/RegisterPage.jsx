@@ -1,7 +1,9 @@
 import UrChoiceLogo from '../RegisterPage/LogoTodoSVG.svg';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { useState } from 'react';
+import { useState,  useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../RegisterPage/RegisterPage.css';
+import Logo from '../LoginPage/logo.png'; // Esto es para la imagen por defecto del logo
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -13,6 +15,26 @@ function RegisterPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate(); 
 
+  useEffect(() => {
+    const loadImageAsBase64 = async () => {
+      try {
+        const response = await fetch(Logo);
+        const blob = await response.blob();
+  
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImg(reader.result.split(',')[1]); // Quita el prefijo "data:image/..."
+        };
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error('Error al cargar la imagen como Base64:', error);
+      }
+    };
+  
+    loadImageAsBase64();
+  }, []);
+ 
+
   const handleRegister = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -23,6 +45,8 @@ function RegisterPage() {
       setLoading(false);
       return;
     }
+
+ 
 
     console.log('Datos enviados:', { email, nick, img, password });
 
@@ -46,6 +70,9 @@ function RegisterPage() {
         console.log('Cuenta creada con éxito:', data);
         localStorage.setItem('token', data.token);  // Guarda el token
         localStorage.setItem('user', JSON.stringify(data));  // Guarda el usuario como un objeto en localStorage
+       
+        setImg(Logo);
+        console.log(Logo);
         navigate("/HomePage");  // Redirigir a la página de inicio
       } else {
         console.log('Error al registrar', data);
@@ -69,7 +96,7 @@ function RegisterPage() {
       <img src={UrChoiceLogo} className="logo UrChoice" alt="UrChoice logo" />
       
       {/* Formulario de registro */}
-      <div className="w-full max-w-sm p-4 rounded-lg bg-black bg-opacity-60 backdrop-blur-md z-10">
+      <div className=" glass w-full max-w-sm p-4 rounded-lg bg-black bg-opacity-60 backdrop-blur-md z-10">
         <h2 className="text-xl font-bold text-white text-center mb-4">Crear Cuenta</h2>
         
         <form className="space-y-3" onSubmit={handleRegister}>
