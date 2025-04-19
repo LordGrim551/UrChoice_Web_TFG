@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import UrChoiceLogo from '../TapToStart/LogoTodoSVG.svg'; // Asegúrate de importar el logo correctamente
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useNavigate } from 'react-router-dom'; // Importa el hook useNavigate
+import Header from './Header/header'; // Asegúrate de que la ruta sea correcta
+
+
 
 function HomePage() {
   const [nick, setNick] = useState('');
@@ -38,8 +39,11 @@ function HomePage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mb-10">
-      <DotLottieReact className="absolute h-full w-screen z-negative" src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
+    <div className="min-h-screen flex flex-col">
+    <Header />
+    <main className="flex-grow">
+      {/* Aquí tu contenido principal */}
+           {/* <DotLottieReact className="absolute h-full w-screen z-negative" src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
       <DotLottieReact className="absolute h-full w-screen rotate-180 z-negative" src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
       <img src={UrChoiceLogo} className="logo UrChoice" alt="React logo" />
       <div id="trapeziums-group">
@@ -47,19 +51,21 @@ function HomePage() {
           <p className="text-l font-bold z-10 text-center pt-5">BIENVENIDO YA ESTÁS DENTRO</p>
         </div>
         <div id="trapezium-Test">
-          {/* Muestra el nick del usuario aquí */}
+        
           <p className="text-l font-bold z-10 text-center pt-5">{nick ? `Nick: ${nick}` : 'Cargando usuario...'}</p>
         </div>
       </div>
 
-      {/* Botón de cerrar sesión */}
       <button
         onClick={handleLogout}
         className="mt-5 py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
       >
         Cerrar sesión
-      </button>
-    </div>
+      </button> */}
+    </main>
+  </div>
+  
+ 
   );
 }
 

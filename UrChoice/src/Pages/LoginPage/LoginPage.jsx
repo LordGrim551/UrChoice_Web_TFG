@@ -74,7 +74,7 @@ function LogInPage() {
       <DotLottieReact className='absolute h-full w-screen' src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
       <DotLottieReact className='absolute h-full w-screen rotate-180' src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
 
-      <img src={UrChoiceLogo} className="logo UrChoice" alt="UrChoice logo" />
+     
 
       <div className="glass w-full max-w-md p-5 rounded-lg bg-black bg-opacity-60 backdrop-blur-md z-10">
         <div className="profile-container">

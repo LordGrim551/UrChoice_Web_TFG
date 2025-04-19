@@ -1,0 +1,10 @@
+header .profile-picture {
+    border-radius: 50%; /* Esto hará que el borde sea circular */
+    overflow: hidden; /* Asegura que la imagen se recorte dentro del borde circular */
+    border: 4px solid #FFBF00; /* Color del borde, puedes cambiar el color */
+}
+
+header .profile-img {
+
+    object-fit: cover; /* Esto asegura que la imagen cubra el área del círculo sin deformarse */
+}

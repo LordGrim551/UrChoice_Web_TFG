@@ -21,11 +21,7 @@ function InitialPage() {
                     </Link>
                  
                 </div>
-                <div id="trapezium-Test">                    
-                    <Link to="/HomePage" element={<HomePage/>}>
-                        <p className='text-l font-bold z-10 text-center pt-5'>RAILWAY CONNECTION TEST</p>
-                    </Link>
-                </div>
+             
                 <div id="trapezium-rotate">
         
                     <Link to="/RegisterPage" element={<RegisterPage/>}>

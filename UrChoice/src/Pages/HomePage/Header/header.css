@@ -1,0 +1,10 @@
+header h1{
+    font-size: large;
+}
+
+
+
+header button:hover{
+    background-color: red; /* Cambia el color de fondo del botón al pasar el mouse */
+    color: white; /* Cambia el color del texto al pasar el mouse */
+}
