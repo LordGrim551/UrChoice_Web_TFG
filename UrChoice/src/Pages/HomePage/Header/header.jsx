@@ -1,6 +1,6 @@
 import { useState } from "react";
 import './header.css';
-import Logo from './Logo.png';
+import Logo from './logo.png';
 import ProfileHeader from "../ProfileHeader/profile";
 
 export default function Header() {
