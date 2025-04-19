@@ -6,6 +6,7 @@ import UrChoiceLogo from '../LoginPage/LogoTodoSVG.svg';
 import Logo from '../LoginPage/logo.png'; // Esto es para la imagen por defecto del logo
 import RegisterPage from '../RegisterPage/RegisterPage';
 function LogInPage() {
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [profileImg, setProfileImg] = useState(''); // Nuevo estado para la imagen del perfil
@@ -38,6 +39,8 @@ function LogInPage() {
         console.log('Conexión exitosa. Usuario autenticado:', data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('id_user', data.id_user); // <-- Esta línea es clave
+
 
         // Verifica si el servidor devuelve la imagen de perfil
         if (data.img_user) {

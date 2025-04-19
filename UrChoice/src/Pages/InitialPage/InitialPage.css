@@ -57,7 +57,10 @@
     border-left: 50px solid transparent; /* Lado izquierdo inclinado */
     border-right: 50px solid transparent; /* Lado derecho inclinado */
     border-bottom: 60px solid #00e1ff; /* Altura del trapecio y su color */
+    
+  
 }
+
 #trapezium-rotate {
     width: 25em; /* Base superior del trapecio */
     height: 0;

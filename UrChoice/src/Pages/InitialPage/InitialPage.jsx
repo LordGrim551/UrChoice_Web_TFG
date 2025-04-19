@@ -14,7 +14,7 @@ function InitialPage() {
             <DotLottieReact className='absolute h-full w-screen rotate-180 z-negative' src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
             <img src={UrChoiceLogo} className="logo UrChoice" alt="React logo" />
             <div id="trapeziums-group">
-                <div id="trapezium" className='text-l font-bold  text-center pt-5'>
+                <div id="trapezium" className='text-l font-bold  text-center pt-5 '>
                    
                     <Link to="/LogInPage" element={<LogInPage/>}>
                         <p className='text-l font-bold z-10 text-center pt-5'>LOG IN</p>

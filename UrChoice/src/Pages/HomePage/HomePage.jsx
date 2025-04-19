@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importa el hook useNavigate
 import Header from './Header/header'; // Asegúrate de que la ruta sea correcta
-
-
+import FriendBar from './FriendBar/FriendBar';
 
 function HomePage() {
   const [nick, setNick] = useState('');
@@ -10,8 +9,6 @@ function HomePage() {
 
   useEffect(() => {
     // Verifica si el usuario existe en el localStorage
-  
-
     const user = localStorage.getItem('user');
 
     if (user) {
@@ -39,33 +36,29 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-    <Header />
-    <main className="flex-grow">
-      {/* Aquí tu contenido principal */}
-           {/* <DotLottieReact className="absolute h-full w-screen z-negative" src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
-      <DotLottieReact className="absolute h-full w-screen rotate-180 z-negative" src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
-      <img src={UrChoiceLogo} className="logo UrChoice" alt="React logo" />
-      <div id="trapeziums-group">
-        <div id="trapezium-Test">
-          <p className="text-l font-bold z-10 text-center pt-5">BIENVENIDO YA ESTÁS DENTRO</p>
+    <div className="min-h-screen flex flex-col p-6 gap-4">
+      <Header />
+      <main className="flex flex-grow gap-4">
+        {/* Contenido principal */}
+        <div className="flex-grow p-4 border-red-600 border-1 rounded-lg">
+          {/* Aquí puedes incluir tu contenido principal */}
+          <p className="text-center text-lg font-bold text-gray-700">
+            Bienvenido, {nick ? `Nick: ${nick}` : 'Cargando usuario...'}
+          </p>
+          <button
+            onClick={handleLogout}
+            className="mt-5 py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            Cerrar sesión
+          </button>
         </div>
-        <div id="trapezium-Test">
-        
-          <p className="text-l font-bold z-10 text-center pt-5">{nick ? `Nick: ${nick}` : 'Cargando usuario...'}</p>
-        </div>
-      </div>
 
-      <button
-        onClick={handleLogout}
-        className="mt-5 py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-      >
-        Cerrar sesión
-      </button> */}
-    </main>
-  </div>
-  
- 
+        {/* Barra de amigos */}
+        <div className="w-1/5">
+          <FriendBar />
+        </div>
+      </main>
+    </div>
   );
 }
 
