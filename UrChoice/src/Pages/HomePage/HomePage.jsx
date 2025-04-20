@@ -38,10 +38,13 @@ function HomePage() {
   return (
     <div className="min-h-screen flex flex-col p-6 gap-4">
       <Header />
+      {/* Barra de amigos en pantallas pequeñas (desplazamiento horizontal) */}
+      <aside className="w-full flex md:hidden overflow-x-auto">
+        <FriendBar />
+      </aside>
       <main className="flex flex-grow gap-4">
         {/* Contenido principal */}
         <div className="flex-grow p-4 border-red-600 border-1 rounded-lg">
-          {/* Aquí puedes incluir tu contenido principal */}
           <p className="text-center text-lg font-bold text-gray-700">
             Bienvenido, {nick ? `Nick: ${nick}` : 'Cargando usuario...'}
           </p>
@@ -53,8 +56,8 @@ function HomePage() {
           </button>
         </div>
 
-        {/* Barra de amigos */}
-        <div className="w-1/5">
+        {/* Barra de amigos en pantallas grandes (desplazamiento vertical) */}
+        <div className="hidden md:flex w-1/5 overflow-y-auto max-h-[calc(100vh-96px)]">
           <FriendBar />
         </div>
       </main>

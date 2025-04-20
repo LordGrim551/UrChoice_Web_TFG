@@ -40,12 +40,12 @@ const Profile = () => {
         <div className="profile-header flex items-center justify-between p-4 text-white rounded-lg shadow-lg border border-cyan-500 md:border-0">
 
             <div className="profile-column">
-                <div className="w-16 h-16 rounded-full border-4 border-amber-600 overflow-hidden mr-2">
+                <div className="w-12 h-12 rounded-full border-4 border-amber-600 overflow-hidden mr-2">
                     <img src={profileImg || Logo} alt="Foto de perfil" className="w-full h-full object-cover" />
                 </div>
             </div>
 
-            <div className="profile-column profile-info flex flex-row md:flex-col gap-x-4 text-justify">
+            <div className="profile-column profile-info flex flex-row md:flex-col gap-x-4 text-justify text-xs">
                 <h2 className="profile-name">{nick ? `${nick}` : 'DEFAULT'}</h2>
                 <p className="profile-games">{gamesPlayed ? `${gamesPlayed}` : 'Loading'}</p>
             </div>
