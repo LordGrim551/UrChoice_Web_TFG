@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import ShowRequest from '../ShowRequest/ShowRequest';
 import AddFriend from '../AddFriend/AddFriend';
-import './FriendBar.css'; // Asegúrate de importar el CSS para el scrollbar personalizado
+// import './FriendBar.css'; // Asegúrate de importar el CSS para el scrollbar personalizado
 const FriendBar = () => {
     const [friends, setFriends] = useState([]);
     const [id_user, setIdUser] = useState('');
