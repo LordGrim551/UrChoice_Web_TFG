@@ -50,8 +50,8 @@
 
 /*-----------------*/
 
-button{
-    background-color: transparent;
+.start_button button{
+    background-color: transparent; /* Cambia el color de fondo del botón */
 }
 
 a {

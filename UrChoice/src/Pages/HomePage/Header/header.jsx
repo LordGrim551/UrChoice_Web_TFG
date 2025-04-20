@@ -89,7 +89,7 @@ export default function Header() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="text-red-500 border border-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
+                      className="text-red-500 border border-red-600 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
                     >
                       {item.name}
                     </a>

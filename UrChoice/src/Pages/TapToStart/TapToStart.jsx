@@ -34,7 +34,7 @@ function TapToStart() {
             className="absolute right-0 top-5 bg-red-500 h-11.5 transition-all duration-100 w-1/2 opacity-50"
           ></div>
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2 text-center text-l font-bold z-10" style={{ top: '0%', transform: 'translateY(-0%)' }}>
+        <div className="start_button absolute left-1/2 transform -translate-x-1/2 text-center text-l font-bold z-10" style={{ top: '0%', transform: 'translateY(-0%)' }}>
           <button className='mt-5 bg-transparent' onClick={handleClick}>
             <span className="text-white">CLICK TO START</span>
           </button>

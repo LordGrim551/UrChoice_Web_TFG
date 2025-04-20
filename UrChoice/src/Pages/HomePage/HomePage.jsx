@@ -39,7 +39,7 @@ function HomePage() {
     <div className="min-h-screen flex flex-col p-6 gap-4">
       <Header />
       {/* Barra de amigos en pantallas pequeñas (desplazamiento horizontal) */}
-      <aside className="w-full flex md:hidden overflow-x-auto">
+      <aside className="w-full flex lg:hidden overflow-x-auto">
         <FriendBar />
       </aside>
       <main className="flex flex-grow gap-4">
@@ -57,7 +57,7 @@ function HomePage() {
         </div>
 
         {/* Barra de amigos en pantallas grandes (desplazamiento vertical) */}
-        <div className="hidden md:flex w-1/5 overflow-y-auto max-h-[calc(100vh-96px)]">
+        <div className="hidden lg:flex w-1/5 overflow-y-auto max-h-[calc(100vh-96px)]">
           <FriendBar />
         </div>
       </main>
