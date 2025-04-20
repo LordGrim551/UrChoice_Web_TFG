@@ -54,10 +54,10 @@ const FriendBar = () => {
             </div> */}
 
             {friends.map((friend) => (
-             <div
-             key={friend.id}
-             className="mr-4 m-4 flex items-center bg-transparent p-3 rounded-lg mb-4 shadow-md border-1 border-cyan-400 md:mr-4 w-48 max-h-16 min-h-16 overflow-hidden"
-         >
+          <div
+  key={friend.id}
+  className="CARTA flex-shrink-0 w-48 mr-4 m-4 flex items-center bg-transparent p-3 rounded-lg mb-4 shadow-md border border-cyan-400"
+>
              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
                  <img
                      src={friend.profilePic}
