@@ -30,9 +30,9 @@ const categories = [
 
 const HomeCategoryCard = () => {
     return (
-        <div className="w-full category-container grid grid-cols-2 md:grid-cols-3 gap-4  max-h-screen p-4">
+        <div className="w-full  category-container grid grid-cols-2 md:grid-cols-3 gap-4  max-h-screen p-4">
             {categories.map((category) => (
-                <div key={category.id} className="category-card border border-gray-300 rounded-lg shadow-md">
+                <div key={category.id} className="category-card border border-gray-300 rounded-lg shadow-md ">
                     {/* Título con fondo rojo y bordes redondeados en las esquinas superiores */}
                     <div className="card-header bg-red-500 text-white rounded-t-lg p-2 text-center">
                         {category.title}

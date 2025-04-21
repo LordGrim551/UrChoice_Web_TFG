@@ -37,14 +37,14 @@ function HomePage() {
       </aside>
       <main className="flex flex-grow gap-4">
         {/* Contenido principal */}
-        <div className="category-card w-full h-[calc(87vh-48px)] flex-grow p-4 border-red-600 border-1 rounded-lg overflow-y-auto scrollbar-custom">
+        <div className="category-card w-full h-[calc(87vh-48px)] flex-grow p-4  border-red-600 border-5 rounded-lg overflow-y-auto scrollbar-custom">
           <p className="text-center text-lg font-bold text-gray-700">
             Bienvenido, {nick ? `Nick: ${nick}` : 'Cargando usuario...'}
           </p>
-          <HomeCategoryCard />
+          <HomeCategoryCard  />
           <button
             onClick={handleLogout}
-            className="mt-5 py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="mt-5 py-2 px-4 bg-red-600 border-5  text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
           >
             Cerrar sesión
           </button>

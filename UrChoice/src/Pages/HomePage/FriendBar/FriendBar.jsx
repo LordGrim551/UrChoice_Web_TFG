@@ -73,7 +73,7 @@ const FriendBar = () => {
 
 
     return (
-        <div className="flex flex-col w-full h-full bg-black border-1 border-red-600 p-4 rounded-lg text-white overflow-y-auto scrollbar-custom">
+        <div className="flex flex-col w-full h-full bg-black border-5 border-red-600 p-4 rounded-lg text-white overflow-y-auto scrollbar-custom">
 
             <div className="friends flex justify-between items-center mb-5">
 

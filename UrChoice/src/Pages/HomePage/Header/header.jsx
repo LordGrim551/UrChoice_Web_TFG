@@ -13,7 +13,7 @@ export default function Header() {
   }, 2000);
 
   return (
-    <header className="bg-black border border-red-500 backdrop-blur-md sticky top-0 z-50 rounded-2xl">
+    <header className="bg-black border-5 border-red-600 backdrop-blur-md sticky top-0 z-50 rounded-2xl">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-24">
           {/* Contenedor del logo y el nav */}
