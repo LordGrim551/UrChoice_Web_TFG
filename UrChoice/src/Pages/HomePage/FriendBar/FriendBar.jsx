@@ -88,11 +88,11 @@ const FriendBar = () => {
             </div>
 
             {/* Contenedor de las cartas de amigos en una fila horizontal */}
-            <div className="flex overflow-x-auto gap-4 scrollbar-custom md:block ">
+            <div className="flex overflow-x-auto gap-4 scrollbar-custom lg:block ">
                 {friends.map((friend) => (
                     <div
                         key={friend.id}
-                        className="CARTA flex-shrink-0 w-48 mb-4 flex items-center justify-between bg-transparent p-3 rounded-lg shadow-md border border-cyan-400 md:w-full"
+                        className="CARTA flex-shrink-0 w-48 mb-4 flex items-center justify-between bg-transparent p-3 rounded-lg shadow-md border border-cyan-400 lg:w-full"
                     >
                         <div className="flex items-center">
                             <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
