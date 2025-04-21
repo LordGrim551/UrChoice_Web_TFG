@@ -2,7 +2,11 @@
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'], // Asegúrate de incluir tus archivos
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        
+      }
+    }
   },
   plugins: [
     require('tailwind-scrollbar'), // Agrega el plugin aquí
