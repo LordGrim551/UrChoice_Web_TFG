@@ -75,7 +75,7 @@ const MailBar = () => {
 
     const openMailDialog = () => {
         if (mailDialogRef.current) {
-            mailDialogRef.current.showModal();  
+            mailDialogRef.current.showModal();
         }
     };
 
@@ -95,7 +95,7 @@ const MailBar = () => {
             >
 
 
-                <div className="prueba w-2xl h-full mt-3.5 bg-cover bg-center flex flex-col gap-4 p-12 max-h-96 overflow-y-auto">
+                <div className="prueba w-l h-full mt-3.5 bg-cover bg-center flex flex-col gap-4 p-8 max-h-96 overflow-y-auto">
                     {isLoading ? (
                         <p className="text-white">Cargando...</p>
                     ) : pendingRequests.length === 0 ? (
@@ -103,7 +103,7 @@ const MailBar = () => {
                     ) : (
                         pendingRequests.map(user => (
                             <div key={user.id_user} className="flex  items-center justify-between p-3 border border-cyan-400 rounded-lg">
-                                <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
                                     {user.img_user ? (
                                         <img
                                             src={`data:image/jpeg;base64,${user.img_user}`}
@@ -115,8 +115,8 @@ const MailBar = () => {
                                     )}
                                 </div>
                                 <div className="flex justify-center items-center flex-grow px-4">
-                                    <p className="text-lg font-bold text-white">{user.nick_user}</p>
-                                    <p className="text-md mt-0.5 ml-4  text-gray-300">{user.email_user}</p>
+                                    <p className="text-md font-bold text-white">{user.nick_user}</p>
+                                    <p className="text-sm mt-0.5 ml-4  text-gray-300">{user.email_user}</p>
                                 </div>
 
                                 <div className="flex gap-2">
