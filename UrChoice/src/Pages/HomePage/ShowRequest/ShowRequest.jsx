@@ -95,14 +95,15 @@ const MailBar = () => {
             >
 
 
-                <div className="prueba w-l h-full mt-3.5 bg-cover bg-center flex flex-col gap-4 p-8 max-h-96 overflow-y-auto">
+                <div className="prueba w-full h-full mt-3.5 bg-cover bg-center flex flex-col gap-4 p-8 max-h-96 overflow-y-auto">
                     {isLoading ? (
                         <p className="text-white">Cargando...</p>
                     ) : pendingRequests.length === 0 ? (
                         <p className="text-white">No tienes solicitudes pendientes</p>
                     ) : (
                         pendingRequests.map(user => (
-                            <div key={user.id_user} className="flex  items-center justify-between p-3 border border-cyan-400 rounded-lg">
+                            <div key={user.id_user} className="flex flex-col sm:flex-row items-center sm:justify-between p-3 border border-cyan-400 rounded-lg">
+                                {/* Imagen del usuario */}
                                 <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
                                     {user.img_user ? (
                                         <img
@@ -111,23 +112,26 @@ const MailBar = () => {
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <div className="text-gray-500">Sin imagen</div>
+                                        <div className="text-gray-500 text-xs">Sin imagen</div>
                                     )}
                                 </div>
-                                <div className="flex justify-center items-center flex-grow px-4">
-                                    <p className="text-md font-bold text-white">{user.nick_user}</p>
-                                    <p className="text-sm mt-0.5 ml-4  text-gray-300">{user.email_user}</p>
+
+                                {/* Información del usuario */}
+                                <div className="flex flex-col items-center sm:items-start flex-grow px-4 mt-2 sm:mt-0">
+                                    <p className="text-xs sm:text-sm font-bold text-white truncate">{user.nick_user}</p>
+                                    <p className="text-xs sm:text-sm text-gray-300 truncate">{user.email_user}</p>
                                 </div>
 
-                                <div className="flex gap-2">
+                                {/* Botones de acción */}
+                                <div className="flex gap-2 mt-2 sm:mt-0">
                                     <button
-                                        className="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                                        className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-green-500 text-white rounded hover:bg-green-600"
                                         onClick={() => handleResponse(user.id_user, 'accept')}
                                     >
                                         Aceptar
                                     </button>
                                     <button
-                                        className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                                        className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-red-500 text-white rounded hover:bg-red-600"
                                         onClick={() => handleResponse(user.id_user, 'reject')}
                                     >
                                         Rechazar
