@@ -41,7 +41,7 @@ const MailBar = () => {
         };
 
         fetchPendingRequests();
-        const interval = setInterval(fetchPendingRequests, 10000);
+        const interval = setInterval(fetchPendingRequests, 50000);
         return () => clearInterval(interval);
     }, [id_user]);
 
