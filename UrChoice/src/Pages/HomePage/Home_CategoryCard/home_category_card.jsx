@@ -1,5 +1,6 @@
 import "./home_category_card.css";
 import React, { useEffect, useState } from 'react';
+import { Heart, Bookmark } from 'lucide-react';
 
 const HomeCategoryCard = () => {
     const [Categories, setCategories] = useState([]);
@@ -20,9 +21,10 @@ const HomeCategoryCard = () => {
                     name_cat: category.name_cat, // asegurarse que coincida con el render
                     img_cat: `data:image/png;base64,${category.img_cat}`,
                 }));
-                const testCategories = Array(24).fill(formattedCategories[0]);
+                // const testCategories = Array(24).fill(formattedCategories[0]);
+                setCategories(formattedCategories);
                 // setCategories(testCategories);
-                setCategories(testCategories);
+                // setCategories(testCategories);
 
             }
         } catch (error) {
@@ -50,8 +52,10 @@ const HomeCategoryCard = () => {
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <div className="card-footer bg-cyan-500 text-white rounded-b-lg p-2 text-center">
+                    <div className="flex items-center justify-evenly card-footer bg-cyan-500 text-white rounded-b-lg p-2 text-center">
                         ID: {category.id_cat}
+                        <Heart size={24} />
+                        <Bookmark size={24} />
                     </div>
                 </div>
             ))}
