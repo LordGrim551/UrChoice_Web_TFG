@@ -57,7 +57,7 @@ const PasswordDialog = ({ dialogRef, selectedRoom, roomDialogRef }) => {
                     type="password"
                     id="password"
                     name="password"
-                    className="w-full p-2 border border-cyan-400 rounded mb-4"
+                    className="w-full p-2 border border-cyan-400 rounded mb-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
                     required
                 />
                 {/* STATUS MESSAGE */}
