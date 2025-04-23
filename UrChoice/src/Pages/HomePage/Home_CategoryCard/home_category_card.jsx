@@ -39,7 +39,7 @@ const HomeCategoryCard = () => {
     }, []);
 
     return (
-        <div className="w-full category-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-screen p-4">
+        <div className="w-full category-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  p-4 overflow-y-auto scrollbar-custom max-h-[70vh]">
             {Categories.map((category) => (
                 <div key={category.id_cat} className="category-card border  border-gray-300 rounded-lg shadow-md">
                     <div className="card-header bg-red-500 text-white rounded-t-lg p-2 text-center">
