@@ -2,7 +2,7 @@ import { useState } from "react";
 import './header.css';
 import Logo from './logo.png';
 import ProfileHeader from "../ProfileHeader/profile";
-
+import CreateRoom from "./CreateRoomDialog/CreateRoom";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -79,9 +79,8 @@ export default function Header() {
                       </div>
                     )}
                   </div>
-
+                  <CreateRoom />
                   {[
-                    { name: "Inicio", href: "#" },
                     { name: "Proyectos", href: "#" },
                     { name: "Blog", href: "#" },
                     { name: "Contacto", href: "#" },
@@ -156,6 +155,7 @@ export default function Header() {
           ) : (
             <>
               <ProfileHeader />
+              <CreateRoom  />
               <a
                 href="#"
                 className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
