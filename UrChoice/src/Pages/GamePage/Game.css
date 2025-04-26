@@ -22,24 +22,24 @@
 .game-page h1 span:last-child {
   color: #0b3fa1;
 }
+
 .game-page .grayscale {
   filter: grayscale(100%);
-
 }
+
 .gallery-img {
   transition: filter 0.3s ease;
 }
-
 
 /* Gallery Styles */
 .game-page .gallery {
   --z: 32px;
   --s: 90vh;
-  --g: 8px;
+  --g: 0px;
 
   display: grid;
   gap: var(--g);
-  width: calc(2 * var(--s) + var(--g));
+  width: calc(2 * 45vw + 1vw);
   grid-auto-flow: column;
 }
 
@@ -49,7 +49,7 @@
 }
 
 /* Image inside each gallery item */
-.gallery > .item > img {
+.gallery>.item>img {
   width: 0;
   min-width: calc(100% + var(--z) / 2);
   height: var(--s);
@@ -61,40 +61,34 @@
 }
 
 /* Hover effect on the image */
-.gallery > .item > img:hover {
+.gallery>.item>img:hover {
   width: calc(var(--s) / 2);
 }
 
 /* First item in the gallery */
-.gallery > .item:first-child > img {
+.gallery>.item:first-child>img {
   place-self: start;
   border: solid 2px cyan;
-  border-radius: 20px;
+  border-radius: 10px;
   border-right: none;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  --mask: conic-gradient(
-    from -135deg at right,
-    #0000,
-    #000 1deg 89deg,
-    #0000 90deg
-  )
-  50%/100% calc(2 * var(--z)) repeat-y;
+  --mask: conic-gradient(from -135deg at right,
+      #0000,
+      #000 1deg 89deg,
+      #0000 90deg) 50%/100% calc(2 * var(--z)) repeat-y;
 }
 
 /* Last item in the gallery */
-.gallery > .item:last-child > img {
+.gallery>.item:last-child>img {
   place-self: end;
   border: solid 2px red;
-  border-radius: 20px;
+  border-radius: 10px;
   border-left: none;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  --mask: conic-gradient(
-    from 45deg at left,
-    #0000,
-    #000 1deg 89deg,
-    #0000 90deg
-  )
-  50% calc(50% - var(--z)) / 100% calc(2 * var(--z)) repeat-y;
+  --mask: conic-gradient(from 45deg at left,
+      #0000,
+      #000 1deg 89deg,
+      #0000 90deg) 50% calc(50% - var(--z)) / 100% calc(2 * var(--z)) repeat-y;
 }
 
 /* Label over the images */
@@ -109,17 +103,99 @@
   font-family: system-ui, sans-serif;
   text-shadow: 0 0 8px black;
   pointer-events: none;
-  z-index: 20; /* MÁS que la imagen expandida */
+  z-index: 20;
 }
-.game-page .gallery.expanding > .item > img {
+
+.game-page .gallery.expanding>.item>img {
   width: 0 !important;
 }
 
-.game-page .gallery.expanding > .item > img.expanded {
+.game-page .gallery.expanding>.item>img.expanded {
   width: 55vw !important;
   object-position: center;
   object-fit: cover;
   background: black;
   position: relative;
   z-index: 10;
+}
+
+/* Media query para pantallas menores a 768px */
+@media (max-width: 768px) {
+  .game-page {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .game-page h1 {
+    font-size: 1.8rem;
+    word-spacing: 0.3em;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .game-page .gallery {
+    --z: 24px;
+    --s: 35vh;
+    --g: 0px; /* Espacio entre imágenes a 0 */
+
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 100%;
+  }
+  .gallery>.item>img:hover {
+    height: calc(var(--s) *1.5);
+  }
+
+  .gallery>.item>img {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: var(--s);
+    object-fit: cover;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .gallery>.item:first-child>img {
+    border: 2px solid red;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    object-position: top;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    --mask: 
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 
+      50% 0/calc(2*var(--z)) 100% repeat-x;
+    margin-bottom: calc(-1 * var(--z)); /* Compensa el zigzag */
+  }
+  
+  .gallery>.item:last-child>img {
+    border: 2px solid cyan;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    object-position: top;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    --mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 
+      calc(50% - var(--z)) 100%/calc(2*var(--z)) 100% repeat-x;
+    margin-top: calc(-1 * var(--z)); /* Compensa el zigzag */
+  }
+
+  .gallery>.item>img.expanded {
+    height: 60vh !important;
+    width: 90vw !important;
+    z-index: 10;
+  }
+
+  .gallery .label {
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px black;
+  }
+
+  .gallery .item {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 }
