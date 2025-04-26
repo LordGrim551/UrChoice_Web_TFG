@@ -4,7 +4,7 @@
   min-height: 100vh;
   display: grid;
   place-content: center;
-  background: #a8dba8;
+  background: #000000;
 }
 
 /* Style for the title */
@@ -24,7 +24,12 @@
 }
 .game-page .grayscale {
   filter: grayscale(100%);
+
 }
+.gallery-img {
+  transition: filter 0.3s ease;
+}
+
 
 /* Gallery Styles */
 .game-page .gallery {
@@ -63,6 +68,9 @@
 /* First item in the gallery */
 .gallery > .item:first-child > img {
   place-self: start;
+  border: solid 2px cyan;
+  border-radius: 20px;
+  border-right: none;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   --mask: conic-gradient(
     from -135deg at right,
@@ -76,6 +84,9 @@
 /* Last item in the gallery */
 .gallery > .item:last-child > img {
   place-self: end;
+  border: solid 2px red;
+  border-radius: 20px;
+  border-left: none;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   --mask: conic-gradient(
     from 45deg at left,
@@ -98,4 +109,17 @@
   font-family: system-ui, sans-serif;
   text-shadow: 0 0 8px black;
   pointer-events: none;
+  z-index: 20; /* MÁS que la imagen expandida */
+}
+.game-page .gallery.expanding > .item > img {
+  width: 0 !important;
+}
+
+.game-page .gallery.expanding > .item > img.expanded {
+  width: 60vw !important;
+  object-position: center;
+  object-fit: cover;
+  background: black;
+  position: relative;
+  z-index: 10;
 }
