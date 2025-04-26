@@ -213,9 +213,3 @@
   transform: scale(1.05);
 }
 
-/* Esto asegura que el hover se mantenga en móvil */
-@media (max-width: 768px) {
-  .keep-hover {
-    height: calc(var(--s) * 1.5) !important;
-  }
-}
