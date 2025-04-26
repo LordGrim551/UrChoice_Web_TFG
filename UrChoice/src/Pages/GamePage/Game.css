@@ -91,7 +91,6 @@
       #0000 90deg) 50% calc(50% - var(--z)) / 100% calc(2 * var(--z)) repeat-y;
 }
 
-/* Label over the images */
 .gallery .label {
   position: absolute;
   top: 50%;
@@ -99,13 +98,18 @@
   transform: translate(-50%, -50%);
   text-align: center;
   color: white;
-  font-size: 2rem;
+  font-size: 5rem;
   font-family: system-ui, sans-serif;
-  text-shadow: 0 0 8px black;
+  font-weight: bold; /* Añadido para mayor grosor */
+  text-shadow: 
+    3px 3px 0 #000,
+    -3px -3px 0 #000,
+    3px -3px 0 #000,
+    -3px 3px 0 #000,
+    0 0 10px #000; /* Sombra adicional para suavizar */
   pointer-events: none;
   z-index: 20;
 }
-
 .game-page .gallery.expanding>.item>img {
   width: 0 !important;
 }
@@ -190,9 +194,10 @@
   }
 
   .gallery .label {
-    font-size: 1.2rem;
+    font-size: 2.5rem;  /* Aumenté el tamaño de 1.2rem a 1.5rem */
+    font-weight: bold;  /* Agregué bold (negrita) */
     text-shadow: 0 0 5px black;
-  }
+}
 
   .gallery .item {
     margin: 0 !important;

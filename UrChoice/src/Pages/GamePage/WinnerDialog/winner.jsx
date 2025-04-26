@@ -28,15 +28,17 @@ const WinnerDialog = ({ isOpen, winnerImage, winnerName, onClose }) => {
 
         {/* Contenido movido al fondo */}
         <div className="relative z-10 flex flex-col items-center justify-between h-full pt-8">
-          <h2 className="text-4xl font-bold text-white mb-4">{winnerName}</h2>
-          <p className="text-gray-300 mb-6 font-bold">¡Ganador de esta ronda!</p>
-
-          
+          <h2 className="text-4xl font-bold text-white mb-4 [text-shadow:_2px_2px_0_black,_-2px_-2px_0_black,_2px_-2px_0_black,_-2px_2px_0_black]">
+            {winnerName}
+          </h2>
+          <p className="text-gray-300 mb-6 font-bold [text-shadow:_2px_2px_0_black,_-2px_-2px_0_black,_2px_-2px_0_black,_-2px_2px_0_black]">
+            ¡Ganador de esta ronda!
+          </p>
         </div>
         <div className="relative z-10 mt-auto pt-64">
           <button
             onClick={handleClose}
-            className="w-full px-6 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white font-bold text-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50"
+            className="w-full px-6 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white font-bold text-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50 [text-shadow:_2px_2px_0_black,_-2px_-2px_0_black,_2px_-2px_0_black,_-2px_2px_0_black]"
           >
             Cerrar
           </button>
