@@ -185,7 +185,7 @@
 
   .gallery>.item>img.expanded {
     height: 60vh !important;
-    width: 90vw !important;
+    width: 20vw !important;
     z-index: 10;
   }
 
