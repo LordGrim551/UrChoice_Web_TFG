@@ -162,7 +162,7 @@
   .gallery>.item:first-child>img {
     border: 2px solid red;
     border-bottom: none;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     object-position: top;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     --mask: 
@@ -174,7 +174,7 @@
   .gallery>.item:last-child>img {
     border: 2px solid cyan;
     border-top: none;
-    border-radius: 0 0 10px 10px;
+    border-radius:  10px;
     object-position: top;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     --mask:
@@ -197,5 +197,25 @@
   .gallery .item {
     margin: 0 !important;
     padding: 0 !important;
+  }
+}
+
+/* Añade esto al final de tu Game.css */
+.no-pointer {
+  pointer-events: none;
+}
+
+.no-pointer .expanded {
+  pointer-events: auto;
+}
+
+.keep-hover {
+  transform: scale(1.05);
+}
+
+/* Esto asegura que el hover se mantenga en móvil */
+@media (max-width: 768px) {
+  .keep-hover {
+    height: calc(var(--s) * 1.5) !important;
   }
 }

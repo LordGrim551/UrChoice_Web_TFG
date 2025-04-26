@@ -4,7 +4,7 @@ import "./Game.css";
 const GamePage = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHoverBlocked, setIsHoverBlocked] = useState(false);  // Estado para bloquear hover
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const images = [
     "https://assets.codepen.io/1480814/archer.jpg",
@@ -17,15 +17,15 @@ const GamePage = () => {
   const visibleImages = images.slice(currentIndex, currentIndex + 2);
 
   const handleClick = (index) => {
-    // Bloquea el hover y expande la imagen
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
     setExpandedIndex(index);
-    setIsHoverBlocked(true);
 
-    // Después de 3 segundos, desbloquea el hover y cambia la imagen
     setTimeout(() => {
       setExpandedIndex(null);
       setCurrentIndex((prevIndex) => (prevIndex + 2) % images.length);
-      setIsHoverBlocked(false);  // Desbloquea el hover
+      setIsAnimating(false);
     }, 3000);
   };
 
@@ -36,7 +36,7 @@ const GamePage = () => {
           const globalIndex = currentIndex + index;
           return (
             <div
-              className="item"
+              className={`item ${isAnimating ? "no-pointer" : ""}`}
               key={index}
               onClick={() => handleClick(globalIndex)}
             >
@@ -46,7 +46,7 @@ const GamePage = () => {
                 className={`gallery-img 
                   ${expandedIndex === globalIndex ? "expanded" : ""}
                   ${expandedIndex !== null && expandedIndex !== globalIndex ? "grayscale" : ""}
-                  ${isHoverBlocked ? "no-hover" : ""}
+                  ${isAnimating ? "keep-hover" : ""}
                 `}
               />
               <span className="label">{imageNames[globalIndex]}</span>
