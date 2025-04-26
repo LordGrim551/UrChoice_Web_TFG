@@ -116,7 +116,7 @@
 }
 
 .game-page .gallery.expanding > .item > img.expanded {
-  width: 60vw !important;
+  width: 55vw !important;
   object-position: center;
   object-fit: cover;
   background: black;
