@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Trash, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
     const [users, setUsers] = useState([]);
     const [userId, setUserId] = useState(currentUserId);
     const [isUserInTable, setIsUserInTable] = useState(true);
+    const navigate = useNavigate(); 
+
+    const checkAllReady = () => {
+        if (users.length > 0 && users.every(user => user.vote_game === 'LISTO')) {
+            startMatch(); // Llama a la función que inicia el juego
+        }
+    };
+     // Efecto que verifica constantemente si todos están listos
+     useEffect(() => {
+        checkAllReady();
+    }, [users]); // Se ejecuta cada vez que cambia 'users'
+
+    
 
     // Si no viene por props, obtenemos userId de localStorage
     useEffect(() => {
@@ -13,6 +27,36 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
             if (stored) setUserId(stored);
         }
     }, [userId]);
+
+    // Función para iniciar el juego
+    const startMatch = async () => {
+        if (!selectedRoom?.id_room) return;
+        try {
+            const res = await fetch(
+                `https://railwayserver-production-7692.up.railway.app/room/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_room: selectedRoom.id_room,
+                    id_user: userId,
+                }),
+            }
+            );
+            
+            if (res.ok) {
+                const data = await res.json();
+                if (data.message === 'La sala se ha cerrado correctamente') {
+                    // Redirige a la página de juego
+                    navigate('/GamePage');
+                }
+            } else {
+                console.error('Error al iniciar partida:', await res.json());
+            }
+        } catch (e) {
+            console.error('Fetch startMatch error:', e);
+        }
+    };
+
 
     const closeDialog = () => {
         dialogRef.current?.close();
@@ -93,6 +137,7 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
             console.error('Fetch kick error:', e);
         }
     };
+  
 
     // Renderiza Admin o Trash según idx y si eres Admin
     const renderUserInfo = (user, idx) => {
