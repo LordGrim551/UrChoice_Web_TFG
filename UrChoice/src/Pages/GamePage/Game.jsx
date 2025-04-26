@@ -10,10 +10,9 @@ const GamePage = () => {
         "https://assets.codepen.io/1480814/saber.jpg",  // Segunda imagen
         "https://media.kg-portal.ru/anime/f/fatestaynight2014/images/fatestaynight2014_146.jpg", // Tercera imagen
         "https://i.pinimg.com/736x/18/70/93/187093f28d04b4df70dba5734a3ab308.jpg"  // Cuarta imagen
-    ]; // Lista de imágenes actualizada
+    ]; // Lista de imágenes
 
     const imageNames = ["Archer", "Saber", "Lancer", "Rider"]; // Nombres de las imágenes
-
 
     const visibleImages = images.slice(currentIndex, currentIndex + 2); // Mostrar solo 2 imágenes a la vez
 
@@ -29,30 +28,22 @@ const GamePage = () => {
 
     return (
         <div className="game-page">
-            <div className={`gallery ${expandedIndex !== null ? "expanding" : ""}`}>
-                {visibleImages.map((img, index) => (
-                    <img
+            <div className="gallery">
+                {visibleImages.map((image, index) => (
+                    <div
+                        className={`item ${expandedIndex === currentIndex + index ? "expanded" : ""}`}
                         key={index}
-                        src={img}
-                        alt={`Character ${index}`}
-                        onClick={() => handleClick(index)}
-                        className={`${expandedIndex === index ? "expanded" : ""} ${expandedIndex !== null && expandedIndex !== index ? "grayscale" : ""}`} // Aplicar grayscale a las no seleccionadas
-                    />
-
-
-
-
+                        onClick={() => handleClick(currentIndex + index)}
+                    >
+                        <img
+                            src={image}
+                            alt={imageNames[currentIndex + index]}
+                            className={expandedIndex === currentIndex + index ? "expanded-img" : ""}
+                        />
+                        <span className="label">{imageNames[currentIndex + index]}</span>
+                    </div>
                 ))}
-                <div className="image-names">
-                    {visibleImages.map((_, index) => (
-                        <span key={index} className={`image-name ${expandedIndex === index ? "visible" : ""}`}>
-                            {imageNames[currentIndex + index]}
-                        </span>
-                    ))}
-
-                </div>
             </div>
-
         </div>
     );
 };

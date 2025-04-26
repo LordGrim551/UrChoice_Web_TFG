@@ -1,5 +1,5 @@
+/* Reset body margin and set up the grid layout */
 .game-page {
-  /* General */
   margin: 0;
   min-height: 100vh;
   display: grid;
@@ -7,6 +7,7 @@
   background: #a8dba8;
 }
 
+/* Style for the title */
 .game-page h1 {
   text-align: center;
   font-family: system-ui, sans-serif;
@@ -21,13 +22,11 @@
 .game-page h1 span:last-child {
   color: #0b3fa1;
 }
-
-/* Estilo para aplicar filtro de blanco y negro */
 .game-page .grayscale {
   filter: grayscale(100%);
 }
 
-/* Estilos existentes */
+/* Gallery Styles */
 .game-page .gallery {
   --z: 32px;
   --s: 90vh;
@@ -39,7 +38,13 @@
   grid-auto-flow: column;
 }
 
-.game-page .gallery > img {
+/* Each item in the gallery */
+.gallery .item {
+  position: relative;
+}
+
+/* Image inside each gallery item */
+.gallery > .item > img {
   width: 0;
   min-width: calc(100% + var(--z) / 2);
   height: var(--s);
@@ -47,56 +52,50 @@
   -webkit-mask: var(--mask);
   mask: var(--mask);
   cursor: pointer;
-  transition: all 0.5s ease-in-out;
-  position: relative; /* Necesario para usar ::after */
+  transition: 0.5s;
 }
 
-.game-page .gallery > img:hover {
+/* Hover effect on the image */
+.gallery > .item > img:hover {
   width: calc(var(--s) / 2);
 }
 
-/* Efectos de zigzag */
-.game-page .gallery > img:first-child {
+/* First item in the gallery */
+.gallery > .item:first-child > img {
   place-self: start;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  --mask: conic-gradient(from -135deg at right, #0000, #000 1deg 89deg, #0000 90deg)
-    50%/100% calc(2 * var(--z)) repeat-y;
+  --mask: conic-gradient(
+    from -135deg at right,
+    #0000,
+    #000 1deg 89deg,
+    #0000 90deg
+  )
+  50%/100% calc(2 * var(--z)) repeat-y;
 }
 
-.game-page .gallery > img:last-child {
+/* Last item in the gallery */
+.gallery > .item:last-child > img {
   place-self: end;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  --mask: conic-gradient(from 45deg at left, #0000, #000 1deg 89deg, #0000 90deg)
-    50% calc(50% - var(--z)) / 100% calc(2 * var(--z)) repeat-y;
+  --mask: conic-gradient(
+    from 45deg at left,
+    #0000,
+    #000 1deg 89deg,
+    #0000 90deg
+  )
+  50% calc(50% - var(--z)) / 100% calc(2 * var(--z)) repeat-y;
 }
 
-/* EXPANSIÓN al hacer clic */
-.game-page .gallery.expanding > img {
-  width: 0 !important;
-}
-
-.game-page .gallery.expanding > img.expanded {
-  width: 50vw !important;
-
-  object-position: center; /* o center center, según la imagen */
-  object-fit: cover;
-  background: black;
-  position: relative;
-  z-index: 10;
-}
-
-/* Mostrar nombre centrado sobre la imagen */
-.game-page .gallery > img::after {
-  content: attr(alt);
+/* Label over the images */
+.gallery .label {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  text-align: center;
   color: white;
   font-size: 2rem;
   font-family: system-ui, sans-serif;
   text-shadow: 0 0 8px black;
   pointer-events: none;
-  z-index: 10;
-  text-align: center;
 }
