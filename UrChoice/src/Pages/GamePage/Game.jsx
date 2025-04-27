@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Game.css";
 import NextRound from "../GamePage/NextRoundDialog/NextRound";
 import WinnerDialog from "../GamePage/WinnerDialog/winner";
+import { useLocation } from 'react-router-dom';
 
 const GamePage = () => {
   const navigate = useNavigate();
@@ -14,39 +15,57 @@ const GamePage = () => {
   const [showNextRound, setShowNextRound] = useState(false);
   const [roundNumber, setRoundNumber] = useState(1);
   const [matchHistory, setMatchHistory] = useState([]);
-
   const [isWinnerDialogOpen, setIsWinnerDialogOpen] = useState(false);
   const [winnerImage, setWinnerImage] = useState("");
   const [winnerName, setWinnerName] = useState("");
+  const [elements, setElements] = useState([]); // Cambiado de category a elements
 
+  const location = useLocation();
+  const { id_cat } = location.state || {};
 
-  const images = [
-    "https://assets.codepen.io/1480814/archer.jpg",    
-    "https://assets.codepen.io/1480814/saber.jpg",     
-    "https://media.kg-portal.ru/anime/f/fatestaynight2014/images/fatestaynight2014_146.jpg",
-    "https://i.pinimg.com/736x/18/70/93/187093f28d04b4df70dba5734a3ab308.jpg",
-    "https://th.bing.com/th/id/OIP.vdxGIu1Pv87GjspBabTzMAAAAA?rs=1&pid=ImgDetMain",
-    "https://th.bing.com/th/id/R.2e6b39f9288e09bab6abec1909b6a7e4?rik=AVjqMguNCXjQ3w&pid=ImgRaw&r=0",
-    "https://th.bing.com/th/id/R.5c5e39bed56788fcbd4cb9622f3ceece?rik=XhyLTdIRu4NF2g&pid=ImgRaw&r=0",
-    "https://th.bing.com/th/id/OIP.eyXkWaz9Qt6UskxDpbaZRAHaK7?rs=1&pid=ImgDetMain",
-    "https://assets.codepen.io/1480814/archer.jpg",    
-    "https://assets.codepen.io/1480814/saber.jpg",     
-    "https://media.kg-portal.ru/anime/f/fatestaynight2014/images/fatestaynight2014_146.jpg",
-    "https://i.pinimg.com/736x/18/70/93/187093f28d04b4df70dba5734a3ab308.jpg",
-    "https://th.bing.com/th/id/OIP.vdxGIu1Pv87GjspBabTzMAAAAA?rs=1&pid=ImgDetMain",
-    "https://th.bing.com/th/id/R.2e6b39f9288e09bab6abec1909b6a7e4?rik=AVjqMguNCXjQ3w&pid=ImgRaw&r=0",
-    "https://th.bing.com/th/id/R.5c5e39bed56788fcbd4cb9622f3ceece?rik=XhyLTdIRu4NF2g&pid=ImgRaw&r=0",
-    "https://th.bing.com/th/id/OIP.eyXkWaz9Qt6UskxDpbaZRAHaK7?rs=1&pid=ImgDetMain"
-  ];
-  const imageNames = [
-    "Archer", "Saber", "Lancer", "Rider", "Assassin", "Berserker", "Caster", "Gilgamesh",
-    "Archer1", "Saber2", "Lancer3", "Rider4", "Assassin5", "Berserker6", "Caster7Ganadora", "Gilgamesh8"
-  ];
+  const fetchElements = async () => {
+    console.log("Fetching elements for category ID:", id_cat);
+    if (!id_cat) return;
+    try {
+      const response = await fetch(`https://railwayserver-production-7692.up.railway.app/elements/${id_cat}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      console.log("Fetched elements:", data);
+      if (response.ok) {
+        const formattedElements = data.map((element) => ({
+          id_elem: element.id_element,
+          name_elem: element.name,
+          img_elem: `data:image/png;base64,${element.image_url}`,
+        }));
+        setElements(formattedElements); // Actualizado para usar setElements
+      } else {
+        console.error("Error fetching elements:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching elements:", error);
+    }
+  };
 
   useEffect(() => {
-    const indices = Array.from({ length: images.length }, (_, i) => i);
-    setCurrentRound(indices);
-  }, [images.length]);
+    if (id_cat) {
+      fetchElements();
+    } else {
+      console.error("id_cat is not available in the location state.");
+    }
+  }, [id_cat]);
+
+  useEffect(() => {
+    console.log("Elements Data:", elements);
+  }, [elements]);
+
+  useEffect(() => {
+    if (elements.length > 0) {
+      const indices = Array.from({ length: elements.length }, (_, i) => i);
+      setCurrentRound(indices);
+    }
+  }, [elements]);
 
   const handleClick = (winnerIndex) => {
     if (isAnimating) return;
@@ -69,9 +88,9 @@ const GamePage = () => {
 
       if (nextMatch >= currentRound.length) {
         if (winners.length + 1 === 1) {
-          // Fin del torneo
-          setWinnerImage(images[winnerIndex]);
-          setWinnerName(imageNames[winnerIndex]);
+          const winnerElement = elements[winnerIndex]; // Usando elements
+          setWinnerImage(winnerElement.img_elem);
+          setWinnerName(winnerElement.name_elem);
           setIsWinnerDialogOpen(true);
         } else {
           setShowNextRound(true);
@@ -93,12 +112,16 @@ const GamePage = () => {
     setRoundNumber(prev => prev + 1);
   };
 
+  if (elements.length === 0) {
+    return <div className="text-white text-center mt-8">Cargando cartas...</div>;
+  }
+
   if (currentRound.length === 1) {
-    navigate("/HomePage", { 
-      state: { 
-        winner: currentRound[0], 
-        history: matchHistory 
-      } 
+    navigate("/HomePage", {
+      state: {
+        winner: currentRound[0],
+        history: matchHistory
+      }
     });
     return null;
   }
@@ -108,32 +131,36 @@ const GamePage = () => {
 
   return (
     <div className="game-page relative min-h-screen bg-gray-900">
-      {/* Área de juego */}
       <header className="pt-6 px-4 text-center">
         <span className="text-gray-300">Ronda {roundNumber} - Match {currentMatchIndex / 2 + 1} de {Math.ceil(currentRound.length / 2)}</span>
       </header>
 
       <div className={`gallery ${expandedIndex !== null ? "expanding" : ""} ${showNextRound ? "opacity-50" : ""}`}>
-        {[firstIndex, secondIndex].map((globalIndex, idx) => (
-          <div
-            className={`item ${isAnimating ? "no-pointer" : ""}`}
-            key={idx}
-            onClick={() => !showNextRound && handleClick(globalIndex)}
-          >
-            <img
-              src={images[globalIndex]}
-              alt={imageNames[globalIndex]}
-              className={`gallery-img 
-                ${expandedIndex === globalIndex ? "expanded" : ""}
-                ${expandedIndex !== null && expandedIndex !== globalIndex ? "grayscale" : ""}
-                ${isAnimating ? "keep-hover" : ""}
-              `}
-            />
-            <div className="label-container">
-              <span className="label">{imageNames[globalIndex]}</span>
+        {[firstIndex, secondIndex].map((globalIndex, idx) => {
+          const element = elements[globalIndex];
+          if (!element) return null;
+
+          return (
+            <div
+              className={`item ${isAnimating ? "no-pointer" : ""}`}
+              key={idx}
+              onClick={() => !showNextRound && handleClick(globalIndex)}
+            >
+              <img
+                src={element.img_elem}
+                alt={element.name_elem}
+                className={`gallery-img 
+                  ${expandedIndex === globalIndex ? "expanded" : ""}
+                  ${expandedIndex !== null && expandedIndex !== globalIndex ? "grayscale" : ""}
+                  ${isAnimating ? "keep-hover" : ""}
+                `}
+              />
+              <div className="label-container">
+                <span className="label">{element.name_elem}</span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {showNextRound && (
@@ -141,11 +168,11 @@ const GamePage = () => {
       )}
 
       {isWinnerDialogOpen && (
-        <WinnerDialog 
-          isOpen={isWinnerDialogOpen} 
-          winnerImage={winnerImage} 
-          winnerName={winnerName} 
-          onClose={() => setIsWinnerDialogOpen(false)} 
+        <WinnerDialog
+          isOpen={isWinnerDialogOpen}
+          winnerImage={winnerImage}
+          winnerName={winnerName}
+          onClose={() => setIsWinnerDialogOpen(false)}
         />
       )}
 

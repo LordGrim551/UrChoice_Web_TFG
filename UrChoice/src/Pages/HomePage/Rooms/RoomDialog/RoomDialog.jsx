@@ -8,6 +8,8 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
     const [isUserInTable, setIsUserInTable] = useState(true);
     const navigate = useNavigate(); 
 
+   
+
     const checkAllReady = () => {
         if (users.length > 0 && users.every(user => user.vote_game === 'LISTO')) {
             startMatch(); // Llama a la función que inicia el juego
@@ -46,8 +48,12 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
             if (res.ok) {
                 const data = await res.json();
                 if (data.message === 'La sala se ha cerrado correctamente') {
+                    console.table(selectedRoom); // 👈 Esto para ver todo el selectedRoom
                     // Redirige a la página de juego
-                    navigate('/GamePage');
+                    navigate('/GamePage', {
+                        state: { id_cat: selectedRoom.id_cat }
+                      });
+                      
                 }
             } else {
                 console.error('Error al iniciar partida:', await res.json());
@@ -68,12 +74,14 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
             const res = await fetch(
                 `https://railwayserver-production-7692.up.railway.app/room/${selectedRoom.id_room}/users`
             );
+           console.log("ID de la categoría recibido en RoomDialog:", selectedRoom?.id_cat); 
             const data = await res.json();
             if (res.ok && Array.isArray(data)) {
                 // ¿Está nuestro userId en la lista?
                 const inTable = data.some(u => u.id_user == userId);
                 setIsUserInTable(inTable);
                 setUsers(data);
+                console.log("ID de la categoría recibido en RoomDialog:", selectedRoom?.id_cat);
             } else {
                 console.error('Error al obtener usuarios:', data);
             }
