@@ -39,7 +39,7 @@ const CreateRoom = () => {
             const roomId = await response.json();
             if (response.ok) {
                 console.log("Room created successfully:", roomId);
-                setSelectedRoom({ id_room: roomId, name_room: roomData.name }); // Guardar la sala creada
+                setSelectedRoom({ id_room: roomId, name_room: roomData.name, id_cat: selectedCategory.id_cat }); // Guardar la sala creada
                 dialogModel.current?.close(); // Cerrar el diálogo de creación
                 roomDialogRef.current?.showModal(); // Abrir el diálogo de RoomDialog
             } else {

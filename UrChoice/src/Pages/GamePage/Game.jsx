@@ -23,6 +23,8 @@ const GamePage = () => {
   const location = useLocation();
   const { id_cat } = location.state || {};
 
+  
+
   const fetchElements = async () => {
     console.log("Fetching elements for category ID:", id_cat);
     if (!id_cat) return;
@@ -35,10 +37,11 @@ const GamePage = () => {
       console.log("Fetched elements:", data);
       if (response.ok) {
         const formattedElements = data.map((element) => ({
-          id_elem: element.id_element,
-          name_elem: element.name,
-          img_elem: `data:image/png;base64,${element.image_url}`,
+          id_elem: element.id_elem,
+          name_elem: element.name_elem,
+          img_elem: `data:image/png;base64,${element.img_elem}`,
         }));
+        
         setElements(formattedElements); // Actualizado para usar setElements
       } else {
         console.error("Error fetching elements:", data.message);
