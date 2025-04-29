@@ -21,9 +21,86 @@ const GamePage = () => {
   const [elements, setElements] = useState([]); // Cambiado de category a elements
 
   const location = useLocation();
-  const { id_cat } = location.state || {};
+  const { id_cat, id_room } = location.state || {};
+  const [hasResetVotes, setHasResetVotes] = useState(false);
 
+
+  const [usersInGame, setUsersInGame] = useState([]);
+
+  /*aqui*/
+  const fetchUsersInGame = async () => {
+    try {
+      const res = await fetch(
+        `https://railwayserver-production-7692.up.railway.app/room/${id_room}/users`
+      );
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setUsersInGame(data);
+        console.log("ID de la categoría recibido en GamePage:", id_cat,"Estos son los que estan dentro"); // 👈 Muestra el ID de la categoría
+        console.table(data); // 👈 Muestra los usuarios en la consola
+      }
+    } catch (e) {
+      console.error('Error fetching users:', e);
+    }
+  };
+  useEffect(() => {
+    fetchUsersInGame();
+   
+    // Si necesitas actualización en tiempo real:
+    const interval = setInterval(fetchUsersInGame, 5000); // Cada 5 segundos
+    return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
+    if (usersInGame.length > 0 && !hasResetVotes) {
+      updateVote();
+      setHasResetVotes(true); // Evita que se vuelva a ejecutar
+    }
+  }, [usersInGame]);
   
+  const updateVote = async () => {
+    if (!id_room || usersInGame.length === 0) return;
+    
+    try {
+      // Crear un array de promesas para todas las actualizaciones
+      const updatePromises = usersInGame.map(user => 
+        fetch(`https://railwayserver-production-7692.up.railway.app/room/updateVote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id_user: user.id_user,
+            id_room: id_room,
+            vote_game: '',
+          }),
+        })
+      );
+  
+      // Esperar a que todas las actualizaciones se completen
+      const responses = await Promise.all(updatePromises);
+      
+      // Verificar si todas las respuestas son OK
+      const allOk = responses.every(res => res.ok);
+      if (allOk) {
+        console.log("Todos los votos se actualizaron correctamente");
+        // Actualizar el estado local si es necesario
+        setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
+      } else {
+        console.error("Error al actualizar algunos votos");
+      }
+    } catch (e) {
+      console.error('Error en updateVote:', e);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
 
   const fetchElements = async () => {
     console.log("Fetching elements for category ID:", id_cat);
@@ -50,6 +127,7 @@ const GamePage = () => {
       console.error("Error fetching elements:", error);
     }
   };
+  
 
   useEffect(() => {
     if (id_cat) {
