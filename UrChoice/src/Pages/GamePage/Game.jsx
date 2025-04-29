@@ -4,7 +4,7 @@ import "./Game.css";
 import NextRound from "../GamePage/NextRoundDialog/NextRound";
 import WinnerDialog from "../GamePage/WinnerDialog/winner";
 import { useLocation } from 'react-router-dom';
-
+import GameStartCountdown from "./GameStartCountdown/GameStartCountdown";
 const GamePage = () => {
   const navigate = useNavigate();
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -19,7 +19,7 @@ const GamePage = () => {
   const [winnerImage, setWinnerImage] = useState("");
   const [winnerName, setWinnerName] = useState("");
   const [elements, setElements] = useState([]); // Cambiado de category a elements
-
+  const [showStartCountdown, setShowStartCountdown] = useState(true);
   const location = useLocation();
   const { id_cat, id_room } = location.state || {};
   const [hasResetVotes, setHasResetVotes] = useState(false);
@@ -36,7 +36,7 @@ const GamePage = () => {
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
         setUsersInGame(data);
-        console.log("ID de la categoría recibido en GamePage:", id_cat,"Estos son los que estan dentro"); // 👈 Muestra el ID de la categoría
+        console.log("ID de la categoría recibido en GamePage:", id_cat, "Estos son los que estan dentro"); // 👈 Muestra el ID de la categoría
         console.table(data); // 👈 Muestra los usuarios en la consola
       }
     } catch (e) {
@@ -45,7 +45,7 @@ const GamePage = () => {
   };
   useEffect(() => {
     fetchUsersInGame();
-   
+
     // Si necesitas actualización en tiempo real:
     const interval = setInterval(fetchUsersInGame, 5000); // Cada 5 segundos
     return () => clearInterval(interval);
@@ -56,13 +56,13 @@ const GamePage = () => {
       setHasResetVotes(true); // Evita que se vuelva a ejecutar
     }
   }, [usersInGame]);
-  
+
   const updateVote = async () => {
     if (!id_room || usersInGame.length === 0) return;
-    
+
     try {
       // Crear un array de promesas para todas las actualizaciones
-      const updatePromises = usersInGame.map(user => 
+      const updatePromises = usersInGame.map(user =>
         fetch(`https://railwayserver-production-7692.up.railway.app/room/updateVote`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -73,10 +73,10 @@ const GamePage = () => {
           }),
         })
       );
-  
+
       // Esperar a que todas las actualizaciones se completen
       const responses = await Promise.all(updatePromises);
-      
+
       // Verificar si todas las respuestas son OK
       const allOk = responses.every(res => res.ok);
       if (allOk) {
@@ -90,16 +90,6 @@ const GamePage = () => {
       console.error('Error en updateVote:', e);
     }
   };
-
-
-
-
-
-
-
-
-
-
 
 
   const fetchElements = async () => {
@@ -116,9 +106,10 @@ const GamePage = () => {
         const formattedElements = data.map((element) => ({
           id_elem: element.id_elem,
           name_elem: element.name_elem,
+          victories: element.victories,
           img_elem: `data:image/png;base64,${element.img_elem}`,
         }));
-        
+
         setElements(formattedElements); // Actualizado para usar setElements
       } else {
         console.error("Error fetching elements:", data.message);
@@ -127,7 +118,7 @@ const GamePage = () => {
       console.error("Error fetching elements:", error);
     }
   };
-  
+
 
   useEffect(() => {
     if (id_cat) {
@@ -169,10 +160,20 @@ const GamePage = () => {
 
       if (nextMatch >= currentRound.length) {
         if (winners.length + 1 === 1) {
-          const winnerElement = elements[winnerIndex]; // Usando elements
+          
+          const winnerElement = elements[winnerIndex];
           setWinnerImage(winnerElement.img_elem);
           setWinnerName(winnerElement.name_elem);
           setIsWinnerDialogOpen(true);
+
+          console.log("GANADOR FINAL:", {
+            id: winnerElement.id_elem,
+            name: winnerElement.name_elem,
+            img: winnerElement.img_elem,
+            victories: winnerElement.victories
+          });
+
+          updateRanking(winnerElement, usersInGame[0]?.id_user); // Esta llamada ahora es correcta
         } else {
           setShowNextRound(true);
         }
@@ -184,6 +185,42 @@ const GamePage = () => {
       setIsAnimating(false);
     }, 1500);
   };
+  /*aqui*/
+
+  const updateRanking = async (winnerElement, userId) => {
+    try {
+      if (!winnerElement || !userId) {
+        console.error("Datos faltantes para actualizar ranking");
+        return;
+      }
+
+      console.log("Actualizando ranking para:", {
+        elementId: winnerElement.id_elem,
+        userId: userId,
+        currentVictories: winnerElement.victories
+      });
+
+      const response = await fetch(`https://railwayserver-production-7692.up.railway.app/element/winner`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_elem: winnerElement.id_elem,
+          victories: winnerElement.victories + 1,
+          id_user: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error del servidor:', errorData);
+        throw new Error(errorData.message || 'Error al actualizar ranking');
+      }
+
+      console.log("Ranking actualizado exitosamente");
+    } catch (error) {
+      console.error('Error en updateRanking:', error.message);
+    }
+  };
 
   const handleNextRoundComplete = () => {
     setCurrentRound([...winners]);
@@ -193,9 +230,19 @@ const GamePage = () => {
     setRoundNumber(prev => prev + 1);
   };
 
-  if (elements.length === 0) {
-    return <div className="text-white text-center mt-8">Cargando cartas...</div>;
+  if (showStartCountdown || elements.length === 0) {
+    return (
+      <>
+        {showStartCountdown ? (
+          <GameStartCountdown onComplete={() => setShowStartCountdown(false)} />
+        ) : (
+          <div className="text-white text-center mt-8">Cargando cartas...</div>
+        )}
+      </>
+    );
   }
+
+
 
   if (currentRound.length === 1) {
     navigate("/HomePage", {
