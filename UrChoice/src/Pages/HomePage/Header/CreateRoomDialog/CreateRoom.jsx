@@ -60,7 +60,7 @@ const CreateRoom = () => {
                 }}
                 className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:block px-3 py-2 rounded-md transition cursor-pointer"
             >
-                Inicio
+                CREAR SALA
             </a>
 
             {/* Main Dialog */}

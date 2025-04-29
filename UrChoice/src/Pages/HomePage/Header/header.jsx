@@ -50,11 +50,13 @@ export default function Header() {
                 </div>
               ) : (
                 <>
+                  <CreateRoom />
                   <div
                     className="relative"
                     onMouseEnter={() => setDropdownOpen(true)}
                     onMouseLeave={() => setDropdownOpen(false)}
                   >
+
                     <a
                       href="#"
                       onClick={(e) => {
@@ -79,7 +81,7 @@ export default function Header() {
                       </div>
                     )}
                   </div>
-                  <CreateRoom />
+
                   {[
                     { name: "Proyectos", href: "#" },
                     { name: "Blog", href: "#" },
@@ -155,7 +157,8 @@ export default function Header() {
           ) : (
             <>
               <ProfileHeader />
-              <CreateRoom  />
+              <CreateRoom />
+
               <a
                 href="#"
                 className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"

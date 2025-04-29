@@ -73,9 +73,9 @@ const FriendBar = () => {
 
 
     return (
-        <div className="flex flex-col w-full h-full bg-black border-5 border-red-600 p-4 rounded-lg text-white overflow-y-auto scrollbar-custom">
+        <div className="flex flex-col  w-full h-full bg-black border-5 border-red-600 p-4 rounded-lg text-white overflow-y-auto scrollbar-custom">
 
-            <div className="friends flex justify-between items-center mb-5">
+            <div className="friends flex justify-between items-center mb-5 mr-54">
 
                 {/* Contenedor de íconos en la parte superior */}
                 <span className="amigos text-m font-bold mr-8">AMIGOS</span>
@@ -88,11 +88,11 @@ const FriendBar = () => {
             </div>
 
             {/* Contenedor de las cartas de amigos en una fila horizontal */}
-            <div className="flex overflow-x-auto gap-4 scrollbar-custom lg:block ">
+            <div className="flex  gap-4 scrollbar-custom lg:block ">
                 {friends.map((friend) => (
                     <div
                         key={friend.id}
-                        className="CARTA flex-shrink-0 w-48 mb-4 flex items-center justify-between bg-transparent p-3 rounded-lg shadow-md border border-cyan-400 lg:w-full"
+                        className="CARTA flex-shrink-0 w-48 mb-4 flex items-center justify-between bg-transparent p-3 rounded-lg shadow-md border border-cyan-400 lg:w-full  "
                     >
                         <div className="flex items-center">
                             <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
@@ -108,7 +108,7 @@ const FriendBar = () => {
                         </div>
                         <div className="papelera">
                             <Trash
-                                className="w-4 h-4 text-red-600 cursor-pointer hover:text-red-800"
+                                className="w-4 h-4  text-red-600 cursor-pointer hover:text-red-800"
                                 onClick={() => handleResponse(friend.id, 'reject')}
                             />
                         </div>
