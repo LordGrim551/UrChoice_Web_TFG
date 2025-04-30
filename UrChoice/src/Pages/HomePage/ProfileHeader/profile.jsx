@@ -12,23 +12,32 @@ const Profile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const user = localStorage.getItem('user');
-
-        if (user) {
-            try {
-                const parsedUser = JSON.parse(user);
-                console.log('Datos de usuario:', parsedUser);
-
-                setProfileImg(`data:image/png;base64,${parsedUser.img_user}`);
-                setNick(parsedUser.nick_user);
-                setGamesPlayed(parsedUser.GamesPlayed);
-            } catch (error) {
-                console.error('Error al parsear el usuario:', error);
+        const fetchUserData = () => {
+            const user = localStorage.getItem('user');
+    
+            if (user) {
+                try {
+                    const parsedUser = JSON.parse(user);
+                    console.log('Datos de usuario:', parsedUser);
+    
+                    setProfileImg(`data:image/png;base64,${parsedUser.img_user}`);
+                    setNick(parsedUser.nick_user);
+                    setGamesPlayed(parsedUser.GamesPlayed);
+                } catch (error) {
+                    console.error('Error al parsear el usuario:', error);
+                }
+            } else {
+                console.log('No se encontró el usuario en el localStorage');
             }
-        } else {
-            console.log('No se encontró el usuario en el localStorage');
-        }
+        };
+    
+        fetchUserData(); // Llamada inicial
+        const interval = setInterval(fetchUserData, 5000); // Repite cada 5 segundos
+    
+        return () => clearInterval(interval); // Limpia el intervalo al desmontar
     }, []);
+    
+    
 
     const handleLogout = () => {
         localStorage.removeItem('token');

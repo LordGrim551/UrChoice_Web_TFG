@@ -23,7 +23,7 @@ const GamePage = () => {
   const location = useLocation();
   const { id_cat, id_room } = location.state || {};
   const [hasResetVotes, setHasResetVotes] = useState(false);
-
+  const [gamesPlayed, setGamesPlayed] = useState('');
 
   const [usersInGame, setUsersInGame] = useState([]);
 
@@ -159,9 +159,9 @@ const GamePage = () => {
       const nextMatch = currentMatchIndex + 2;
 
       if (nextMatch >= currentRound.length) {
+        const winnerElement = elements[winnerIndex];
         if (winners.length + 1 === 1) {
-          
-          const winnerElement = elements[winnerIndex];
+
           setWinnerImage(winnerElement.img_elem);
           setWinnerName(winnerElement.name_elem);
           setIsWinnerDialogOpen(true);
@@ -199,6 +199,18 @@ const GamePage = () => {
         userId: userId,
         currentVictories: winnerElement.victories
       });
+      const user = localStorage.getItem('user');
+      const parsedUser = JSON.parse(user);
+      setGamesPlayed(parsedUser.GamesPlayed + 1);
+      // Actualiza el localStorage con +1 partida
+      
+      const updatedUser = {
+        ...parsedUser,
+        GamesPlayed: parsedUser.GamesPlayed + 1,
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
 
       const response = await fetch(`https://railwayserver-production-7692.up.railway.app/element/winner`, {
         method: 'POST',
@@ -207,6 +219,7 @@ const GamePage = () => {
           id_elem: winnerElement.id_elem,
           victories: winnerElement.victories + 1,
           id_user: userId,
+
         }),
       });
 
@@ -245,6 +258,7 @@ const GamePage = () => {
 
 
   if (currentRound.length === 1) {
+
     navigate("/HomePage", {
       state: {
         winner: currentRound[0],
