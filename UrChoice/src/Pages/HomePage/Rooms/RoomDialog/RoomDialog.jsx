@@ -17,7 +17,12 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
                   id_cat: selectedRoom.id_cat,
                   id_room: selectedRoom.id_room // 👈 Añade esto
                 } 
-              });
+              },
+              
+            
+            
+        
+        );
             startMatch(); // Inicia la partida
         }
     };
@@ -57,7 +62,7 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
                     console.table(selectedRoom); // 👈 Esto para ver todo el selectedRoom
                     // Redirige a la página de juego
                     navigate('/GamePage', {
-                        state: { id_cat: selectedRoom.id_cat }
+                        state: { id_cat: selectedRoom.id_cat, id_room: selectedRoom.id_room },
                       });
                       
                 }

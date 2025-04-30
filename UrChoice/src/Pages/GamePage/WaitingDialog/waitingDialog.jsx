@@ -22,11 +22,11 @@ const WaitingDialog = ({ isOpen, gifPath }) => {
       } ${isClosing ? "opacity-0" : ""}`}
     >
       {/* Fondo más claro */}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="absolute inset-0 bg-transparent bg-opacity-50"></div>
 
       {/* Diálogo centrado */}
       <div
-        className={`relative bg-gray-800 rounded-xl p-6 max-w-sm w-full mx-4 transform transition-all duration-500 ${
+        className={`relative bg-black border-2 border-cyan-400 rounded-xl p-6 max-w-sm w-full mx-4 transform transition-all duration-500 ${
           isVisible ? "scale-100" : "scale-75"
         } ${isClosing ? "scale-75 opacity-0" : ""} shadow-lg`}
       >

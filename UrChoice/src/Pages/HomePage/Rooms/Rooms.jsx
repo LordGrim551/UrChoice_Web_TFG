@@ -6,6 +6,7 @@ const Rooms = () => {
     const [rooms, setRooms] = useState([]);
     const [id_user, setIdUser] = useState('');
     const [selectedRoom, setSelectedRoom] = useState(null); // Estado para la sala seleccionada
+    
     const roomDialogRef = useRef(null);
     const passwordDialogRef = useRef(null);
 
@@ -46,7 +47,7 @@ const Rooms = () => {
         }
     };
 
-    const closeDialog = () => {
+    const closeDialog = () => { 
         if (dialogRef.current) {
             dialogRef.current.close();
             setValidationStatus(null); // Reiniciar el estado al cerrar el diálogo
