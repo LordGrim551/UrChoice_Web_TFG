@@ -4,7 +4,7 @@ import "./Game.css";
 import NextRound from "../GamePage/NextRoundDialog/NextRound";
 import WinnerDialog from "../GamePage/WinnerDialog/winner";
 import GameStartCountdown from "./GameStartCountdown/GameStartCountdown";
-import WaitingDialog from "../GamePage/WaitingDialog/WaitingDialog";
+import WaitingDialog from "./WaitingDialog/waitingDialog";
 
 const API_BASE_URL = "https://railwayserver-production-7692.up.railway.app";
 
