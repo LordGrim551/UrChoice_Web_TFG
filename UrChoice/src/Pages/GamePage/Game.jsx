@@ -46,6 +46,7 @@ const GamePage = () => {
     if (id_cat) {
       fetchElements();
       fetchAllVotes();
+      // VIGILANCIA
     } else {
       console.error("id_cat is not available in the location state.");
     }
@@ -158,6 +159,7 @@ const updateVote = async () => {
     setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
     setVoteGame('');
     fetchAllVotes();
+    // VIGILANCIA
 
     const updatePromises = usersInGame.map(async user =>
       await fetch(`${API_BASE_URL}/room/updateVote`, {
@@ -321,6 +323,8 @@ const updateVote = async () => {
       const parsedUser = JSON.parse(user);
       if (!parsedUser.id_user) return;
       fetchAllVotes();
+      // POSIBLE VIGILANCIA
+      // PARA SOLUCIONAR EL NO ACTUALIZAR VOTOS INICIALES
 
       const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
         method: 'POST',
