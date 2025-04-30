@@ -45,6 +45,7 @@ const GamePage = () => {
   useEffect(() => {
     if (id_cat) {
       fetchElements();
+      fetchAllVotes();
     } else {
       console.error("id_cat is not available in the location state.");
     }
@@ -150,33 +151,33 @@ const GamePage = () => {
     }
   };
 
-  const updateVote = async () => {
-    if (!id_room || usersInGame.length === 0) return;
+const updateVote = async () => {
+  if (!id_room || usersInGame.length === 0) return;
 
-    try {
-      // Reset local first
-      setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
-      setVoteGame('');
+  try {
+    setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
+    setVoteGame('');
+    fetchAllVotes();
 
-      // Then update server
-      const updatePromises = usersInGame.map(user =>
-        fetch(`${API_BASE_URL}/room/updateVote`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id_user: user.id_user,
-            id_room: id_room,
-            vote_game: '',
-          }),
-        })
-      );
+    const updatePromises = usersInGame.map(async user =>
+      await fetch(`${API_BASE_URL}/room/updateVote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_user: user.id_user, // ✅ usar el ID de cada usuario
+          id_room: id_room,
+          vote_game: '',
+        }),
+      })
+    );
 
-      await Promise.all(updatePromises);
-      console.log("Todos los votos se actualizaron correctamente");
-    } catch (e) {
-      console.error('Error en updateVote:', e);
-    }
-  };
+    await Promise.all(updatePromises);
+    console.log("Todos los votos se actualizaron correctamente");
+  } catch (e) {
+    console.error('Error en updateVote:', e);
+  }
+};
+
 
   const updateRanking = async (winnerElement, userId) => {
     try {
@@ -319,6 +320,7 @@ const GamePage = () => {
 
       const parsedUser = JSON.parse(user);
       if (!parsedUser.id_user) return;
+      fetchAllVotes();
 
       const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
         method: 'POST',
