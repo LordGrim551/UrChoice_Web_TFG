@@ -24,8 +24,7 @@ const GamePage = () => {
   const [matchHistory, setMatchHistory] = useState([]);
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
-  const [hasUserVoted, setHasUserVoted] = useState(false);
-
+  
 
   // Estado de la UI
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -198,13 +197,6 @@ const GamePage = () => {
       console.error('Error en updateRanking:', error.message);
     }
   };
-  useEffect(() => {
-    // Solo mostrar diálogo de espera si el usuario ya ha votado
-    if (hasUserVoted) {
-      const allVoted = usersInGame.every(user => user.vote_game !== '');
-      setIsWaiting(!allVoted);
-    }
-  }, [usersInGame, hasUserVoted]);
 
   // Lógica del juego
   const handleClick = (winnerIndex) => {
@@ -216,8 +208,11 @@ const GamePage = () => {
     const secondIndex = currentRound[currentMatchIndex + 1];
     const loserIndex = winnerIndex === firstIndex ? secondIndex : firstIndex;
     const winnerElement = elements[winnerIndex];
-    setVoteGame(winnerElement.name_elem);
-    setHasUserVoted(true); // <-- Marcar que el usuario ha votado
+    setVoteGame(winnerElement.name_elem); // Guardar la imagen seleccionada
+    setIsWaiting(true); // Mostrar el diálogo de espera
+    setTimeout(() => {  
+      setIsWaiting(false); // Ocultar el diálogo de espera después de 2 segundos
+    }, 2000); // Simular un tiempo de espera antes de ocultar el diálogo
 
     setMatchHistory(prev => [...prev, {
       winner: winnerIndex,
@@ -247,7 +242,7 @@ const GamePage = () => {
           updateRanking(winnerElement, usersInGame[0]?.id_user);
         } else {
           setShowNextRound(true);
-
+         
         }
       } else {
         setCurrentMatchIndex(nextMatch);
@@ -304,7 +299,6 @@ const GamePage = () => {
 
       if (response.ok) {
         console.log("Voto actualizado correctamente");
-        console.log("Se ha votado por:", vote);
       } else {
         console.error("Error al actualizar el voto");
       }
@@ -318,11 +312,12 @@ const GamePage = () => {
     setCurrentMatchIndex(0);
     setShowNextRound(false);
     setRoundNumber(prev => prev + 1);
-    setHasUserVoted(false); // <-- Resetear para la nueva ronda
     resetVotes(); // Resetear votos al pasar de ronda
   };
 
-
+  const openWaitingDialog = () => {
+    
+  }
 
   // Renderizado condicional
   if (showStartCountdown || elements.length === 0) {
@@ -395,7 +390,7 @@ const GamePage = () => {
           roundNumber={roundNumber}
         />
       )}
-      {isWaiting && (
+       {isWaiting && (
         <WaitingDialog
           isOpen={isWaiting}
           message="Esperando a que los demás jugadores voten..."
