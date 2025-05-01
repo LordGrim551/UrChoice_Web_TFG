@@ -23,7 +23,7 @@ const GamePage = () => {
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
   const [mostVotedImages, setMostVotedImages] = useState([]);
-
+ 
 
   // Estados de UI
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -86,17 +86,17 @@ const GamePage = () => {
       sendVoteToServer(vote_game);
     }
   }, [vote_game]);
-  // Agrega este efecto en tu componente
-  /*ESTO FUNCIONA NO MODIFICAR*/
-useEffect(() => {
-  if (isWaiting) {
-    const allVoted = usersInGame.every(user => user.vote_game && user.vote_game.trim() !== '');
-    
-    if (allVoted) {
-      updateVote();
+
+  useEffect(() => {
+    if (isWaiting) {
+      const allVoted = usersInGame.every(user => user.vote_game && user.vote_game.trim() !== '');
+      fetchAllVotes();
+      if (allVoted) {
+        updateVote();
+        fetchAllVotes();
+      }
     }
-  }
-}, [usersInGame, isWaiting]); // Se ejecutará cuando cambien los usuarios o el estado de espera
+  }, [usersInGame, isWaiting]); // Se ejecutará cuando cambien los usuarios o el estado de espera
 
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
@@ -163,33 +163,33 @@ useEffect(() => {
     }
   };
 
-  const updateVote = async () => {
-    if (!id_room || usersInGame.length === 0) return;
+const updateVote = async () => {
+  if (!id_room || usersInGame.length === 0) return;
 
-    try {
-      setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
-      setVoteGame('');
-      fetchAllVotes();
-      // VIGILANCIA
+  try {
+    setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
+    setVoteGame('');
+    fetchAllVotes();
+    // VIGILANCIA
 
-      const updatePromises = usersInGame.map(async user =>
-        await fetch(`${API_BASE_URL}/room/updateVote`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id_user: user.id_user, // ✅ usar el ID de cada usuario
-            id_room: id_room,
-            vote_game: '',
-          }),
-        })
-      );
+    const updatePromises = usersInGame.map(async user =>
+      await fetch(`${API_BASE_URL}/room/updateVote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_user: user.id_user, // ✅ usar el ID de cada usuario
+          id_room: id_room,
+          vote_game: '',
+        }),
+      })
+    );
 
-      await Promise.all(updatePromises);
-      console.log("Todos los votos se actualizaron correctamente");
-    } catch (e) {
-      console.error('Error en updateVote:', e);
-    }
-  };
+    await Promise.all(updatePromises);
+    console.log("Todos los votos se actualizaron correctamente");
+  } catch (e) {
+    console.error('Error en updateVote:', e);
+  }
+};
 
 
   const updateRanking = async (winnerElement, userId) => {
@@ -268,10 +268,10 @@ useEffect(() => {
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
 
-
+    
 
     const winnerElement = elements[winnerIndex];
-    // REVISAR estado local y enviar voto de manera síncrona
+    // Actualizar estado local y enviar voto de manera síncrona
     await new Promise(resolve => {
       setVoteGame(winnerElement.name_elem);
       setTimeout(resolve, 100); // Pequeño delay para asegurar la actualización
@@ -297,34 +297,31 @@ useEffect(() => {
 
         if (winners.length + 1 === 1) {
           await fetchMostVotedImages();
-
+        
           setTimeout(() => {
-
+        
             setWinnerImage(winnerElement.img_elem);
             setWinnerName(winnerElement.name_elem);
             setIsWinnerDialogOpen(true);
             updateRanking(winnerElement, usersInGame[0]?.id_user);
           }, 3000);
         } else {
-
-          /*AQUI PROBLEMA*/
           await fetchMostVotedImages();
-          setIsWaiting(true);
-          console.log('Mostrando estado de espera');
-
-     
-
+        
+          setTimeout(() => {
+         
             setShowNextRound(true);
-  
-            /* HASTA AQUI AQUI PROBLEMA*/
+            setIsWaiting(true);
+            console.log('Aqui 1')
+          }, 3000);
 
         }
       } else {
-        /*ESTO FUNCIONA*/
+            /*ESTO FUNCIONA*/
         setIsWaiting(true);
         setCurrentMatchIndex(nextMatch);
         console.log('Aqui 2')
-        
+      
       }
 
       setExpandedIndex(null);
