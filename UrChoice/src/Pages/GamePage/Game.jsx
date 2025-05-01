@@ -87,17 +87,6 @@ const GamePage = () => {
     }
   }, [vote_game]);
 
-  useEffect(() => {
-    if (isWaiting) {
-      const allVoted = usersInGame.every(user => user.vote_game && user.vote_game.trim() !== '');
-      fetchAllVotes();
-      if (allVoted) {
-        updateVote();
-        fetchAllVotes();
-      }
-    }
-  }, [usersInGame, isWaiting]); // Se ejecutará cuando cambien los usuarios o el estado de espera
-
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
     try {
@@ -317,7 +306,6 @@ const updateVote = async () => {
 
         }
       } else {
-            /*ESTO FUNCIONA*/
         setIsWaiting(true);
         setCurrentMatchIndex(nextMatch);
         console.log('Aqui 2')
