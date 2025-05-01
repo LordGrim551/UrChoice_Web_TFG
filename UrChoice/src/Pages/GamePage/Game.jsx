@@ -41,7 +41,8 @@ const GamePage = () => {
   const [hasResetVotes, setHasResetVotes] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState('');
 
-  // Efectos para cargar datos iniciales
+  // Efectos para cargar datos iniciales de las cartas a través de su id categoria
+  // dara error si desde los dialogs de room no se envian bien sus id categorias
   useEffect(() => {
     if (id_cat) {
       fetchElements();
@@ -51,20 +52,20 @@ const GamePage = () => {
       console.error("id_cat is not available in the location state.");
     }
   }, [id_cat]);
-
+  // Obtener e ir actualizando los usuarios que hay en la sala
   useEffect(() => {
     fetchUsersInGame();
     const interval = setInterval(fetchUsersInGame, 5000);
     return () => clearInterval(interval);
   }, []);
-
+  //Una vez iniciada las partidas establecer sus sus vote_game a vacio '' a todos los usuarios que se encuentran dentro de la sala
   useEffect(() => {
     if (usersInGame.length > 0 && !hasResetVotes) {
       updateVote();
       setHasResetVotes(true);
     }
   }, [usersInGame]);
-
+  // cada 2 seg ir actualizando los votos de la sala de juegos
   useEffect(() => {
     const interval = setInterval(() => {
       if (isWaiting) {
@@ -73,14 +74,15 @@ const GamePage = () => {
     }, 2000);
     return () => clearInterval(interval);
   }, [isWaiting, id_room]);
-
+  //Establecer el orden por el cuál se irán mostrando las cartas
   useEffect(() => {
     if (elements.length > 0) {
       const indices = Array.from({ length: elements.length }, (_, i) => i);
       setCurrentRound(indices);
     }
   }, [elements]);
-
+  // supuestamente con esto despues de pasar ccada ronda los vote_game de los usuarios con valor se establecerán a ''
+  // pero no se esta haciendo por desgracia
   useEffect(() => {
     if (vote_game && vote_game.trim() !== '') {
       sendVoteToServer(vote_game);
