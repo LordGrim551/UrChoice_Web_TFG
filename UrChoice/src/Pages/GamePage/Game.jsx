@@ -100,7 +100,7 @@ const GamePage = () => {
     if (todosHanVotado) {
       console.log("Se han reiniciado los datos");
       fetchAllVotes();
-      setIsWaiting(false);
+      // setIsWaiting(false);
       const interval = setInterval(updateVote, 3000);
       return () => clearInterval(interval);
     }
@@ -260,7 +260,7 @@ const GamePage = () => {
         );
 
         if (allUsersVoted) {
-          // setIsWaiting(false);
+          setIsWaiting(false);
           setVoteGame("");
         }
 
