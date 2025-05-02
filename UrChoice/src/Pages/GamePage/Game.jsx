@@ -326,49 +326,71 @@ const GamePage = () => {
 
   const handleClick = async (winnerIndex) => {
     if (isAnimating) return;
-    console.log(`🖱️ Click en elemento ${winnerIndex}`);
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
-
+  
+    // 1. Registrar el voto del jugador local
     const winnerElement = elements[winnerIndex];
-    console.log(`🏅 Elemento seleccionado: ${winnerElement.name_elem}`);
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
-
+  
+    // 2. Esperar a que todos voten
+    await waitForAllVotes();
+    
+    // 3. Determinar el ganador REAL (global)
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
-    const loserIndex = winnerIndex === firstIndex ? secondIndex : firstIndex;
-
+    const firstElem = elements[firstIndex];
+    const secondElem = elements[secondIndex];
+  
+    const voteCount = {
+      [firstElem.name_elem]: 0,
+      [secondElem.name_elem]: 0
+    };
+  
+    usersInGame.forEach(user => {
+      if (user.vote_game === firstElem.name_elem) voteCount[firstElem.name_elem]++;
+      if (user.vote_game === secondElem.name_elem) voteCount[secondElem.name_elem]++;
+    });
+  
+    // Determinar el verdadero ganador grupal
+    const globalWinnerName = voteCount[firstElem.name_elem] >= voteCount[secondElem.name_elem] 
+      ? firstElem.name_elem 
+      : secondElem.name_elem;
+    
+    const globalWinnerIndex = globalWinnerName === firstElem.name_elem ? firstIndex : secondIndex;
+  
+    // 4. Actualizar el historial con el ganador REAL
     setMatchHistory(prev => [...prev, {
-      winner: winnerIndex,
-      loser: loserIndex,
+      winner: globalWinnerIndex,
+      loser: globalWinnerIndex === firstIndex ? secondIndex : firstIndex,
       round: roundNumber
     }]);
-
-    console.log("📝 Historial de partidas actualizado");
-    await waitForAllVotes();
-    await fetchMostVotedImages();
-
-    setWinners((prev) => [...prev, winnerIndex]);
+  
+    setMostVotedImages(prev => [...prev, {
+      img: elements[globalWinnerIndex].img_elem,
+      name: elements[globalWinnerIndex].name_elem,
+      round: roundNumber
+    }]);
+  
+    // 5. Avanzar con el ganador GRUPAL (no el local)
+    setWinners((prev) => [...prev, globalWinnerIndex]);
     const nextMatch = currentMatchIndex + 2;
-
+  
     if (nextMatch >= currentRound.length) {
-      if (winners.length + 1 === 1) {
-        console.log("🎉 Tenemos un ganador!");
-        setWinnerImage(winnerElement.img_elem);
-        setWinnerName(winnerElement.name_elem);
+      if (winners.length + 1 === 1) { // Solo queda un ganador
+        setWinnerImage(elements[globalWinnerIndex].img_elem);
+        setWinnerName(elements[globalWinnerIndex].name_elem);
         setIsWinnerDialogOpen(true);
-        await updateRanking(winnerElement, usersInGame[0]?.id_user);
+        await updateRanking(elements[globalWinnerIndex], usersInGame[0]?.id_user);
       } else {
-        console.log("🔜 Preparando siguiente ronda...");
         setShowNextRound(true);
       }
     } else {
-      console.log("➡️ Pasando al siguiente match...");
       setCurrentMatchIndex(nextMatch);
       await resetAllVotes();
     }
-
+  
     setExpandedIndex(null);
     setIsAnimating(false);
   };
