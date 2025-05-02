@@ -89,9 +89,9 @@ const GamePage = () => {
     }
     
   }, [vote_game]);
-  useEffect(async () => {
+  useEffect(() => {
     console.log('hola')
-    await fetchAllVotes();
+    fetchAllVotes();
     const todosHanVotado = usersInGame.every(user => {
       const voto = user?.vote_game ?? '';
       return typeof voto === 'string' && voto.trim() !== '';
@@ -99,7 +99,7 @@ const GamePage = () => {
   
     if (todosHanVotado) {
       console.log("Se han reiniciado los datos");
-      await fetchAllVotes();
+      fetchAllVotes();
       setIsWaiting(false);
       const interval = setInterval(updateVote, 3000);
       return () => clearInterval(interval);
