@@ -107,8 +107,6 @@ const GamePage = () => {
   }, [usersInGame]);
 
 
-
-
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
     try {
@@ -261,27 +259,10 @@ const GamePage = () => {
           user.vote_game && user.vote_game.trim() !== ''
         );
 
-        // if (allUsersVoted) {
-        //   setIsWaiting(false);
-        //   setVoteGame("");
-        // }
-
         if (allUsersVoted) {
           setIsWaiting(false);
           setVoteGame("");
-        
-          await fetchMostVotedImages();
-        
-          /**/
-          const isLastMatchOfRound = !(winners.length + 1 === 2);
-          if (isLastMatchOfRound) {
-            setShowNextRound(true);
-            console.log('✅ Todos han votado en el último match, mostramos siguiente ronda');
-          } else {
-            console.log('🕹️ Todos han votado, pero aún hay más matches en este round');
-          }
         }
-        
 
         data.forEach(user => {
           console.log(`Usuario ${user.id_user} votó por: ${user.vote_game}`);
@@ -326,24 +307,65 @@ const GamePage = () => {
 
         if (winners.length + 1 === 1) {
           await fetchMostVotedImages();
+          console.log('Aqui 1');
+        
+          // Mostrar el WaitingDialog inicialmente
+          setIsWaiting(true);
+        
+          // Iniciar un intervalo que verifica si todos han votado
+          const voteCheckInterval = setInterval(async () => {
+            try {
+              const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+              const data = await res.json();
+        
+              const allUsersVoted = data.every(user =>
+                user.vote_game && user.vote_game.trim() !== ''
+              );
+        
+              if (allUsersVoted) {
+                clearInterval(voteCheckInterval); // Detener el intervalo cuando todos hayan votado
+                setIsWaiting(false);
+              
+                setWinnerImage(winnerElement.img_elem);
+                setWinnerName(winnerElement.name_elem);
+                setIsWinnerDialogOpen(true);
+                updateRanking(winnerElement, usersInGame[0]?.id_user);
+              }
+            } catch (error) {
+              console.error('Error verificando votos:', error);
+            }
+          }, 2000); // verifica cada 2 segundos
 
-          setTimeout(() => {
-
-            setWinnerImage(winnerElement.img_elem);
-            setWinnerName(winnerElement.name_elem);
-            setIsWinnerDialogOpen(true);
-            updateRanking(winnerElement, usersInGame[0]?.id_user);
-          }, 3000);
+  
         } else {
           await fetchMostVotedImages();
-
-
-          setIsWaiting(true); // ✅ solo activamos la espera
-          console.log('🕒 Esperando a que todos voten...');
-          console.log('Aqui 1')
-
-
+          console.log('Aqui 1');
+        
+          // Mostrar el WaitingDialog inicialmente
+          setIsWaiting(true);
+        
+          // Iniciar un intervalo que verifica si todos han votado
+          const voteCheckInterval = setInterval(async () => {
+            try {
+              const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+              const data = await res.json();
+        
+              const allUsersVoted = data.every(user =>
+                user.vote_game && user.vote_game.trim() !== ''
+              );
+        
+              if (allUsersVoted) {
+                clearInterval(voteCheckInterval); // Detener el intervalo cuando todos hayan votado
+                setIsWaiting(false);
+                setShowNextRound(true);
+              }
+            } catch (error) {
+              console.error('Error verificando votos:', error);
+            }
+          }, 2000); // verifica cada 2 segundos
         }
+        
+
       } else {
         setIsWaiting(true);
         setCurrentMatchIndex(nextMatch);
@@ -424,17 +446,17 @@ const GamePage = () => {
       </>
     );
   }
-  useEffect(() => {
-    if (currentRound.length === 1) {
-      navigate("/HomePage", {
-        state: {
-          winner: currentRound[0],
-          history: matchHistory
-        }
-      });
-    }
-  }, [currentRound, matchHistory, navigate]);
-  
+
+  if (currentRound.length === 1) {
+    navigate("/HomePage", {
+      state: {
+        winner: currentRound[0],
+        history: matchHistory
+      }
+    });
+    return null;
+  }
+
 
 
   const firstIndex = currentRound[currentMatchIndex];
