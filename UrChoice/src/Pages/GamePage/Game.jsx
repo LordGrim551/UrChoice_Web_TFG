@@ -91,6 +91,7 @@ const GamePage = () => {
   }, [vote_game]);
   useEffect(() => {
     console.log('hola')
+    fetchAllVotes();
     const todosHanVotado = usersInGame.every(user => {
       const voto = user?.vote_game ?? '';
       return typeof voto === 'string' && voto.trim() !== '';
