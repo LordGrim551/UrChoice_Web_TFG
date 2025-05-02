@@ -37,7 +37,6 @@ const GamePage = () => {
 
   // Estados de usuarios y sala
   const [usersInGame, setUsersInGame] = useState([]);
-  const [gamesPlayed, setGamesPlayed] = useState('');
 
   // Función para reiniciar todos los votos con logs
   const resetAllVotes = async () => {
@@ -193,6 +192,7 @@ const GamePage = () => {
     
     if (winnerElement) {
       console.log(`🏆 Ganador global: ${winnerElement.name_elem}`);
+      console.log(`📌 Agregando a roundWinners (actual: ${roundWinners.length} elementos)`);
       
       setGlobalWinnersHistory(prev => [...prev, {
         img: winnerElement.img_elem,
@@ -200,8 +200,11 @@ const GamePage = () => {
         round: roundNumber
       }]);
 
-      setRoundWinners(prev => [...prev, winnerElement]);
-      console.log("📌 Ganador agregado a la lista de ganadores de la ronda");
+      setRoundWinners(prev => {
+        const newWinners = [...prev, winnerElement];
+        console.log(`Nuevos ganadores: ${newWinners.map(w => w.name_elem).join(', ')}`);
+        return newWinners;
+      });
     }
   };
 
@@ -259,13 +262,6 @@ const GamePage = () => {
 
       const user = localStorage.getItem('user');
       const parsedUser = JSON.parse(user);
-      setGamesPlayed(parsedUser.GamesPlayed + 1);
-
-      const updatedUser = {
-        ...parsedUser,
-        GamesPlayed: parsedUser.GamesPlayed + 1,
-      };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
 
       const response = await fetch(`${API_BASE_URL}/element/winner`, {
         method: 'POST',
@@ -378,8 +374,10 @@ const GamePage = () => {
     const nextMatch = currentMatchIndex + 2;
 
     if (nextMatch >= currentRoundElements.length) {
-      if (roundWinners.length + 1 === 1) {
-        console.log("🎉 Tenemos un ganador!");
+      console.log(`🏁 Ronda ${roundNumber} completada con ${roundWinners.length} ganadores`);
+      
+      if (roundWinners.length === 1) {
+        console.log("🎉 Tenemos un ganador final!");
         setWinnerImage(winnerElement.img_elem);
         setWinnerName(winnerElement.name_elem);
         setIsWinnerDialogOpen(true);
@@ -443,13 +441,20 @@ const GamePage = () => {
       await resetAllVotes();
       
       console.log(`🎲 Preparando ronda ${roundNumber + 1} con ${roundWinners.length} ganadores`);
+      console.log("Ganadores de la ronda:", roundWinners.map(w => w.name_elem));
+      
+      if (roundWinners.length === 0) {
+        console.error("❌ No hay ganadores para la siguiente ronda");
+        return;
+      }
+      
       setCurrentRoundElements([...roundWinners]);
       setRoundWinners([]);
       setCurrentMatchIndex(0);
       setShowNextRound(false);
       setRoundNumber(prev => prev + 1);
       
-      console.log(`🆕 Nueva ronda #${roundNumber + 1} iniciada`);
+      console.log(`🆕 Nueva ronda #${roundNumber + 1} iniciada con ${roundWinners.length} elementos`);
     } catch (error) {
       console.error('❌ Error en handleNextRoundComplete:', error);
     }
@@ -489,6 +494,7 @@ const GamePage = () => {
   const currentMatch = currentMatchIndex / 2 + 1;
 
   console.log(`🎮 Renderizando juego - Ronda ${roundNumber}, Match ${currentMatch}/${matchesCount}`);
+  console.log("Elementos en ronda actual:", currentRoundElements.map(e => e.name_elem));
 
   return (
     <div className="game-page relative min-h-screen bg-gray-900">
