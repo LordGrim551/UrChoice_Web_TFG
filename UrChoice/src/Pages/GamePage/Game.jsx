@@ -115,11 +115,7 @@ const GamePage = () => {
 
     return () => clearInterval(interval);
   }, [isWaiting]);
-  data.forEach(user => {
-  if (!user.vote_game || user.vote_game.trim() === '') {
-    console.warn(`Jugador pendiente de votar: ${user.id_user}`);
-  }
-});
+
 
 
 
