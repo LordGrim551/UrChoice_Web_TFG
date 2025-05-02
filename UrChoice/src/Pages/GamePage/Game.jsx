@@ -17,56 +17,33 @@ const GamePage = () => {
   const [elements, setElements] = useState([]);
   const [currentRound, setCurrentRound] = useState([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+  const [winners, setWinners] = useState([]);
   const [roundNumber, setRoundNumber] = useState(1);
   const [matchHistory, setMatchHistory] = useState([]);
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
-  const [globalWinners, setGlobalWinners] = useState([]);
+  const [globalResults, setGlobalResults] = useState([]);
+
+  // Estados de UI
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [showNextRound, setShowNextRound] = useState(false);
   const [showStartCountdown, setShowStartCountdown] = useState(true);
+
+  // Estados del ganador
   const [isWinnerDialogOpen, setIsWinnerDialogOpen] = useState(false);
   const [winnerImage, setWinnerImage] = useState("");
   const [winnerName, setWinnerName] = useState("");
+
+  // Estados de usuarios y sala
   const [usersInGame, setUsersInGame] = useState([]);
-  const [expandedIndex, setExpandedIndex] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [hasResetVotes, setHasResetVotes] = useState(false);
+  const [gamesPlayed, setGamesPlayed] = useState('');
 
-  // Obtener elementos de la categoría
-  const fetchElements = async () => {
-    if (!id_cat) return;
-    try {
-      const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`);
-      const data = await response.json();
-      if (response.ok) {
-        const formattedElements = data.map((element) => ({
-          id_elem: element.id_elem,
-          name_elem: element.name_elem,
-          victories: element.victories,
-          img_elem: `data:image/png;base64,${element.img_elem}`,
-        }));
-        setElements(formattedElements);
-      }
-    } catch (error) {
-      console.error("Error fetching elements:", error);
-    }
-  };
-
-  // Obtener usuarios en la sala
-  const fetchUsersInGame = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
-      const data = await res.json();
-      if (res.ok && Array.isArray(data)) {
-        setUsersInGame(data);
-      }
-    } catch (e) {
-      console.error('Error fetching users:', e);
-    }
-  };
-
-  // Reiniciar todos los votos
+  // Función para reiniciar todos los votos
   const resetAllVotes = async () => {
     if (!id_room) return;
+
     try {
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const users = await res.json();
@@ -86,66 +63,178 @@ const GamePage = () => {
       });
 
       await Promise.all(resetPromises);
-      setUsersInGame(prevUsers => prevUsers.map(user => ({ ...user, vote_game: '' })));
+      setUsersInGame(prevUsers => 
+        prevUsers.map(user => ({ ...user, vote_game: '' }))
+      );
       setVoteGame('');
     } catch (error) {
       console.error('Error al reiniciar votos:', error);
     }
   };
 
-  // Determinar ganadores globales
-  const getGlobalWinners = () => {
-    const winnersMap = {};
-    const matchesInRound = Math.floor(currentRound.length / 2);
-    
-    for (let i = 0; i < matchesInRound; i++) {
-      const firstIndex = currentRound[i * 2];
-      const secondIndex = currentRound[i * 2 + 1];
-      
-      if (firstIndex === undefined || secondIndex === undefined) continue;
+  // Efectos para cargar datos iniciales
+  useEffect(() => {
+    const initializeGame = async () => {
+      if (id_cat) {
+        await fetchElements();
+        await fetchAllVotes();
+        await resetAllVotes();
+      }
+    };
+    initializeGame();
+  }, [id_cat]);
 
-      const firstElem = elements[firstIndex];
-      const secondElem = elements[secondIndex];
+  useEffect(() => {
+    fetchUsersInGame();
+    const interval = setInterval(fetchUsersInGame, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-      const votesFirst = usersInGame.filter(u => u.vote_game === firstElem.name_elem).length;
-      const votesSecond = usersInGame.filter(u => u.vote_game === secondElem.name_elem).length;
+  useEffect(() => {
+    const interval = setInterval(fetchAllVotes, 2000);
+    return () => clearInterval(interval);
+  }, [id_room]);
 
-      const winnerIndex = votesFirst >= votesSecond ? firstIndex : secondIndex;
-      winnersMap[winnerIndex] = true;
+  useEffect(() => {
+    if (elements.length > 0) {
+      const indices = Array.from({ length: elements.length }, (_, i) => i);
+      setCurrentRound(indices);
     }
+  }, [elements]);
 
-    return Object.keys(winnersMap).map(Number);
+  useEffect(() => {
+    if (vote_game && vote_game.trim() !== '') {
+      sendVoteToServer(vote_game);
+    }
+  }, [vote_game]);
+
+  // Función para calcular el resultado global de la votación actual
+  const calculateGlobalVoteResult = async () => {
+    const firstIndex = currentRound[currentMatchIndex];
+    const secondIndex = currentRound[currentMatchIndex + 1];
+    const firstElem = elements[firstIndex];
+    const secondElem = elements[secondIndex];
+
+    const globalVoteCount = {
+      [firstElem.name_elem]: 0,
+      [secondElem.name_elem]: 0
+    };
+
+    usersInGame.forEach(user => {
+      if (user.vote_game === firstElem.name_elem) {
+        globalVoteCount[firstElem.name_elem]++;
+      } else if (user.vote_game === secondElem.name_elem) {
+        globalVoteCount[secondElem.name_elem]++;
+      }
+    });
+
+    const result = {
+      winner: globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem] 
+        ? firstElem.name_elem 
+        : secondElem.name_elem,
+      loser: globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem]
+        ? secondElem.name_elem
+        : firstElem.name_elem,
+      votes: globalVoteCount,
+      round: roundNumber,
+      matchIndex: currentMatchIndex
+    };
+
+    // Guardar el resultado global
+    setGlobalResults(prev => {
+      const existingIndex = prev.findIndex(r => 
+        r.round === roundNumber && r.matchIndex === currentMatchIndex
+      );
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = result;
+        return updated;
+      }
+      return [...prev, result];
+    });
+
+    return result;
   };
 
-  // Enviar voto al servidor
-  const sendVoteToServer = async (vote) => {
+  const fetchUsersInGame = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!user?.id_user) return;
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setUsersInGame(data);
+      }
+    } catch (e) {
+      console.error('Error fetching users:', e);
+    }
+  };
 
-      const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
+  const fetchElements = async () => {
+    if (!id_cat) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        const formattedElements = data.map((element) => ({
+          id_elem: element.id_elem,
+          name_elem: element.name_elem,
+          victories: element.victories,
+          img_elem: `data:image/png;base64,${element.img_elem}`,
+        }));
+        setElements(formattedElements);
+      }
+    } catch (error) {
+      console.error("Error fetching elements:", error);
+    }
+  };
+
+  const updateRanking = async (winnerElement, userId) => {
+    try {
+      if (!winnerElement || !userId) return;
+
+      const user = localStorage.getItem('user');
+      const parsedUser = JSON.parse(user);
+      setGamesPlayed(parsedUser.GamesPlayed + 1);
+
+      const updatedUser = {
+        ...parsedUser,
+        GamesPlayed: parsedUser.GamesPlayed + 1,
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      const response = await fetch(`${API_BASE_URL}/element/winner`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id_user: user.id_user,
-          id_room: id_room,
-          vote_game: vote,
+          id_elem: winnerElement.id_elem,
+          victories: winnerElement.victories + 1,
+          id_user: userId,
         }),
       });
 
-      if (response.ok) {
-        setUsersInGame(prevUsers => 
-          prevUsers.map(u => 
-            u.id_user === user.id_user ? {...u, vote_game: vote} : u
-          )
-        );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al actualizar ranking');
       }
     } catch (error) {
-      console.error('Error al enviar el voto:', error);
+      console.error('Error en updateRanking:', error.message);
     }
   };
 
-  // Esperar a que todos voten
+  const fetchAllVotes = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setUsersInGame(data);
+      }
+    } catch (error) {
+      console.error('Error fetching votes:', error);
+    }
+  };
+
   const waitForAllVotes = async () => {
     setIsWaiting(true);
     let attempts = 0;
@@ -177,7 +266,6 @@ const GamePage = () => {
     }
   };
 
-  // Manejar clic en una carta
   const handleClick = async (winnerIndex) => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -187,59 +275,162 @@ const GamePage = () => {
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
 
+    // Esperar a que todos voten y obtener resultados globales
     await waitForAllVotes();
-    const newGlobalWinners = getGlobalWinners();
-    setGlobalWinners(newGlobalWinners);
+    
+    // Obtener el resultado global de la votación actual
+    const globalResult = await calculateGlobalVoteResult();
+    
+    // Usar siempre el ganador global, no el voto individual
+    const globalWinnerIndex = elements.findIndex(el => el.name_elem === globalResult.winner);
+    const firstIndex = currentRound[currentMatchIndex];
+    const secondIndex = currentRound[currentMatchIndex + 1];
+    const loserIndex = globalWinnerIndex === firstIndex ? secondIndex : firstIndex;
 
+    setMatchHistory(prev => [...prev, {
+      winner: globalWinnerIndex,
+      loser: loserIndex,
+      round: roundNumber
+    }]);
+
+    // Guardar el ganador global para la siguiente ronda
+    setWinners((prev) => [...prev, globalWinnerIndex]);
+    
     const nextMatch = currentMatchIndex + 2;
 
     if (nextMatch >= currentRound.length) {
-      if (newGlobalWinners.length === 1) {
-        setWinnerImage(elements[newGlobalWinners[0]].img_elem);
-        setWinnerName(elements[newGlobalWinners[0]].name_elem);
+      if (winners.length + 1 === 1) {
+        setWinnerImage(elements[globalWinnerIndex].img_elem);
+        setWinnerName(elements[globalWinnerIndex].name_elem);
         setIsWinnerDialogOpen(true);
+        await updateRanking(elements[globalWinnerIndex], usersInGame[0]?.id_user);
       } else {
         setShowNextRound(true);
       }
     } else {
       setCurrentMatchIndex(nextMatch);
+      await resetAllVotes();
     }
 
+    setExpandedIndex(null);
     setIsAnimating(false);
   };
 
-  // Pasar a la siguiente ronda
-  const handleNextRoundComplete = async () => {
-    await resetAllVotes();
-    setCurrentRound(globalWinners);
-    setCurrentMatchIndex(0);
-    setShowNextRound(false);
-    setRoundNumber(prev => prev + 1);
+  const sendVoteToServer = async (vote) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user?.id_user) return;
+
+      const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_user: user.id_user,
+          id_room: id_room,
+          vote_game: vote,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar el voto');
+      }
+
+      setUsersInGame(prevUsers => 
+        prevUsers.map(u => 
+          u.id_user === user.id_user ? {...u, vote_game: vote} : u
+        )
+      );
+      setVoteGame(vote);
+    } catch (error) {
+      console.error('Error al enviar el voto:', error);
+    }
   };
 
-  // Efectos iniciales
-  useEffect(() => {
-    const initializeGame = async () => {
-      if (id_cat) {
-        await fetchElements();
-        await fetchUsersInGame();
-        await resetAllVotes();
-      }
-    };
-    initializeGame();
-  }, [id_cat]);
-
-  useEffect(() => {
-    if (elements.length > 0) {
-      const indices = Array.from({ length: elements.length }, (_, i) => i);
-      setCurrentRound(indices);
+  const handleNextRoundComplete = async () => {
+    try {
+      await fetchAllVotes();
+      await resetAllVotes();
+      
+      setCurrentRound([...winners]);
+      setWinners([]);
+      setCurrentMatchIndex(0);
+      setShowNextRound(false);
+      setRoundNumber(prev => prev + 1);
+    } catch (error) {
+      console.error('Error en handleNextRoundComplete:', error);
     }
-  }, [elements]);
+  };
 
-  useEffect(() => {
-    const interval = setInterval(fetchUsersInGame, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // Función para renderizar el match actual basado en resultados globales
+  const renderCurrentMatch = () => {
+    const firstIndex = currentRound[currentMatchIndex];
+    const secondIndex = currentRound[currentMatchIndex + 1];
+    const firstElem = elements[firstIndex];
+    const secondElem = elements[secondIndex];
+
+    // Buscar resultado global para este match
+    const globalResult = globalResults.find(r => 
+      r.round === roundNumber && r.matchIndex === currentMatchIndex
+    );
+
+    // Si hay resultado global, mostrar según ese resultado
+    if (globalResult) {
+      const winnerIndex = elements.findIndex(el => el.name_elem === globalResult.winner);
+      const loserIndex = elements.findIndex(el => el.name_elem === globalResult.loser);
+
+      return [winnerIndex, loserIndex].map((index, idx) => {
+        const element = elements[index];
+        return (
+          <div 
+            className={`item ${isAnimating ? "no-pointer" : ""}`} 
+            key={idx}
+            onClick={() => !showNextRound && !globalResult && handleClick(index)}
+          >
+            <img
+              src={element.img_elem}
+              alt={element.name_elem}
+              className={`gallery-img 
+                ${idx === 0 ? "expanded" : "grayscale"}
+                ${isAnimating ? "keep-hover" : ""}
+              `}
+            />
+            <div className="label-container">
+              <span className="label">{element.name_elem}</span>
+              {globalResult && (
+                <span className="vote-count">
+                  {globalResult.votes[element.name_elem]} votos
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      });
+    }
+
+    // Si no hay resultado global aún, mostrar las cartas normalmente
+    return [firstIndex, secondIndex].map((index, idx) => {
+      const element = elements[index];
+      return (
+        <div
+          className={`item ${isAnimating ? "no-pointer" : ""}`}
+          key={idx}
+          onClick={() => !showNextRound && handleClick(index)}
+        >
+          <img
+            src={element.img_elem}
+            alt={element.name_elem}
+            className={`gallery-img 
+              ${expandedIndex === index ? "expanded" : ""}
+              ${isAnimating ? "keep-hover" : ""}
+            `}
+          />
+          <div className="label-container">
+            <span className="label">{element.name_elem}</span>
+          </div>
+        </div>
+      );
+    });
+  };
 
   // Renderizado condicional
   if (showStartCountdown || elements.length === 0) {
@@ -259,14 +450,12 @@ const GamePage = () => {
       state: {
         winner: currentRound[0],
         history: matchHistory,
-        globalWinners
+        globalResults
       }
     });
     return null;
   }
 
-  const firstIndex = currentRound[currentMatchIndex];
-  const secondIndex = currentRound[currentMatchIndex + 1];
   const matchesCount = Math.ceil(currentRound.length / 2);
   const currentMatch = currentMatchIndex / 2 + 1;
 
@@ -279,31 +468,7 @@ const GamePage = () => {
       </header>
 
       <div className={`gallery ${expandedIndex !== null ? "expanding" : ""} ${showNextRound ? "opacity-50" : ""}`}>
-        {[firstIndex, secondIndex].map((globalIndex, idx) => {
-          const element = elements[globalIndex];
-          if (!element) return null;
-
-          return (
-            <div
-              className={`item ${isAnimating ? "no-pointer" : ""}`}
-              key={idx}
-              onClick={() => !showNextRound && handleClick(globalIndex)}
-            >
-              <img
-                src={element.img_elem}
-                alt={element.name_elem}
-                className={`gallery-img 
-                  ${expandedIndex === globalIndex ? "expanded" : ""}
-                  ${expandedIndex !== null && expandedIndex !== globalIndex ? "grayscale" : ""}
-                  ${isAnimating ? "keep-hover" : ""}
-                `}
-              />
-              <div className="label-container">
-                <span className="label">{element.name_elem}</span>
-              </div>
-            </div>
-          );
-        })}
+        {renderCurrentMatch()}
       </div>
 
       {showNextRound && (
