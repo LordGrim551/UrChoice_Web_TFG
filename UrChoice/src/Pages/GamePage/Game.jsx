@@ -22,9 +22,7 @@ const GamePage = () => {
   const [matchHistory, setMatchHistory] = useState([]);
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
-  const [globalRoundResults, setGlobalRoundResults] = useState([]);
-  const [isShowingResults, setIsShowingResults] = useState(false);
-  const [currentResults, setCurrentResults] = useState(null);
+  const [mostVotedGlobalImages, setMostVotedGlobalImages] = useState([]);
 
   // Estados de UI
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -42,16 +40,25 @@ const GamePage = () => {
   const [hasResetVotes, setHasResetVotes] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState('');
 
-  // Función para reiniciar todos los votos
+  // Función para reiniciar todos los votos con logs
   const resetAllVotes = async () => {
     if (!id_room) return;
 
     try {
+      console.log("🔁 Iniciando reset de todos los votos...");
+      
+      // Obtener todos los usuarios en la sala
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const users = await res.json();
       
-      if (!res.ok || !Array.isArray(users)) return;
+      if (!res.ok || !Array.isArray(users)) {
+        console.error("❌ Error al obtener usuarios para resetear votos");
+        return;
+      }
 
+      console.log("👥 Usuarios encontrados para resetear votos:", users.length);
+      
+      // Crear un array de promesas para actualizar todos los votos
       const resetPromises = users.map(user => {
         return fetch(`${API_BASE_URL}/room/updateVote`, {
           method: 'POST',
@@ -61,19 +68,40 @@ const GamePage = () => {
             id_room: id_room,
             vote_game: '',
           }),
+        }).then(response => {
+          if (!response.ok) {
+            console.warn(`⚠️ No se pudo resetear voto para usuario ${user.id_user}`);
+            return { success: false, user: user.id_user };
+          }
+          return { success: true, user: user.id_user };
         });
       });
 
-      await Promise.all(resetPromises);
-      setUsersInGame(prevUsers => prevUsers.map(user => ({ ...user, vote_game: '' })));
+      // Esperar a que todas las actualizaciones se completen
+      const results = await Promise.all(resetPromises);
+      
+      // Mostrar tabla de resultados del reset
+      console.table(results.map(r => ({
+        Usuario: r.user,
+        Estado: r.success ? "✅ Éxito" : "❌ Falló"
+      })));
+
+      // Actualizar el estado local
+      setUsersInGame(prevUsers => 
+        prevUsers.map(user => ({ ...user, vote_game: '' }))
+      );
       setVoteGame('');
+      
+      console.log("🔄 Todos los votos han sido reiniciados");
+      
     } catch (error) {
-      console.error('Error al reiniciar votos:', error);
+      console.error('❌ Error al reiniciar votos:', error);
     }
   };
 
   // Efectos para cargar datos iniciales
   useEffect(() => {
+    console.log("🚀 Inicializando juego...");
     const initializeGame = async () => {
       if (id_cat) {
         await fetchElements();
@@ -81,6 +109,7 @@ const GamePage = () => {
         await resetAllVotes();
       }
     };
+    
     initializeGame();
   }, [id_cat]);
 
@@ -97,6 +126,7 @@ const GamePage = () => {
 
   useEffect(() => {
     if (elements.length > 0) {
+      console.log("🃏 Elementos cargados, configurando ronda inicial");
       const indices = Array.from({ length: elements.length }, (_, i) => i);
       setCurrentRound(indices);
     }
@@ -104,62 +134,95 @@ const GamePage = () => {
 
   useEffect(() => {
     if (vote_game && vote_game.trim() !== '') {
+      console.log(`🗳️ Voto local cambiado a: ${vote_game}`);
       sendVoteToServer(vote_game);
     }
   }, [vote_game]);
 
-  // Nueva función para determinar ganadores globales
-  const determineRoundWinners = async () => {
-    const results = {};
-    currentRound.forEach(index => {
-      results[elements[index].name_elem] = 0;
+  const fetchMostVotedGlobalImages = async () => {
+    console.log("🌍 Calculando imágenes más votadas a nivel global...");
+    
+    const firstIndex = currentRound[currentMatchIndex];
+    const secondIndex = currentRound[currentMatchIndex + 1];
+    const firstElem = elements[firstIndex];
+    const secondElem = elements[secondIndex];
+
+    if (!firstElem || !secondElem) {
+      console.warn("⚠️ Elementos no encontrados para calcular votos globales");
+      return;
+    }
+
+    console.log("⚔️ Match actual (global):", {
+      [firstElem.name_elem]: 0,
+      [secondElem.name_elem]: 0
     });
 
+    // Contar votos globales de todos los usuarios
+    const globalVoteCount = {
+      [firstElem.name_elem]: 0,
+      [secondElem.name_elem]: 0
+    };
+
     usersInGame.forEach(user => {
-      if (user.vote_game && results[user.vote_game] !== undefined) {
-        results[user.vote_game]++;
+      if (user.vote_game === firstElem.name_elem) {
+        globalVoteCount[firstElem.name_elem]++;
+      } else if (user.vote_game === secondElem.name_elem) {
+        globalVoteCount[secondElem.name_elem]++;
       }
     });
 
-    const sorted = Object.entries(results).sort((a, b) => b[1] - a[1]);
-    const winners = sorted.filter(([_, votes]) => votes > 0)
-                         .slice(0, Math.ceil(sorted.length / 2))
-                         .map(([name]) => elements.find(el => el.name_elem === name));
+    console.table([
+      { Opción: firstElem.name_elem, Votos: globalVoteCount[firstElem.name_elem] },
+      { Opción: secondElem.name_elem, Votos: globalVoteCount[secondElem.name_elem] }
+    ]);
 
-    const roundResult = {
-      round: roundNumber,
-      results: sorted,
-      winners: winners.map(w => w.name_elem)
-    };
+    // Determinar el más votado globalmente
+    const mostVotedGlobalName = globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem]
+      ? firstElem.name_elem
+      : secondElem.name_elem;
 
-    setCurrentResults(roundResult);
-    setGlobalRoundResults(prev => [...prev, roundResult]);
-    setIsShowingResults(true);
+    console.log(`🏆 Más votado globalmente: ${mostVotedGlobalName}`);
 
-    return winners;
+    const mostVotedGlobalElement = elements.find(el => el.name_elem === mostVotedGlobalName);
+
+    if (mostVotedGlobalElement) {
+      setMostVotedGlobalImages(prev => [...prev, {
+        img: mostVotedGlobalElement.img_elem,
+        name: mostVotedGlobalElement.name_elem,
+        round: roundNumber
+      }]);
+      
+      console.log("📌 Imagen más votada globalmente guardada:", mostVotedGlobalElement.name_elem);
+    }
   };
 
   const fetchUsersInGame = async () => {
     try {
+      console.log("🔍 Buscando usuarios en el juego...");
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
+        console.log(`👥 Usuarios en sala (${data.length}):`, data.map(u => u.id_user));
         setUsersInGame(data);
+      } else {
+        console.warn("⚠️ Respuesta inesperada al obtener usuarios");
       }
     } catch (e) {
-      console.error('Error fetching users:', e);
+      console.error('❌ Error fetching users:', e);
     }
   };
 
   const fetchElements = async () => {
     if (!id_cat) return;
     try {
+      console.log("🖼️ Obteniendo elementos de la categoría...");
       const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
       if (response.ok) {
+        console.log(`🃏 Elementos obtenidos: ${data.length}`);
         const formattedElements = data.map((element) => ({
           id_elem: element.id_elem,
           name_elem: element.name_elem,
@@ -169,13 +232,15 @@ const GamePage = () => {
         setElements(formattedElements);
       }
     } catch (error) {
-      console.error("Error fetching elements:", error);
+      console.error("❌ Error fetching elements:", error);
     }
   };
 
   const updateRanking = async (winnerElement, userId) => {
     try {
       if (!winnerElement || !userId) return;
+
+      console.log(`🏆 Actualizando ranking para elemento ${winnerElement.name_elem} y usuario ${userId}`);
 
       const user = localStorage.getItem('user');
       const parsedUser = JSON.parse(user);
@@ -201,24 +266,40 @@ const GamePage = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error al actualizar ranking');
       }
+
+      console.log("📈 Ranking actualizado con éxito");
     } catch (error) {
-      console.error('Error en updateRanking:', error.message);
+      console.error('❌ Error en updateRanking:', error.message);
     }
   };
 
   const fetchAllVotes = async () => {
     try {
+      console.log("🗳️ Obteniendo todos los votos...");
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
+        // Mostrar tabla de votos actuales
+        console.table(data.map(user => ({
+          Usuario: user.id_user,
+          Voto: user.vote_game || 'No votó'
+        })));
+        
+        // Identificar usuarios que no han votado
+        const nonVoters = data.filter(user => !user.vote_game || user.vote_game.trim() === '');
+        if (nonVoters.length > 0) {
+          console.warn("⚠️ Usuarios sin votar:", nonVoters.map(u => u.id_user));
+        }
+        
         setUsersInGame(data);
       }
     } catch (error) {
-      console.error('Error fetching votes:', error);
+      console.error('❌ Error fetching votes:', error);
     }
   };
 
   const waitForAllVotes = async () => {
+    console.log("⏳ Esperando que todos voten...");
     setIsWaiting(true);
     let attempts = 0;
     const maxAttempts = 10;
@@ -232,9 +313,12 @@ const GamePage = () => {
           const nonVoters = data.filter(user => !user.vote_game || user.vote_game.trim() === '');
           
           if (nonVoters.length === 0) {
+            console.log("✅ Todos han votado!");
             setUsersInGame(data);
             setIsWaiting(false);
             return;
+          } else {
+            console.warn(`⏱️ Esperando votos de: ${nonVoters.map(u => u.id_user).join(', ')}`);
           }
         }
         
@@ -242,19 +326,22 @@ const GamePage = () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       
+      console.warn('⏰ Tiempo de espera agotado para los votos');
       setIsWaiting(false);
     } catch (error) {
-      console.error('Error en waitForAllVotes:', error);
+      console.error('❌ Error en waitForAllVotes:', error);
       setIsWaiting(false);
     }
   };
 
   const handleClick = async (winnerIndex) => {
     if (isAnimating) return;
+    console.log(`🖱️ Click en elemento ${winnerIndex}`);
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
 
     const winnerElement = elements[winnerIndex];
+    console.log(`🏅 Elemento seleccionado: ${winnerElement.name_elem}`);
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
 
@@ -268,22 +355,26 @@ const GamePage = () => {
       round: roundNumber
     }]);
 
+    console.log("📝 Historial de partidas actualizado");
     await waitForAllVotes();
-    const roundWinners = await determineRoundWinners();
+    await fetchMostVotedGlobalImages(); // Usamos la función global ahora
 
-    setWinners(roundWinners.map(w => elements.indexOf(w)));
+    setWinners((prev) => [...prev, winnerIndex]);
     const nextMatch = currentMatchIndex + 2;
 
     if (nextMatch >= currentRound.length) {
-      if (roundWinners.length === 1) {
-        setWinnerImage(roundWinners[0].img_elem);
-        setWinnerName(roundWinners[0].name_elem);
+      if (winners.length + 1 === 1) {
+        console.log("🎉 Tenemos un ganador!");
+        setWinnerImage(winnerElement.img_elem);
+        setWinnerName(winnerElement.name_elem);
         setIsWinnerDialogOpen(true);
-        await updateRanking(roundWinners[0], usersInGame[0]?.id_user);
+        await updateRanking(winnerElement, usersInGame[0]?.id_user);
       } else {
+        console.log("🔜 Preparando siguiente ronda...");
         setShowNextRound(true);
       }
     } else {
+      console.log("➡️ Pasando al siguiente match...");
       setCurrentMatchIndex(nextMatch);
       await resetAllVotes();
     }
@@ -295,8 +386,13 @@ const GamePage = () => {
   const sendVoteToServer = async (vote) => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      if (!user?.id_user) return;
+      if (!user?.id_user) {
+        console.warn("⚠️ Usuario no identificado para votar");
+        return;
+      }
 
+      console.log(`📤 Enviando voto de ${user.id_user}: ${vote}`);
+      
       const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -307,20 +403,28 @@ const GamePage = () => {
         }),
       });
 
-      if (!response.ok) throw new Error('Error al actualizar el voto');
+      if (!response.ok) {
+        console.warn(`⚠️ No se pudo registrar voto para usuario ${user.id_user}`);
+        throw new Error('Error al actualizar el voto');
+      }
 
+      console.log(`✅ Voto registrado para ${user.id_user}`);
+      
+      // Actualizar el estado local
       setUsersInGame(prevUsers => 
         prevUsers.map(u => 
           u.id_user === user.id_user ? {...u, vote_game: vote} : u
         )
       );
       setVoteGame(vote);
+      
     } catch (error) {
-      console.error('Error al enviar el voto:', error);
+      console.error('❌ Error al enviar el voto:', error);
     }
   };
 
   const handleNextRoundComplete = async () => {
+    console.log("🔄 Completando ronda...");
     try {
       await fetchAllVotes();
       await resetAllVotes();
@@ -330,14 +434,11 @@ const GamePage = () => {
       setCurrentMatchIndex(0);
       setShowNextRound(false);
       setRoundNumber(prev => prev + 1);
+      
+      console.log(`🆕 Nueva ronda #${roundNumber + 1} iniciada`);
     } catch (error) {
-      console.error('Error en handleNextRoundComplete:', error);
+      console.error('❌ Error en handleNextRoundComplete:', error);
     }
-  };
-
-  const handleResultsClose = () => {
-    setIsShowingResults(false);
-    setCurrentResults(null);
   };
 
   // Renderizado condicional
@@ -358,7 +459,7 @@ const GamePage = () => {
       state: {
         winner: currentRound[0],
         history: matchHistory,
-        globalRoundResults
+        mostVotedGlobalImages // Pasamos las imágenes más votadas globalmente
       }
     });
     return null;
@@ -425,32 +526,6 @@ const GamePage = () => {
           winnerName={winnerName}
           onClose={() => setIsWinnerDialogOpen(false)}
         />
-      )}
-
-      {isShowingResults && currentResults && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Resultados Ronda {currentResults.round}
-            </h3>
-            <ul className="space-y-2 mb-4">
-              {currentResults.results.map(([name, votes]) => (
-                <li key={name} className="flex justify-between items-center">
-                  <span className="text-white">{name}</span>
-                  <span className="text-gray-300">
-                    {votes} votos {currentResults.winners.includes(name) ? '✅' : '❌'}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={handleResultsClose}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            >
-              Continuar
-            </button>
-          </div>
-        </div>
       )}
 
       <footer className="absolute bottom-0 w-full p-4 text-center text-gray-400 text-sm">
