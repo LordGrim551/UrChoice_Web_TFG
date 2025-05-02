@@ -22,7 +22,9 @@ const GamePage = () => {
   const [matchHistory, setMatchHistory] = useState([]);
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
-  const [globalResults, setGlobalResults] = useState([]);
+  const [globalRoundResults, setGlobalRoundResults] = useState([]);
+  const [isShowingResults, setIsShowingResults] = useState(false);
+  const [currentResults, setCurrentResults] = useState(null);
 
   // Estados de UI
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -63,9 +65,7 @@ const GamePage = () => {
       });
 
       await Promise.all(resetPromises);
-      setUsersInGame(prevUsers => 
-        prevUsers.map(user => ({ ...user, vote_game: '' }))
-      );
+      setUsersInGame(prevUsers => prevUsers.map(user => ({ ...user, vote_game: '' })));
       setVoteGame('');
     } catch (error) {
       console.error('Error al reiniciar votos:', error);
@@ -108,52 +108,35 @@ const GamePage = () => {
     }
   }, [vote_game]);
 
-  // Función para calcular el resultado global de la votación actual
-  const calculateGlobalVoteResult = async () => {
-    const firstIndex = currentRound[currentMatchIndex];
-    const secondIndex = currentRound[currentMatchIndex + 1];
-    const firstElem = elements[firstIndex];
-    const secondElem = elements[secondIndex];
-
-    const globalVoteCount = {
-      [firstElem.name_elem]: 0,
-      [secondElem.name_elem]: 0
-    };
+  // Nueva función para determinar ganadores globales
+  const determineRoundWinners = async () => {
+    const results = {};
+    currentRound.forEach(index => {
+      results[elements[index].name_elem] = 0;
+    });
 
     usersInGame.forEach(user => {
-      if (user.vote_game === firstElem.name_elem) {
-        globalVoteCount[firstElem.name_elem]++;
-      } else if (user.vote_game === secondElem.name_elem) {
-        globalVoteCount[secondElem.name_elem]++;
+      if (user.vote_game && results[user.vote_game] !== undefined) {
+        results[user.vote_game]++;
       }
     });
 
-    const result = {
-      winner: globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem] 
-        ? firstElem.name_elem 
-        : secondElem.name_elem,
-      loser: globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem]
-        ? secondElem.name_elem
-        : firstElem.name_elem,
-      votes: globalVoteCount,
+    const sorted = Object.entries(results).sort((a, b) => b[1] - a[1]);
+    const winners = sorted.filter(([_, votes]) => votes > 0)
+                         .slice(0, Math.ceil(sorted.length / 2))
+                         .map(([name]) => elements.find(el => el.name_elem === name));
+
+    const roundResult = {
       round: roundNumber,
-      matchIndex: currentMatchIndex
+      results: sorted,
+      winners: winners.map(w => w.name_elem)
     };
 
-    // Guardar el resultado global
-    setGlobalResults(prev => {
-      const existingIndex = prev.findIndex(r => 
-        r.round === roundNumber && r.matchIndex === currentMatchIndex
-      );
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = result;
-        return updated;
-      }
-      return [...prev, result];
-    });
+    setCurrentResults(roundResult);
+    setGlobalRoundResults(prev => [...prev, roundResult]);
+    setIsShowingResults(true);
 
-    return result;
+    return winners;
   };
 
   const fetchUsersInGame = async () => {
@@ -275,35 +258,28 @@ const GamePage = () => {
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
 
-    // Esperar a que todos voten y obtener resultados globales
-    await waitForAllVotes();
-    
-    // Obtener el resultado global de la votación actual
-    const globalResult = await calculateGlobalVoteResult();
-    
-    // Usar siempre el ganador global, no el voto individual
-    const globalWinnerIndex = elements.findIndex(el => el.name_elem === globalResult.winner);
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
-    const loserIndex = globalWinnerIndex === firstIndex ? secondIndex : firstIndex;
+    const loserIndex = winnerIndex === firstIndex ? secondIndex : firstIndex;
 
     setMatchHistory(prev => [...prev, {
-      winner: globalWinnerIndex,
+      winner: winnerIndex,
       loser: loserIndex,
       round: roundNumber
     }]);
 
-    // Guardar el ganador global para la siguiente ronda
-    setWinners((prev) => [...prev, globalWinnerIndex]);
-    
+    await waitForAllVotes();
+    const roundWinners = await determineRoundWinners();
+
+    setWinners(roundWinners.map(w => elements.indexOf(w)));
     const nextMatch = currentMatchIndex + 2;
 
     if (nextMatch >= currentRound.length) {
-      if (winners.length + 1 === 1) {
-        setWinnerImage(elements[globalWinnerIndex].img_elem);
-        setWinnerName(elements[globalWinnerIndex].name_elem);
+      if (roundWinners.length === 1) {
+        setWinnerImage(roundWinners[0].img_elem);
+        setWinnerName(roundWinners[0].name_elem);
         setIsWinnerDialogOpen(true);
-        await updateRanking(elements[globalWinnerIndex], usersInGame[0]?.id_user);
+        await updateRanking(roundWinners[0], usersInGame[0]?.id_user);
       } else {
         setShowNextRound(true);
       }
@@ -331,9 +307,7 @@ const GamePage = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Error al actualizar el voto');
-      }
+      if (!response.ok) throw new Error('Error al actualizar el voto');
 
       setUsersInGame(prevUsers => 
         prevUsers.map(u => 
@@ -361,75 +335,9 @@ const GamePage = () => {
     }
   };
 
-  // Función para renderizar el match actual basado en resultados globales
-  const renderCurrentMatch = () => {
-    const firstIndex = currentRound[currentMatchIndex];
-    const secondIndex = currentRound[currentMatchIndex + 1];
-    const firstElem = elements[firstIndex];
-    const secondElem = elements[secondIndex];
-
-    // Buscar resultado global para este match
-    const globalResult = globalResults.find(r => 
-      r.round === roundNumber && r.matchIndex === currentMatchIndex
-    );
-
-    // Si hay resultado global, mostrar según ese resultado
-    if (globalResult) {
-      const winnerIndex = elements.findIndex(el => el.name_elem === globalResult.winner);
-      const loserIndex = elements.findIndex(el => el.name_elem === globalResult.loser);
-
-      return [winnerIndex, loserIndex].map((index, idx) => {
-        const element = elements[index];
-        return (
-          <div 
-            className={`item ${isAnimating ? "no-pointer" : ""}`} 
-            key={idx}
-            onClick={() => !showNextRound && !globalResult && handleClick(index)}
-          >
-            <img
-              src={element.img_elem}
-              alt={element.name_elem}
-              className={`gallery-img 
-                ${idx === 0 ? "expanded" : "grayscale"}
-                ${isAnimating ? "keep-hover" : ""}
-              `}
-            />
-            <div className="label-container">
-              <span className="label">{element.name_elem}</span>
-              {globalResult && (
-                <span className="vote-count">
-                  {globalResult.votes[element.name_elem]} votos
-                </span>
-              )}
-            </div>
-          </div>
-        );
-      });
-    }
-
-    // Si no hay resultado global aún, mostrar las cartas normalmente
-    return [firstIndex, secondIndex].map((index, idx) => {
-      const element = elements[index];
-      return (
-        <div
-          className={`item ${isAnimating ? "no-pointer" : ""}`}
-          key={idx}
-          onClick={() => !showNextRound && handleClick(index)}
-        >
-          <img
-            src={element.img_elem}
-            alt={element.name_elem}
-            className={`gallery-img 
-              ${expandedIndex === index ? "expanded" : ""}
-              ${isAnimating ? "keep-hover" : ""}
-            `}
-          />
-          <div className="label-container">
-            <span className="label">{element.name_elem}</span>
-          </div>
-        </div>
-      );
-    });
+  const handleResultsClose = () => {
+    setIsShowingResults(false);
+    setCurrentResults(null);
   };
 
   // Renderizado condicional
@@ -450,12 +358,14 @@ const GamePage = () => {
       state: {
         winner: currentRound[0],
         history: matchHistory,
-        globalResults
+        globalRoundResults
       }
     });
     return null;
   }
 
+  const firstIndex = currentRound[currentMatchIndex];
+  const secondIndex = currentRound[currentMatchIndex + 1];
   const matchesCount = Math.ceil(currentRound.length / 2);
   const currentMatch = currentMatchIndex / 2 + 1;
 
@@ -468,7 +378,31 @@ const GamePage = () => {
       </header>
 
       <div className={`gallery ${expandedIndex !== null ? "expanding" : ""} ${showNextRound ? "opacity-50" : ""}`}>
-        {renderCurrentMatch()}
+        {[firstIndex, secondIndex].map((globalIndex, idx) => {
+          const element = elements[globalIndex];
+          if (!element) return null;
+
+          return (
+            <div
+              className={`item ${isAnimating ? "no-pointer" : ""}`}
+              key={idx}
+              onClick={() => !showNextRound && handleClick(globalIndex)}
+            >
+              <img
+                src={element.img_elem}
+                alt={element.name_elem}
+                className={`gallery-img 
+                  ${expandedIndex === globalIndex ? "expanded" : ""}
+                  ${expandedIndex !== null && expandedIndex !== globalIndex ? "grayscale" : ""}
+                  ${isAnimating ? "keep-hover" : ""}
+                `}
+              />
+              <div className="label-container">
+                <span className="label">{element.name_elem}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {showNextRound && (
@@ -491,6 +425,32 @@ const GamePage = () => {
           winnerName={winnerName}
           onClose={() => setIsWinnerDialogOpen(false)}
         />
+      )}
+
+      {isShowingResults && currentResults && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-xl font-bold text-white mb-4">
+              Resultados Ronda {currentResults.round}
+            </h3>
+            <ul className="space-y-2 mb-4">
+              {currentResults.results.map(([name, votes]) => (
+                <li key={name} className="flex justify-between items-center">
+                  <span className="text-white">{name}</span>
+                  <span className="text-gray-300">
+                    {votes} votos {currentResults.winners.includes(name) ? '✅' : '❌'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={handleResultsClose}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
       )}
 
       <footer className="absolute bottom-0 w-full p-4 text-center text-gray-400 text-sm">
