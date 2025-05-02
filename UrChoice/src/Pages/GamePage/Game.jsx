@@ -323,7 +323,7 @@ const GamePage = () => {
             setShowNextRound(true);
             setIsWaiting(true);
             console.log('Aqui 1')
-          }, 3000);
+          }, 1000);
 
         }
       } else {
