@@ -24,7 +24,6 @@ const GamePage = () => {
   const [isWaiting, setIsWaiting] = useState(false);
   const [mostVotedImages, setMostVotedImages] = useState([]);
 
-
   // Estados de UI
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -41,122 +40,122 @@ const GamePage = () => {
   const [hasResetVotes, setHasResetVotes] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState('');
 
-  // Efectos para cargar datos iniciales de las cartas a través de su id categoria
-  // dara error si desde los dialogs de room no se envian bien sus id categorias
-  useEffect(() => {
-    if (id_cat) {
-      fetchElements();
-      fetchAllVotes();
-      // VIGILANCIA
-    } else {
-      console.error("id_cat is not available in the location state.");
+  // Función para reiniciar todos los votos
+  const resetAllVotes = async () => {
+    if (!id_room) return;
+
+    try {
+      // Obtener todos los usuarios en la sala
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+      const users = await res.json();
+      
+      if (!res.ok || !Array.isArray(users)) return;
+
+      // Crear un array de promesas para actualizar todos los votos
+      const resetPromises = users.map(user => {
+        return fetch(`${API_BASE_URL}/room/updateVote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id_user: user.id_user,
+            id_room: id_room,
+            vote_game: '', // Establecer vote_game como string vacío
+          }),
+        });
+      });
+
+      // Esperar a que todas las actualizaciones se completen
+      await Promise.all(resetPromises);
+      console.log("Todos los votos han sido reiniciados");
+      
+      // Actualizar el estado local
+      setUsersInGame(prevUsers => 
+        prevUsers.map(user => ({ ...user, vote_game: '' }))
+      );
+      setVoteGame('');
+      
+    } catch (error) {
+      console.error('Error al reiniciar votos:', error);
     }
+  };
+
+  // Efectos para cargar datos iniciales
+  useEffect(() => {
+    const initializeGame = async () => {
+      if (id_cat) {
+        await fetchElements();
+        await fetchAllVotes();
+        await resetAllVotes(); // Reiniciar votos al inicio
+      }
+    };
+    
+    initializeGame();
   }, [id_cat]);
-  // Obtener e ir actualizando los usuarios que hay en la sala
+
   useEffect(() => {
     fetchUsersInGame();
     const interval = setInterval(fetchUsersInGame, 5000);
     return () => clearInterval(interval);
   }, []);
-  //Una vez iniciada las partidas establecer sus sus vote_game a vacio '' a todos los usuarios que se encuentran dentro de la sala
-  useEffect(() => {
-    if (usersInGame.length > 0 && !hasResetVotes) {
-      updateVote();
-      setHasResetVotes(true);
-    }
-  }, [usersInGame]);
 
-  // cada 2 seg ir actualizando los votos de la sala de juegos
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (isWaiting) {
-        fetchAllVotes();
-      }
-    }, 2000);
+    const interval = setInterval(fetchAllVotes, 2000);
     return () => clearInterval(interval);
-  }, [isWaiting, id_room]);
-  //Establecer el orden por el cuál se irán mostrando las cartas
+  }, [id_room]);
+
   useEffect(() => {
     if (elements.length > 0) {
       const indices = Array.from({ length: elements.length }, (_, i) => i);
       setCurrentRound(indices);
     }
   }, [elements]);
-  // enviar voto al servidor
+
   useEffect(() => {
     if (vote_game && vote_game.trim() !== '') {
       sendVoteToServer(vote_game);
-      fetchAllVotes();
     }
-
   }, [vote_game]);
-  useEffect(() => {
-    console.log('hola')
-    fetchAllVotes();
-    const todosHanVotado = usersInGame.every(user => {
-      const voto = user?.vote_game ?? '';
-      return typeof voto === 'string' && voto.trim() !== '';
+
+  const fetchMostVotedImages = async () => {
+    const firstIndex = currentRound[currentMatchIndex];
+    const secondIndex = currentRound[currentMatchIndex + 1];
+    const firstElem = elements[firstIndex];
+    const secondElem = elements[secondIndex];
+
+    const voteCount = {
+      [firstElem.name_elem]: 0,
+      [secondElem.name_elem]: 0
+    };
+
+    usersInGame.forEach(user => {
+      if (user.vote_game === firstElem.name_elem) {
+        voteCount[firstElem.name_elem]++;
+      } else if (user.vote_game === secondElem.name_elem) {
+        voteCount[secondElem.name_elem]++;
+      }
     });
 
-    if (todosHanVotado) {
-      console.log("Se han reiniciado los datos");
-      fetchAllVotes();
-      // setIsWaiting(false);
-      const interval = setInterval(updateVote, 1000);
-      return () => clearInterval(interval);
+    const mostVotedName = voteCount[firstElem.name_elem] >= voteCount[secondElem.name_elem]
+      ? firstElem.name_elem
+      : secondElem.name_elem;
+
+    const mostVotedElement = elements.find(el => el.name_elem === mostVotedName);
+
+    if (mostVotedElement) {
+      setMostVotedImages(prev => [...prev, {
+        img: mostVotedElement.img_elem,
+        name: mostVotedElement.name_elem,
+        round: roundNumber
+      }]);
     }
-  }, [usersInGame]);
-
-
-const fetchMostVotedImages = () => {
-  // Obtener los índices de los dos elementos del match actual
-  const firstIndex = currentRound[currentMatchIndex];
-  const secondIndex = currentRound[currentMatchIndex + 1];
-
-  const firstElem = elements[firstIndex];
-  const secondElem = elements[secondIndex];
-
-  // Contar votos solo para estos dos elementos
-  const voteCount = {
-    [firstElem.name_elem]: 0,
-    [secondElem.name_elem]: 0
   };
-
-  usersInGame.forEach(user => {
-    if (user.vote_game === firstElem.name_elem) {
-      voteCount[firstElem.name_elem]++;
-    } else if (user.vote_game === secondElem.name_elem) {
-      voteCount[secondElem.name_elem]++;
-    }
-  });
-
-  // Determinar cuál tiene más votos
-  const mostVotedName = voteCount[firstElem.name_elem] >= voteCount[secondElem.name_elem]
-    ? firstElem.name_elem
-    : secondElem.name_elem;
-
-  const mostVotedElement = elements.find(el => el.name_elem === mostVotedName);
-
-  if (mostVotedElement) {
-    setMostVotedImages(prev => [...prev, {
-      img: mostVotedElement.img_elem,
-      name: mostVotedElement.name_elem,
-      round: roundNumber
-    }]);
-  }
-};
-
 
   const fetchUsersInGame = async () => {
     try {
-      const res = await fetch(
-        `https://railwayserver-production-7692.up.railway.app/room/${id_room}/users`
-      );
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
         setUsersInGame(data);
-        console.log("ID de la categoría recibido en GamePage:", id_cat);
-        console.table(data);
       }
     } catch (e) {
       console.error('Error fetching users:', e);
@@ -164,15 +163,13 @@ const fetchMostVotedImages = () => {
   };
 
   const fetchElements = async () => {
-    console.log("Fetching elements for category ID:", id_cat);
     if (!id_cat) return;
     try {
-      const response = await fetch(`https://railwayserver-production-7692.up.railway.app/elements/${id_cat}`, {
+      const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
-      console.log("Fetched elements:", data);
       if (response.ok) {
         const formattedElements = data.map((element) => ({
           id_elem: element.id_elem,
@@ -181,57 +178,15 @@ const fetchMostVotedImages = () => {
           img_elem: `data:image/png;base64,${element.img_elem}`,
         }));
         setElements(formattedElements);
-      } else {
-        console.error("Error fetching elements:", data.message);
       }
     } catch (error) {
       console.error("Error fetching elements:", error);
     }
   };
 
-  const updateVote = async () => {
-    if (!id_room || usersInGame.length === 0) return;
-
-    try {
-      setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
-      // setVoteGame('');
-      fetchAllVotes();
-      // VIGILANCIA
-
-      const updatePromises = usersInGame.map(async user =>
-        await fetch(`${API_BASE_URL}/room/updateVote`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id_user: user.id_user, // ✅ usar el ID de cada usuario
-            id_room: id_room,
-            vote_game: '',
-          }),
-        })
-      );
-
-
-      await Promise.all(updatePromises);
-      console.log("Todos los votos se actualizaron correctamente");
-
-    } catch (e) {
-      console.error('Error en updateVote:', e);
-    }
-  };
-
-
   const updateRanking = async (winnerElement, userId) => {
     try {
-      if (!winnerElement || !userId) {
-        console.error("Datos faltantes para actualizar ranking");
-        return;
-      }
-
-      console.log("Actualizando ranking para:", {
-        elementId: winnerElement.id_elem,
-        userId: userId,
-        currentVictories: winnerElement.victories
-      });
+      if (!winnerElement || !userId) return;
 
       const user = localStorage.getItem('user');
       const parsedUser = JSON.parse(user);
@@ -243,7 +198,7 @@ const fetchMostVotedImages = () => {
       };
       localStorage.setItem('user', JSON.stringify(updatedUser));
 
-      const response = await fetch(`https://railwayserver-production-7692.up.railway.app/element/winner`, {
+      const response = await fetch(`${API_BASE_URL}/element/winner`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -255,10 +210,8 @@ const fetchMostVotedImages = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error del servidor:', errorData);
         throw new Error(errorData.message || 'Error al actualizar ranking');
       }
-      console.log("Ranking actualizado exitosamente");
     } catch (error) {
       console.error('Error en updateRanking:', error.message);
     }
@@ -266,29 +219,25 @@ const fetchMostVotedImages = () => {
 
   const fetchAllVotes = async () => {
     try {
-      const res = await fetch(
-        `https://railwayserver-production-7692.up.railway.app/room/${id_room}/users`
-      );
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
-        console.log("Votos de todos los usuarios:", data);
-
-        const allUsersVoted = data.every(user =>
-          user.vote_game && user.vote_game.trim() !== ''
-        );
-
-        if (allUsersVoted) {
-          setIsWaiting(false);
-          setVoteGame("");
-        }
-
-        data.forEach(user => {
-          console.log(`Usuario ${user.id_user} votó por: ${user.vote_game}`);
-        });
+        setUsersInGame(data);
       }
     } catch (error) {
       console.error('Error fetching votes:', error);
     }
+  };
+
+  const waitForAllVotes = async () => {
+    let allVoted = false;
+    while (!allVoted) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+      const data = await res.json();
+      allVoted = data.every(user => user.vote_game && user.vote_game.trim() !== '');
+    }
+    setIsWaiting(false);
   };
 
   const handleClick = async (winnerIndex) => {
@@ -296,16 +245,9 @@ const fetchMostVotedImages = () => {
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
 
-
-
     const winnerElement = elements[winnerIndex];
-    // Actualizar estado local y enviar voto de manera síncrona
-    await new Promise(resolve => {
-      setVoteGame(winnerElement.name_elem);
-      setTimeout(resolve, 100); // Pequeño delay para asegurar la actualización
-    });
+    setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
-    fetchAllVotes();
 
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
@@ -317,144 +259,57 @@ const fetchMostVotedImages = () => {
       round: roundNumber
     }]);
 
-    setTimeout(async () => {
-      setWinners((prev) => [...prev, winnerIndex]);
-      const nextMatch = currentMatchIndex + 2;
+    setIsWaiting(true);
+    await waitForAllVotes();
+    await fetchMostVotedImages();
 
-      if (nextMatch >= currentRound.length) {
-        const winnerElement = elements[winnerIndex];
+    setWinners((prev) => [...prev, winnerIndex]);
+    const nextMatch = currentMatchIndex + 2;
 
-        if (winners.length + 1 === 1) {
-          fetchAllVotes();
-          await fetchMostVotedImages();
-          fetchAllVotes();
-          console.log('Aqui 1');
-
-          // Mostrar el WaitingDialog inicialmente
-          setIsWaiting(true);
-
-          // Iniciar un intervalo que verifica si todos han votado
-          const voteCheckInterval = setInterval(async () => {
-            try {
-              const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
-              const data = await res.json();
-              fetchAllVotes();
-              const allUsersVoted = data.every(user =>
-                user.vote_game && user.vote_game.trim() !== ''
-              );
-              fetchAllVotes();
-              if (allUsersVoted) {
-                fetchAllVotes();
-                setIsWaiting(false);
-                setExpandedIndex(null);
-                setIsAnimating(false);
-                setWinnerImage(winnerElement.img_elem);
-                setWinnerName(winnerElement.name_elem);
-                setIsWinnerDialogOpen(true);
-                updateRanking(winnerElement, usersInGame[0]?.id_user);
-                clearInterval(voteCheckInterval); // Detener el intervalo cuando todos hayan votado
-                setExpandedIndex(null);
-                setIsAnimating(false);
-              }
-            } catch (error) {
-              console.error('Error verificando votos:', error);
-            }
-          }, 1500); // verifica cada 2 segundos
-
-
-        } else {
-          fetchAllVotes();
-          await fetchMostVotedImages();
-          fetchAllVotes();
-          console.log('Aqui 1');
-
-          // Mostrar el WaitingDialog inicialmente
-          setIsWaiting(true);
-
-          // Iniciar un intervalo que verifica si todos han votado
-          const voteCheckInterval = setInterval(async () => {
-            try {
-              const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
-              const data = await res.json();
-              fetchAllVotes();
-              const allUsersVoted = data.every(user =>
-                user.vote_game && user.vote_game.trim() !== ''
-              );
-
-              if (allUsersVoted) {
-
-                fetchAllVotes();
-                setIsWaiting(false);
-                fetchAllVotes();
-                setShowNextRound(true);
-                clearInterval(voteCheckInterval); // Detener el intervalo cuando todos hayan votado
-                setExpandedIndex(null);
-                setIsAnimating(false);
-              }
-
-            } catch (error) {
-              console.error('Error verificando votos:', error);
-            }
-
-          }, 1500); // verifica cada 2 segundos
-        }
-
-
+    if (nextMatch >= currentRound.length) {
+      if (winners.length + 1 === 1) {
+        setWinnerImage(winnerElement.img_elem);
+        setWinnerName(winnerElement.name_elem);
+        setIsWinnerDialogOpen(true);
+        await updateRanking(winnerElement, usersInGame[0]?.id_user);
       } else {
-        fetchAllVotes();
-        setIsWaiting(true);
-        setCurrentMatchIndex(nextMatch);
-        console.log('Aqui 2')
-        setExpandedIndex(null);
-        setIsAnimating(false);
-
+        setShowNextRound(true);
       }
-      console.log('ya se desactivo')
-
-    }, 1500);
-  };
-
-const sendVoteToServer = async (vote) => {
-  if (!vote || vote.trim() === '' ) return;
-
-  try {
-    const user = localStorage.getItem('user');
-    if (!user) return;
-
-    const parsedUser = JSON.parse(user);
-    if (!parsedUser.id_user) return;
-
-    const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id_user: parsedUser.id_user,
-        id_room: id_room,
-        vote_game: vote,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al actualizar el voto');
+    } else {
+      setCurrentMatchIndex(nextMatch);
+      await resetAllVotes(); // Reiniciar votos al pasar al siguiente match
     }
 
-    console.log("✅ Voto enviado correctamente:", vote);
+    setExpandedIndex(null);
+    setIsAnimating(false);
+  };
 
-  } catch (error) {
-    console.error('❌ Error al enviar el voto:', error.message);
-  }
-};
+  const sendVoteToServer = async (vote) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user?.id_user) return;
 
+      await fetch(`${API_BASE_URL}/room/updateVote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_user: user.id_user,
+          id_room: id_room,
+          vote_game: vote,
+        }),
+      });
+    } catch (error) {
+      console.error('Error al enviar el voto:', error);
+    }
+  };
 
   const handleNextRoundComplete = () => {
     setCurrentRound([...winners]);
     setWinners([]);
     setCurrentMatchIndex(0);
     setShowNextRound(false);
-    setIsWaiting(false);
     setRoundNumber(prev => prev + 1);
-    setVoteGame("");
-    updateVote();
+    resetAllVotes(); // Reiniciar todos los votos al pasar a la siguiente ronda
   };
 
   // Renderizado condicional
@@ -479,8 +334,6 @@ const sendVoteToServer = async (vote) => {
     });
     return null;
   }
-
-
 
   const firstIndex = currentRound[currentMatchIndex];
   const secondIndex = currentRound[currentMatchIndex + 1];
@@ -531,7 +384,7 @@ const sendVoteToServer = async (vote) => {
         <WaitingDialog
           isOpen={isWaiting}
           message="Esperando a que todos los jugadores voten..."
-          onClose={() => { }}
+          onClose={() => {}}
           showCloseButton={false}
         />
       )}
@@ -552,4 +405,4 @@ const sendVoteToServer = async (vote) => {
   );
 };
 
-export default GamePage;  
+export default GamePage;

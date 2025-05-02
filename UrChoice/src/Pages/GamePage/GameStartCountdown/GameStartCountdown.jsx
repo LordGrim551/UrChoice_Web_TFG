@@ -27,7 +27,7 @@ const GameStartCountdown = ({ onComplete }) => {
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 ${isClosing ? "opacity-0" : "opacity-100"}`}>
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+      <div className="absolute inset-0 bg-transparent bg-opacity-60"></div>
 
       <div className={`relative bg-gray-900 border-2 border-cyan-400 rounded-xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 ${
         isVisible ? "scale-100" : "scale-75"

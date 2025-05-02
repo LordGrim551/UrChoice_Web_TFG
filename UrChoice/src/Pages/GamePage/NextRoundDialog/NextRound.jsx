@@ -62,12 +62,12 @@ const NextRound = ({ onComplete, roundNumber }) => {
             </div>
           </div>
 
-          <button
+          {/* <button
             onClick={handleSkip}
             className="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50"
           >
             Saltar
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
