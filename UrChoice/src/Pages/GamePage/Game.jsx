@@ -115,7 +115,7 @@ const GamePage = () => {
 
   useEffect(() => {
     fetchUsersInGame();
-    const interval = setInterval(fetchUsersInGame, 5000);
+    const interval = setInterval(fetchUsersInGame, 2000);
     return () => clearInterval(interval);
   }, []);
 
