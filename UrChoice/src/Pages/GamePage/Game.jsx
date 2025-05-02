@@ -23,7 +23,7 @@ const GamePage = () => {
   const [vote_game, setVoteGame] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
   const [mostVotedImages, setMostVotedImages] = useState([]);
- 
+
 
   // Estados de UI
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -65,6 +65,7 @@ const GamePage = () => {
       setHasResetVotes(true);
     }
   }, [usersInGame]);
+ 
   // cada 2 seg ir actualizando los votos de la sala de juegos
   useEffect(() => {
     const interval = setInterval(() => {
@@ -81,13 +82,29 @@ const GamePage = () => {
       setCurrentRound(indices);
     }
   }, [elements]);
-  // supuestamente con esto despues de pasar ccada ronda los vote_game de los usuarios con valor se establecerán a ''
-  // pero no se esta haciendo por desgracia
+  // enviar voto al servidor
   useEffect(() => {
     if (vote_game && vote_game.trim() !== '') {
       sendVoteToServer(vote_game);
     }
+    
   }, [vote_game]);
+  useEffect(() => {
+    console.log('hola')
+    const todosHanVotado = usersInGame.every(user => {
+      const voto = user?.vote_game ?? '';
+      return typeof voto === 'string' && voto.trim() !== '';
+    });
+  
+    if (todosHanVotado) {
+      console.log("Se han reiniciado los datos");
+      fetchAllVotes();
+      setIsWaiting(false);
+      const interval = setInterval(updateVote, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [usersInGame]);
+  
 
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
@@ -154,33 +171,34 @@ const GamePage = () => {
     }
   };
 
-const updateVote = async () => {
-  if (!id_room || usersInGame.length === 0) return;
+  const updateVote = async () => {
+    if (!id_room || usersInGame.length === 0) return;
 
-  try {
-    setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
-    setVoteGame('');
-    fetchAllVotes();
-    // VIGILANCIA
+    try {
+      setUsersInGame(usersInGame.map(user => ({ ...user, vote_game: '' })));
+      setVoteGame('');
+      fetchAllVotes();
+      // VIGILANCIA
 
-    const updatePromises = usersInGame.map(async user =>
-      await fetch(`${API_BASE_URL}/room/updateVote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_user: user.id_user, // ✅ usar el ID de cada usuario
-          id_room: id_room,
-          vote_game: '',
-        }),
-      })
-    );
+      const updatePromises = usersInGame.map(async user =>
+        await fetch(`${API_BASE_URL}/room/updateVote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id_user: user.id_user, // ✅ usar el ID de cada usuario
+            id_room: id_room,
+            vote_game: '',
+          }),
+        })
+      );
 
-    await Promise.all(updatePromises);
-    console.log("Todos los votos se actualizaron correctamente");
-  } catch (e) {
-    console.error('Error en updateVote:', e);
-  }
-};
+      await Promise.all(updatePromises);
+      console.log("Todos los votos se actualizaron correctamente");
+
+    } catch (e) {
+      console.error('Error en updateVote:', e);
+    }
+  };
 
 
   const updateRanking = async (winnerElement, userId) => {
@@ -241,7 +259,7 @@ const updateVote = async () => {
         );
 
         if (allUsersVoted) {
-          setIsWaiting(false);
+          // setIsWaiting(false);
           setVoteGame("");
         }
 
@@ -259,7 +277,7 @@ const updateVote = async () => {
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
 
-    
+
 
     const winnerElement = elements[winnerIndex];
     // Actualizar estado local y enviar voto de manera síncrona
@@ -288,9 +306,9 @@ const updateVote = async () => {
 
         if (winners.length + 1 === 1) {
           await fetchMostVotedImages();
-        
+
           setTimeout(() => {
-        
+
             setWinnerImage(winnerElement.img_elem);
             setWinnerName(winnerElement.name_elem);
             setIsWinnerDialogOpen(true);
@@ -298,9 +316,9 @@ const updateVote = async () => {
           }, 3000);
         } else {
           await fetchMostVotedImages();
-        
+
           setTimeout(() => {
-         
+
             setShowNextRound(true);
             setIsWaiting(true);
             console.log('Aqui 1')
@@ -311,7 +329,7 @@ const updateVote = async () => {
         setIsWaiting(true);
         setCurrentMatchIndex(nextMatch);
         console.log('Aqui 2')
-      
+
       }
 
       setExpandedIndex(null);
