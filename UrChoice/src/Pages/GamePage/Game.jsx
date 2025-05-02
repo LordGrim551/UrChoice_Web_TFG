@@ -65,7 +65,7 @@ const GamePage = () => {
       setHasResetVotes(true);
     }
   }, [usersInGame]);
- 
+
   // cada 2 seg ir actualizando los votos de la sala de juegos
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,25 +87,41 @@ const GamePage = () => {
     if (vote_game && vote_game.trim() !== '') {
       sendVoteToServer(vote_game);
     }
-    
+
   }, [vote_game]);
   useEffect(() => {
-    console.log('hola')
-    fetchAllVotes();
-    const todosHanVotado = usersInGame.every(user => {
-      const voto = user?.vote_game ?? '';
-      return typeof voto === 'string' && voto.trim() !== '';
-    });
-  
-    if (todosHanVotado) {
-      console.log("Se han reiniciado los datos");
-      fetchAllVotes();
-      setIsWaiting(false);
-      const interval = setInterval(updateVote, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [usersInGame]);
-  
+    if (!isWaiting) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
+        const data = await res.json();
+
+        const todosVotaron = data.every(user => user.vote_game && user.vote_game.trim() !== '');
+
+        if (todosVotaron) {
+          console.log("¡Todos votaron!");
+          setIsWaiting(false);
+          setShowNextRound(true);
+          clearInterval(interval);
+        }
+
+      
+        
+      } catch (e) {
+        console.error('Error verificando votos:', e);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isWaiting]);
+  data.forEach(user => {
+  if (!user.vote_game || user.vote_game.trim() === '') {
+    console.warn(`Jugador pendiente de votar: ${user.id_user}`);
+  }
+});
+
+
 
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
