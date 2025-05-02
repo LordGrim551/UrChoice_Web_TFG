@@ -272,8 +272,8 @@ const GamePage = () => {
         
           await fetchMostVotedImages();
         
-          const isLastMatchOfRound = currentMatchIndex === totalMatchesInRound - 1;
-        
+          /**/
+          const isLastMatchOfRound = !(winners.length + 1 === 2);
           if (isLastMatchOfRound) {
             setShowNextRound(true);
             console.log('✅ Todos han votado en el último match, mostramos siguiente ronda');
