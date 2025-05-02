@@ -65,7 +65,7 @@ const GamePage = () => {
       setHasResetVotes(true);
     }
   }, [usersInGame]);
- 
+
   // cada 2 seg ir actualizando los votos de la sala de juegos
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,7 +87,7 @@ const GamePage = () => {
     if (vote_game && vote_game.trim() !== '') {
       sendVoteToServer(vote_game);
     }
-    
+
   }, [vote_game]);
   useEffect(() => {
     console.log('hola')
@@ -96,7 +96,7 @@ const GamePage = () => {
       const voto = user?.vote_game ?? '';
       return typeof voto === 'string' && voto.trim() !== '';
     });
-  
+
     if (todosHanVotado) {
       console.log("Se han reiniciado los datos");
       fetchAllVotes();
@@ -105,7 +105,9 @@ const GamePage = () => {
       return () => clearInterval(interval);
     }
   }, [usersInGame]);
-  
+
+
+
 
   // Función para obtener las imágenes más votadas
   const fetchMostVotedImages = async () => {
@@ -259,10 +261,27 @@ const GamePage = () => {
           user.vote_game && user.vote_game.trim() !== ''
         );
 
+        // if (allUsersVoted) {
+        //   setIsWaiting(false);
+        //   setVoteGame("");
+        // }
+
         if (allUsersVoted) {
           setIsWaiting(false);
           setVoteGame("");
+        
+          await fetchMostVotedImages();
+        
+          const isLastMatchOfRound = currentMatchIndex === totalMatchesInRound - 1;
+        
+          if (isLastMatchOfRound) {
+            setShowNextRound(true);
+            console.log('✅ Todos han votado en el último match, mostramos siguiente ronda');
+          } else {
+            console.log('🕹️ Todos han votado, pero aún hay más matches en este round');
+          }
         }
+        
 
         data.forEach(user => {
           console.log(`Usuario ${user.id_user} votó por: ${user.vote_game}`);
@@ -318,12 +337,11 @@ const GamePage = () => {
         } else {
           await fetchMostVotedImages();
 
-          setTimeout(() => {
 
-            setShowNextRound(true);
-            setIsWaiting(true);
-            console.log('Aqui 1')
-          }, 1000);
+          setIsWaiting(true); // ✅ solo activamos la espera
+          console.log('🕒 Esperando a que todos voten...');
+          console.log('Aqui 1')
+
 
         }
       } else {
