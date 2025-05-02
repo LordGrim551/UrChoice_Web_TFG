@@ -424,17 +424,17 @@ const GamePage = () => {
       </>
     );
   }
-
-  if (currentRound.length === 1) {
-    navigate("/HomePage", {
-      state: {
-        winner: currentRound[0],
-        history: matchHistory
-      }
-    });
-    return null;
-  }
-
+  useEffect(() => {
+    if (currentRound.length === 1) {
+      navigate("/HomePage", {
+        state: {
+          winner: currentRound[0],
+          history: matchHistory
+        }
+      });
+    }
+  }, [currentRound, matchHistory, navigate]);
+  
 
 
   const firstIndex = currentRound[currentMatchIndex];
