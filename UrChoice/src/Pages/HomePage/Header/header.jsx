@@ -4,6 +4,7 @@ import Logo from './logo.png';
 import ProfileHeader from "../ProfileHeader/profile";
 import CreateRoom from "./CreateRoomDialog/CreateRoom";
 import CrearCategory from "./CreateCategory/CreateCategory"
+import CreateCategory from "./CreateCategory/CreateCategory";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -51,6 +52,7 @@ export default function Header() {
                 </div>
               ) : (
                 <>
+                <CreateCategory/>
                   <CreateRoom />
                   <div
                     className="relative"
@@ -146,6 +148,7 @@ export default function Header() {
           ) : (
             <>
               <ProfileHeader />
+              <CreateCategory/>
               <CreateRoom />
 
               
