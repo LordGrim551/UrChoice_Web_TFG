@@ -39,7 +39,10 @@ const GamePage = () => {
   const [usersInGame, setUsersInGame] = useState([]);
   const [gamesPlayed, setGamesPlayed] = useState('');
 
-  
+
+
+
+
 
   // Función para verificar votos vacíos
   const verifyEmptyVotes = async () => {
@@ -50,23 +53,23 @@ const GamePage = () => {
     while (attempts < maxAttempts) {
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const users = await res.json();
-      
+
       if (res.ok && Array.isArray(users)) {
         const usersWithVotes = users.filter(user => user.vote_game && user.vote_game.trim() !== '');
-        
+
         if (usersWithVotes.length === 0) {
           console.log("✅ Todos los votos están vacíos");
           return true;
         }
-        
-        console.warn(`⚠️ ${usersWithVotes.length} usuarios aún tienen votos:`, 
+
+        console.warn(`⚠️ ${usersWithVotes.length} usuarios aún tienen votos:`,
           usersWithVotes.map(u => u.id_user));
       }
-      
+
       attempts++;
       await new Promise(resolve => setTimeout(resolve, 500));
     }
-    
+
     console.error("❌ No se pudo verificar votos vacíos después de varios intentos");
     return false;
   };
@@ -77,11 +80,11 @@ const GamePage = () => {
 
     try {
       console.log(isInitialReset ? "🔁 Iniciando RESET INICIAL de votos..." : "🔁 Reiniciando votos...");
-      
+
       // 1. Obtener todos los usuarios
       const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const users = await res.json();
-      
+
       if (!res.ok || !Array.isArray(users)) {
         console.error("❌ Error al obtener usuarios para resetear votos");
         return;
@@ -101,16 +104,16 @@ const GamePage = () => {
       });
 
       await Promise.all(resetPromises);
-      
+
       // 3. Forzar actualización del estado local
       const updatedRes = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const updatedUsers = await updatedRes.json();
-      
+
       if (updatedRes.ok) {
         setUsersInGame(updatedUsers);
         setVoteGame('');
         console.log("✅ Votos reiniciados correctamente");
-        
+
         if (isInitialReset) {
           console.log("🔄 Forzando refresh completo...");
           await new Promise(resolve => setTimeout(resolve, 500));
@@ -126,13 +129,13 @@ const GamePage = () => {
   const initializeGame = async () => {
     if (id_cat) {
       console.log("🔄 Inicializando juego...");
-      
+
       await fetchElements();
       await resetAllVotes(true);
       await verifyEmptyVotes();
       await fetchUsersInGame();
       await fetchAllVotes();
-      
+
       console.log("✅ Juego inicializado correctamente");
     }
   };
@@ -141,32 +144,32 @@ const GamePage = () => {
   const fetchAllVotes = async () => {
     let attempts = 0;
     const maxAttempts = 3;
-    
+
     while (attempts < maxAttempts) {
       try {
         console.log(`🗳️ Obteniendo votos (intento ${attempts + 1})...`);
         const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
         const data = await res.json();
-        
+
         if (res.ok && Array.isArray(data)) {
           console.table(data.map(user => ({
             Usuario: user.id_user,
             Voto: user.vote_game || 'Vacío'
           })));
-          
+
           setUsersInGame(data);
           return true;
         }
       } catch (error) {
         console.error(`❌ Error en intento ${attempts + 1}:`, error);
       }
-      
+
       attempts++;
       if (attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
-    
+
     console.error("❌ No se pudieron obtener los votos después de varios intentos");
     return false;
   };
@@ -262,25 +265,25 @@ const GamePage = () => {
       while (attempts < maxAttempts) {
         const res = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
         const data = await res.json();
-        
+
         if (res.ok && Array.isArray(data)) {
           setUsersInGame(data);
-          
+
           const firstIndex = currentRound[currentMatchIndex];
           const secondIndex = currentRound[currentMatchIndex + 1];
           const firstElem = elements[firstIndex];
           const secondElem = elements[secondIndex];
-          
+
           if (!firstElem || !secondElem) {
             console.warn("Elementos no encontrados para verificar votos");
             continue;
           }
-          
+
           const expectedOptions = [firstElem.name_elem, secondElem.name_elem];
-          const nonVoters = data.filter(user => 
+          const nonVoters = data.filter(user =>
             !user.vote_game || !expectedOptions.includes(user.vote_game)
           );
-          
+
           if (nonVoters.length === 0) {
             console.log("✅ Todos han votado!");
             setIsWaiting(false);
@@ -289,11 +292,11 @@ const GamePage = () => {
             console.warn(`⏱️ Esperando votos de: ${nonVoters.map(u => u.id_user).join(', ')}`);
           }
         }
-        
+
         attempts++;
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
-      
+
       console.warn('⏰ Tiempo de espera agotado para los votos');
       setIsWaiting(false);
     } catch (error) {
@@ -308,54 +311,54 @@ const GamePage = () => {
     console.log(`🖱️ Click en elemento ${winnerIndex}`);
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
-  
+
     const winnerElement = elements[winnerIndex];
     console.log(`🏅 Elemento seleccionado: ${winnerElement.name_elem}`);
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
-  
+
     await waitForAllVotes();
     await fetchMostVotedGlobalImages();
-  
+
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
     const firstElem = elements[firstIndex];
     const secondElem = elements[secondIndex];
-  
+
     const finalVotesRes = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
     const finalVotesData = await finalVotesRes.json();
-    
+
     if (!finalVotesRes.ok || !Array.isArray(finalVotesData)) {
       console.error("❌ Error al obtener votos finales");
       return;
     }
-    
+
     const globalVoteCount = {
       [firstElem.name_elem]: 0,
       [secondElem.name_elem]: 0
     };
-  
+
     finalVotesData.forEach(user => {
       if (user.vote_game === firstElem.name_elem) globalVoteCount[firstElem.name_elem]++;
       if (user.vote_game === secondElem.name_elem) globalVoteCount[secondElem.name_elem]++;
     });
-  
+
     const globalWinnerName = globalVoteCount[firstElem.name_elem] >= globalVoteCount[secondElem.name_elem]
       ? firstElem.name_elem
       : secondElem.name_elem;
-  
+
     const globalWinnerIndex = elements.findIndex(el => el.name_elem === globalWinnerName);
     const globalLoserIndex = globalWinnerIndex === firstIndex ? secondIndex : firstIndex;
-  
+
     setMatchHistory(prev => [...prev, {
       winner: globalWinnerIndex,
       loser: globalLoserIndex,
       round: roundNumber
     }]);
-  
+
     setWinners((prev) => [...prev, globalWinnerIndex]);
     const nextMatch = currentMatchIndex + 2;
-  
+
     if (nextMatch >= currentRound.length) {
       if (winners.length + 1 === 1) {
         console.log("🎉 Tenemos un ganador!");
@@ -372,7 +375,7 @@ const GamePage = () => {
       setCurrentMatchIndex(nextMatch);
       await resetAllVotes();
     }
-  
+
     setExpandedIndex(null);
     setIsAnimating(false);
   };
@@ -387,7 +390,7 @@ const GamePage = () => {
       }
 
       console.log(`📤 Enviando voto de ${user.id_user}: ${vote}`);
-      
+
       const response = await fetch(`${API_BASE_URL}/room/updateVote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -404,15 +407,15 @@ const GamePage = () => {
       }
 
       console.log(`✅ Voto registrado para ${user.id_user}`);
-      
+
       const updatedResponse = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
       const updatedData = await updatedResponse.json();
-      
+
       if (updatedResponse.ok && Array.isArray(updatedData)) {
         setUsersInGame(updatedData);
         console.log("🔄 Estado de usuarios actualizado con votos frescos");
       }
-      
+
     } catch (error) {
       console.error('❌ Error al enviar el voto:', error);
     }
@@ -421,16 +424,20 @@ const GamePage = () => {
   // Función para obtener imágenes más votadas
   const fetchMostVotedGlobalImages = async () => {
     console.log("🌍 Calculando imágenes más votadas a nivel global...");
-    
+
     const freshResponse = await fetch(`${API_BASE_URL}/room/${id_room}/users`);
     const freshData = await freshResponse.json();
-    
+    fetchAllVotes();
+    fetchElements();
+    fetchUsersInGame();
+
     if (!freshResponse.ok || !Array.isArray(freshData)) {
       console.error("❌ Error al obtener datos frescos para votación global");
       return;
     }
-    
+
     setUsersInGame(freshData);
+    
 
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
@@ -479,7 +486,7 @@ const GamePage = () => {
         name: mostVotedGlobalElement.name_elem,
         round: roundNumber
       }]);
-      
+
       console.log("📌 Imagen más votada globalmente guardada:", mostVotedGlobalElement.name_elem);
     }
   };
@@ -487,17 +494,17 @@ const GamePage = () => {
   // Función para manejar siguiente ronda
   const handleNextRoundComplete = () => {
     console.log("🔄 Completando ronda...");
-    
+
     try {
       fetchAllVotes();
       resetAllVotes();
-      
+
       setCurrentRound([...winners]);
       setWinners([]);
       setCurrentMatchIndex(0);
       setShowNextRound(false);
       setRoundNumber(prev => prev + 1);
-      
+
       console.log(`🆕 Nueva ronda #${roundNumber + 1} iniciada`);
     } catch (error) {
       console.error('❌ Error en handleNextRoundComplete:', error);
@@ -507,11 +514,19 @@ const GamePage = () => {
   // Efectos
   useEffect(() => {
     console.log("🚀 Montando componente GamePage...");
-    
+    fetchAllVotes();
+    fetchElements();
+    fetchUsersInGame();
+
+
     const startGame = async () => {
+      fetchAllVotes();
+      fetchElements();
+      fetchUsersInGame();
       setShowStartCountdown(true);
       await new Promise(resolve => setTimeout(resolve, 3000));
       await initializeGame();
+
       setShowStartCountdown(false);
     };
 
@@ -522,6 +537,7 @@ const GamePage = () => {
 
     return () => {
       console.log("🧹 Limpiando GamePage...");
+
       clearInterval(usersInterval);
       clearInterval(votesInterval);
     };
@@ -541,6 +557,15 @@ const GamePage = () => {
       sendVoteToServer(vote_game);
     }
   }, [vote_game]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("⏱️ Intervalo ejecutado");
+      // fetchAllVotes();
+    }, 3000); // cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   // Renderizado condicional
   if (showStartCountdown || elements.length === 0) {
@@ -615,7 +640,7 @@ const GamePage = () => {
         <WaitingDialog
           isOpen={isWaiting}
           message="Esperando a que todos los jugadores voten..."
-          onClose={() => {}}
+          onClose={() => { }}
           showCloseButton={false}
         />
       )}

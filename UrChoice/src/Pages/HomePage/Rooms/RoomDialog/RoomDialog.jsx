@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
     const [users, setUsers] = useState([]);
-    const [userId, setUserId] = useState(currentUserId);
+    const [userId, setUserId] = useState(currentUserId || localStorage.getItem('id_user'));
+
     const [isUserInTable, setIsUserInTable] = useState(true);
     const navigate = useNavigate(); 
 
@@ -12,17 +13,10 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
 
     const checkAllReady = () => {
         if (users.length > 0 && users.every(user => user.vote_game === 'LISTO')) {
-            navigate('/GamePage', { 
-                state: { 
-                  id_cat: selectedRoom.id_cat,
-                  id_room: selectedRoom.id_room // 👈 Añade esto
-                } 
-              },
+            navigate('/GamePage', {
+                state: { id_cat: selectedRoom.id_cat, id_room: selectedRoom.id_room },
+              });
               
-            
-            
-        
-        );
             startMatch(); // Inicia la partida
         }
     };
@@ -122,11 +116,9 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
             }
             );
             if (res.ok) {
-                // Reflejar localmente
-                setUsers(users.map(u =>
-                    u.id_user === userId ? { ...u, vote_game: 'LISTO' } : u
-                ));
-            } else {
+                await fetchUsers(); // <-- Llama a la función que actualiza desde el backend
+            }
+             else {
                 console.error('Error updateVote:', await res.json());
             }
         } catch (e) {
@@ -227,8 +219,8 @@ const RoomDialog = ({ dialogRef, selectedRoom, currentUserId }) => {
                     Cerrar
                 </button>
                 <button
-                    onClick={updateVote}
-                    disabled={users.find(u => u.id_user == userId)?.vote_game === 'LISTO'}
+                    onClick={() => userId && updateVote()}
+                    disabled={!userId || users.find(u => u.id_user == userId)?.vote_game === 'LISTO'}
                     className={`px-4 py-2 rounded ${users.find(u => u.id_user == userId)?.vote_game === 'LISTO'
                             ? 'bg-gray-500 cursor-not-allowed'
                             : 'bg-cyan-500 hover:bg-cyan-600'
