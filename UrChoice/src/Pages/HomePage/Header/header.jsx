@@ -3,6 +3,7 @@ import './header.css';
 import Logo from './logo.png';
 import ProfileHeader from "../ProfileHeader/profile";
 import CreateRoom from "./CreateRoomDialog/CreateRoom";
+import CrearCategory from "./CreateCategory/CreateCategory"
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function Header() {
                       }}
                       className="text-red-500 border border-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
                     >
-                      CREAR CATEGORIA
+                      Servicios
                     </a>
                     {dropdownOpen && (
                       <div className="absolute pt-6 top-7 left-0 bg-black/90 border border-cyan-500 shadow-lg rounded-md py-2 w-44 z-40">
@@ -156,7 +157,7 @@ export default function Header() {
                 }}
                 className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
               >
-                CREAR CATEGORIA
+                Servicios
               </a>
 
               {dropdownOpen && (
