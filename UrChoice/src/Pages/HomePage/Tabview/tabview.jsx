@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HomeCategoryCard from '../Home_CategoryCard/home_category_card';
-import CreateCategory from '../Rooms/Rooms';
+import CreateRoom from '../Rooms/Rooms';
 
 const TabView = () => {
   const [activeTab, setActiveTab] = useState('categories');
@@ -82,7 +82,7 @@ const TabView = () => {
               exit="exit"
               className="absolute w-full"
             >
-              <CreateCategory />
+              <CreateRoom />
             </motion.div>
           )}
         </AnimatePresence>

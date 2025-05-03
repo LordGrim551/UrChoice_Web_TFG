@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import AddCard from "../AddCard/AddCard";   
+import AddCard from "../AddCard/AddCard";
+
 
 const CreateCategory = () => {
     const [categoryName, setCategoryName] = useState('');
@@ -47,6 +48,16 @@ const CreateCategory = () => {
             reader.readAsDataURL(file);
         }
     };
+    const [cards, setCards] = useState([
+        { id: 1, name: "Card 1", image: "https://via.placeholder.com/150x200" },
+        { id: 2, name: "Card 2", image: "https://via.placeholder.com/150x200" },
+        { id: 3, name: "Card 3", image: "https://via.placeholder.com/150x200" },
+        { id: 4, name: "Card 4", image: "https://via.placeholder.com/150x200" },
+        { id: 5, name: "Card 5", image: "https://via.placeholder.com/150x200" },
+    ]);
+    const deleteCard = (cardId) => {
+        setCards(cards.filter(card => card.id !== cardId));
+    };
 
     return (
         <div>
@@ -66,6 +77,7 @@ const CreateCategory = () => {
                 className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
                 <h2 className="text-white text-lg mb-4">Create Category</h2>
+                <h2 className="text-white text-lg mb-4">Cards List</h2>
 
                 {/* Formulario encapsulado */}
                 <form
@@ -97,8 +109,34 @@ const CreateCategory = () => {
                             backgroundRepeat: 'no-repeat',  // Evita la repetición de la imagen
                         }}
                     />
-                    <AddCard/>
+                    <AddCard />
 
+                        {/* Div para mostrar las cartas */}
+                        <div className="border-cyan-400 border-4 rounded mt-4 p-4">
+                            <h2 className="m-2 mb-4 text-start text-2xl">CARTAS</h2>
+                            <div className="border-red-500 border-5 rounded border-2 p-4 flex gap-4 overflow-x-auto scrollbar-custom max-h-[70vh]">
+                                {cards.map((card) => (
+                                    <div
+                                        key={card.id}
+                                        className="relative w-32 h-48 bg-gray-800 rounded-lg shadow-md overflow-hidden flex-shrink-0"
+                                    >
+                                        <button onClick={() => deleteCard(card.id)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                                        X
+                                        </button>
+                                        <img
+                                            src={card.image}
+                                            alt={card.name}
+                                            className="w-full h-3/4 object-cover"
+                                        />
+                                        <div className="p-2">
+                                            <p className="text-white text-sm">
+                                                {card.name}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     {/* Botones de acción */}
                     <div className="flex flex-col md:flex-row md:justify-between gap-2">
                         <button
@@ -116,7 +154,7 @@ const CreateCategory = () => {
                         </button>
                     </div>
                 </form>
-            </dialog>
+            </dialog>            
         </div>
     );
 };
