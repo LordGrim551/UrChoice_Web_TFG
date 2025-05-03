@@ -420,7 +420,7 @@ const GamePage = () => {
       console.error('❌ Error al enviar el voto:', error);
     }
   };
-
+// a
   // Función para obtener imágenes más votadas
   const fetchMostVotedGlobalImages = async () => {
     console.log("🌍 Calculando imágenes más votadas a nivel global...");
