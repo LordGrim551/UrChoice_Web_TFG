@@ -118,14 +118,14 @@ const CreateRoom = () => {
                     <div className="flex flex-col md:flex-row md:justify-between gap-2">
                         <button
                             type="submit"
-                            className="w-1/2 px-4 py-2 bg-cyan-400 text-white rounded hover:bg-gray-300"
+                            className="w-full px-4 py-2 bg-cyan-400 text-white rounded hover:bg-gray-300"
                         >
                             Create Room
                         </button>
                         <button
                             type="button"
                             onClick={() => dialogModel.current?.close()}
-                            className="w-1/2 px-4 py-2 bg-red-500 text-white rounded"
+                            className="w-full px-4 py-2 bg-red-500 text-white rounded"
                         >
                             Close
                         </button>
