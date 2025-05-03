@@ -1,33 +1,40 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 const AddCard = () => {
   const dialogRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
-  const openDialog = () => {
-    dialogRef.current?.showModal();
-  };
-
-  const closeDialog = () => {
-    dialogRef.current?.close();
-  };
+  const openDialog = () => dialogRef.current?.showModal();
+  const closeDialog = () => dialogRef.current?.close();
 
   const handleAddCard = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const cardName = formData.get('cardName');
-
-    // Aquí puedes agregar la lógica para enviar la información de la carta (cardName) a tu backend
     console.log('Card Name:', cardName);
-
-    // Ejemplo de cómo cerrar el diálogo después de procesar la información
     closeDialog();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPreviewImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleClickImage = () => {
+    fileInputRef.current.click();
   };
 
   return (
     <div>
       <button
         onClick={openDialog}
-        className="text-blue-500 border border-blue-600 hover:bg-blue-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
+        style={{ padding: `1rem`, fontSize: `1rem`, backgroundColor: `gray` }}
+        className="w-full mt-2 mb-4 bg-gray-400 text-white rounded hover:bg-gray-300"
       >
         Add Card
       </button>
@@ -37,10 +44,25 @@ const AddCard = () => {
         className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <h2 className="text-white text-lg mb-4">Add New Card</h2>
-        <form
-          onSubmit={handleAddCard}
-          className="flex flex-col gap-4"
-        >
+        <form onSubmit={handleAddCard} className="flex flex-col gap-4">
+          {/* Imagen circular editable */}
+          <div className="profile-container">
+            <div className="profile" onClick={handleClickImage}>
+              <img
+                src={previewImage || "./logo.png"}
+                alt="Foto de perfil"
+                className="foto-perfil"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            </div>
+          </div>
+
           <input
             type="text"
             name="cardName"

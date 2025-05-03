@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import AddCard from "../AddCard/AddCard";   
 
 const CreateCategory = () => {
     const [categoryName, setCategoryName] = useState('');
@@ -96,19 +97,7 @@ const CreateCategory = () => {
                             backgroundRepeat: 'no-repeat',  // Evita la repetición de la imagen
                         }}
                     />
-
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            openDialog();
-                        }}
-                        style={{ padding: `1rem`, fontSize: `1rem`, backgroundColor: `gray` }}
-                        className="w-full mt-2 mb-4 bg-gray-400 text-white rounded hover:bg-gray-300"
-                    >
-                        ADD CARD
-                    </button>
-            
+                    <AddCard/>
 
                     {/* Botones de acción */}
                     <div className="flex flex-col md:flex-row md:justify-between gap-2">
