@@ -109,17 +109,26 @@ const CreateCategory = () => {
                     />
                     <AddCard addCardToCategory={addCardToCategory} />
 
-                        {/* Div para mostrar las cartas */}
-                        <div className="border-cyan-400 border-4 rounded mt-4 p-4">
-                            <h2 className="m-2 mb-4 text-start text-2xl">CARTAS</h2>
-                            <div className="border-red-500 border-5 rounded border-2 p-4 flex gap-4 overflow-x-auto scrollbar-custom max-h-[70vh]">
-                                {cards.map((card) => (
+                    {/* Div para mostrar las cartas */}
+                    <div className="border-cyan-400 border-4 rounded mt-4 p-4">
+                        <h2 className="m-2 mb-4 text-start text-2xl">CARTAS</h2>
+                        <div className="border-red-500 border-5 rounded border-2 p-4 flex gap-4 overflow-x-auto scrollbar-custom max-h-[70vh]">
+                            {cards.length === 0 ? (
+                                <p className="text-white text-lg">
+                                    You haven't added any cards yet. What are you
+                                    waiting for?
+                                </p>
+                            ) : (
+                                cards.map((card) => (
                                     <div
                                         key={card.id}
                                         className="relative w-32 h-48 bg-gray-800 rounded-lg shadow-md overflow-hidden flex-shrink-0"
                                     >
-                                        <button onClick={() => deleteCard(card.id)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                                        X
+                                        <button
+                                            onClick={() => deleteCard(card.id)}
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                                        >
+                                            X
                                         </button>
                                         <img
                                             src={card.image}
@@ -127,12 +136,11 @@ const CreateCategory = () => {
                                             className="w-full h-3/4 object-cover"
                                         />
                                         <div className="p-2">
-                                            <p className="text-white text-sm">
-                                                {card.name}
-                                            </p>
+                                            <p className="text-white text-sm">{card.name}</p>
                                         </div>
                                     </div>
-                                ))}
+                                ))
+                            )}
                             </div>
                         </div>
                     {/* Botones de acción */}

@@ -13,14 +13,14 @@ const AddCard = ({ onAddCard }) => {
     const formData = new FormData(e.target);
     const cardName = formData.get('cardName');
     console.log('Card Name:', cardName);
-
+    closeDialog()
     if (cardName && previewImage) {
       onAddCard({
         name: cardName,
         image: previewImage,
       });
     }
-    closeDialog();
+
   };
 
   const handleImageChange = (e) => {
