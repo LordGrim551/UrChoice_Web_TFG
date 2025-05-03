@@ -11,6 +11,7 @@ const CreateRoom = () => {
     const [userId, setUserId] = useState(localStorage.getItem("id_user")); // Obtener userId de localStorage
 
     const openDialog = () => {
+        
         dialogModel.current?.showModal();
     };
 
@@ -58,7 +59,7 @@ const CreateRoom = () => {
                     e.preventDefault();
                     openDialog();
                 }}
-                className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:block px-3 py-2 rounded-md transition cursor-pointer"
+                className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
             >
                 CREAR SALA
             </a>

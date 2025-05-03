@@ -40,9 +40,11 @@ const Rooms = () => {
         setSelectedRoom(room); // Guardar la sala seleccionada
         if (room.pass_room === "") {
             // Si no hay contraseña, unirse directamente
+            setRooms('');
             joinRoom(room);
         } else {
             // Si hay contraseña, abrir PasswordDialog
+            setRooms('');
             passwordDialogRef.current?.showModal();
         }
     };

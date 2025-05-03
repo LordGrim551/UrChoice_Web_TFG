@@ -58,7 +58,7 @@ const TabView = () => {
       </div>
 
       {/* Contenido dinámico con transición */}
-      <div className="relative w-full h-full">
+      <div className="CONTENT relative w-full h-full">
         <AnimatePresence mode="wait" custom={direction}>
           {activeTab === 'categories' ? (
             <motion.div

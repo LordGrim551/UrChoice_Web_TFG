@@ -65,7 +65,7 @@ export default function Header() {
                       }}
                       className="text-red-500 border border-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
                     >
-                      Servicios
+                      CREAR CATEGORIA
                     </a>
                     {dropdownOpen && (
                       <div className="absolute pt-6 top-7 left-0 bg-black/90 border border-cyan-500 shadow-lg rounded-md py-2 w-44 z-40">
@@ -82,19 +82,7 @@ export default function Header() {
                     )}
                   </div>
 
-                  {[
-                    { name: "Proyectos", href: "#" },
-                    { name: "Blog", href: "#" },
-                    { name: "Contacto", href: "#" },
-                  ].map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="text-red-500 border border-red-600 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
-                    >
-                      {item.name}
-                    </a>
-                  ))}
+               
                 </>
               )}
             </nav>
@@ -159,12 +147,7 @@ export default function Header() {
               <ProfileHeader />
               <CreateRoom />
 
-              <a
-                href="#"
-                className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
-              >
-                Inicio
-              </a>
+              
               <a
                 href="#"
                 onClick={(e) => {
@@ -173,7 +156,7 @@ export default function Header() {
                 }}
                 className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
               >
-                Servicios
+                CREAR CATEGORIA
               </a>
 
               {dropdownOpen && (
@@ -190,24 +173,7 @@ export default function Header() {
                 </div>
               )}
 
-              <a
-                href="#"
-                className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
-              >
-                Proyectos
-              </a>
-              <a
-                href="#"
-                className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
-              >
-                Blog
-              </a>
-              <a
-                href="#"
-                className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
-              >
-                Contacto
-              </a>
+              
             </>
           )}
         </div>
