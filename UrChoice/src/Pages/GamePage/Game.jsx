@@ -334,13 +334,13 @@ const GamePage = () => {
     }
   };
 
-  const handleClick = async (winnerIndex) => {
+  const handleClick = async (mostVotedGlobalElement) => {
     if (isAnimating) return;
-    console.log(`🖱️ Click en elemento ${winnerIndex}`);
+    console.log(`🖱️ Click en elemento ${mostVotedGlobalElement}`);
     setIsAnimating(true);
     setExpandedIndex(winnerIndex);
 
-    const winnerElement = elements[winnerIndex];
+    const winnerElement = elements[mostVotedGlobalElement];
     console.log(`🏅 Elemento seleccionado: ${winnerElement.name_elem}`);
     setVoteGame(winnerElement.name_elem);
     await sendVoteToServer(winnerElement.name_elem);
