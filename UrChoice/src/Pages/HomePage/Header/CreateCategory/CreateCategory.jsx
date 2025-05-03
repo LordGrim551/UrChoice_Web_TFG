@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
 import AddCard from "../AddCard/AddCard";
 
-
 const CreateCategory = () => {
     const [categoryName, setCategoryName] = useState('');
+    const [cards, setCards] = useState([]);
+
     const [backgroundImage, setBackgroundImage] = useState(''); // Estado para la imagen de fondo
     const dialogModel = useRef(null);
     
@@ -48,15 +49,12 @@ const CreateCategory = () => {
             reader.readAsDataURL(file);
         }
     };
-    const [cards, setCards] = useState([
-        { id: 1, name: "Card 1", image: "https://via.placeholder.com/150x200" },
-        { id: 2, name: "Card 2", image: "https://via.placeholder.com/150x200" },
-        { id: 3, name: "Card 3", image: "https://via.placeholder.com/150x200" },
-        { id: 4, name: "Card 4", image: "https://via.placeholder.com/150x200" },
-        { id: 5, name: "Card 5", image: "https://via.placeholder.com/150x200" },
-    ]);
+
     const deleteCard = (cardId) => {
         setCards(cards.filter(card => card.id !== cardId));
+    };
+    const addCardToCategory = (newCard) => {
+        setCards([...cards, newCard]);
     };
 
     return (
@@ -109,7 +107,7 @@ const CreateCategory = () => {
                             backgroundRepeat: 'no-repeat',  // Evita la repetición de la imagen
                         }}
                     />
-                    <AddCard />
+                    <AddCard addCardToCategory={addCardToCategory} />
 
                         {/* Div para mostrar las cartas */}
                         <div className="border-cyan-400 border-4 rounded mt-4 p-4">
@@ -156,6 +154,7 @@ const CreateCategory = () => {
                 </form>
             </dialog>            
         </div>
+
     );
 };
 

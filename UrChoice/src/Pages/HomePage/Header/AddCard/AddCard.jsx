@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 
-const AddCard = () => {
+const AddCard = ({ onAddCard }) => {
   const dialogRef = useRef(null);
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -13,6 +13,13 @@ const AddCard = () => {
     const formData = new FormData(e.target);
     const cardName = formData.get('cardName');
     console.log('Card Name:', cardName);
+
+    if (cardName && previewImage) {
+      onAddCard({
+        name: cardName,
+        image: previewImage,
+      });
+    }
     closeDialog();
   };
 
@@ -50,7 +57,7 @@ const AddCard = () => {
             <div className="profile" onClick={handleClickImage}>
               <img
                 src={previewImage || "./logo.png"}
-                alt="Foto de perfil"
+                alt="Card Preview"
                 className="foto-perfil"
               />
               <input
