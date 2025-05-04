@@ -11,11 +11,12 @@ const CreateCategory = () => {
         dialogModel.current?.showModal();
     };
     const user = JSON.parse(localStorage.getItem('user'));
+   
 
     const createCategory = async (name) => {
         try {
             const response = await fetch(
-                `https://railwayserver-production-7692.up.railway.app/category/create`,
+                `https://railwayserver-production-7692.up.railway.app/categories/create`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
