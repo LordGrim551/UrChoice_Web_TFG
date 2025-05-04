@@ -14,6 +14,8 @@ const CreateCategory = () => {
 
 
     const createCategory = async () => {
+
+        
         try {
             const response = await fetch(
                 `https://railwayserver-production-7692.up.railway.app/categories/create`,
@@ -175,10 +177,10 @@ const CreateCategory = () => {
                                             X
                                         </button>
 
-                                        {/* Imagen que ocupa todo el espacio */}
+                                         {/* Imagen que ocupa todo el espacio */}
                                        
                                         <img
-                                            src={`data:image/png;base64,`+card.image}
+                                            src={`data:image/png;base64,`+ card.image}
                                             alt={card.name}
                                             className="w-full h-full object-cover"
                                         />
