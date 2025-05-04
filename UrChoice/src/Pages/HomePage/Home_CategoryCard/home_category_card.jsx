@@ -1,8 +1,9 @@
 import "./home_category_card.css";
 import React, { useEffect, useState } from 'react';
 import { Heart, Bookmark } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const HomeCategoryCard = () => {
+const HomeCategoryCard = ({ onCategoryClick }) => {
     const [Categories, setCategories] = useState([]);
 
     const fetchCategories = async () => {
@@ -41,7 +42,12 @@ const HomeCategoryCard = () => {
     return (
         <div className="w-full category-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  p-4 overflow-y-auto scrollbar-custom max-h-[70vh]">
             {Categories.map((category) => (
-                <div key={category.id_cat} className="category-card border  border-gray-300 rounded-lg shadow-md">
+                <div
+                    key={category.id_cat}
+                    className="category-card border  border-gray-300 rounded-lg shadow-md cursor-pointer"
+                    onClick={() => onCategoryClick(category.id_cat)}
+                >
+
                     <div className="card-header bg-red-500 text-white rounded-t-lg p-2 text-center">
                         {category.name_cat}
                     </div>
