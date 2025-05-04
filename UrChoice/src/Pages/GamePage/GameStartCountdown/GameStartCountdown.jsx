@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Altera from "./altera_final.gif"; // Asegúrate de que la ruta sea correcta
 
 const GameStartCountdown = ({ onComplete }) => {
   const [counter, setCounter] = useState(5);
@@ -29,7 +30,7 @@ const GameStartCountdown = ({ onComplete }) => {
     <div className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 ${isClosing ? "opacity-0" : "opacity-100"}`}>
       <div className="absolute inset-0 bg-transparent bg-opacity-60"></div>
 
-      <div className={`relative bg-gray-900 border-2 border-cyan-400 rounded-xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 ${isVisible ? "scale-100" : "scale-75"
+      <div className={`relative bg-gray-1000 border-2 border-cyan-400 rounded-xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 ${isVisible ? "scale-100" : "scale-75"
         } ${isClosing ? "scale-90 opacity-0" : ""} shadow-2xl`}>
         <div className="text-center">
           <h2 className="text-2xl font-bold text-cyan-400 mb-2">
