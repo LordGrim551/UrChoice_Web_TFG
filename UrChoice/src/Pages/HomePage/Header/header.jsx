@@ -5,14 +5,24 @@ import ProfileHeader from "../ProfileHeader/profile";
 import CreateRoom from "./CreateRoomDialog/CreateRoom";
 import CrearCategory from "./CreateCategory/CreateCategory"
 import CreateCategory from "./CreateCategory/CreateCategory";
+import { useNavigate } from 'react-router-dom';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   setTimeout(() => {
     setIsLoading(false);
   }, 2000);
+  const Biblioteca = () => {
+
+    navigate('/Biblioteca');
+
+
+
+  };
+
 
   return (
     <header className="bg-black border-5 border-red-600 backdrop-blur-md sticky top-0 z-50 rounded-2xl">
@@ -52,7 +62,7 @@ export default function Header() {
                 </div>
               ) : (
                 <>
-                <CreateCategory/>
+                  <CreateCategory />
                   <CreateRoom />
                   <div
                     className="relative"
@@ -61,18 +71,19 @@ export default function Header() {
                   >
 
                     <a
-                      href="#"
+                      href="/Biblioteca"
                       onClick={(e) => {
                         e.preventDefault();
                         setDropdownOpen(!dropdownOpen);
+                        Biblioteca();
                       }}
                       className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
                     >
-                      Servicios
+                      BIBLIOTECA
                     </a>
                     {dropdownOpen && (
                       <div className="absolute pt-6 top-7 left-0 bg-black/90 border border-cyan-500 shadow-lg rounded-md py-2 w-44 z-40">
-                        {["Diseño Web", "Desarrollo", "SEO"].map((sub, idx) => (
+                        {["FAVORITOS", "GUARDADOS"].map((sub, idx) => (
                           <a
                             key={idx}
                             href="#"
@@ -85,7 +96,7 @@ export default function Header() {
                     )}
                   </div>
 
-               
+
                 </>
               )}
             </nav>
@@ -148,24 +159,24 @@ export default function Header() {
           ) : (
             <>
               <ProfileHeader />
-              <CreateCategory/>
+              <CreateCategory />
               <CreateRoom />
 
-              
+
               <a
-                href="#"
+                href="/Biblioteca"
                 onClick={(e) => {
                   e.preventDefault();
                   setDropdownOpen(!dropdownOpen);
                 }}
                 className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
               >
-                Servicios
+                BIBLIOTECA
               </a>
 
               {dropdownOpen && (
                 <div className="mt-2 border-l-2 border-cyan-400 space-y-1">
-                  {["Diseño Web", "Desarrollo", "SEO"].map((sub, idx) => (
+                  {["FAVORITOS", "GUARDADOS"].map((sub, idx) => (
                     <a
                       key={idx}
                       href="#"
@@ -177,7 +188,7 @@ export default function Header() {
                 </div>
               )}
 
-              
+
             </>
           )}
         </div>
