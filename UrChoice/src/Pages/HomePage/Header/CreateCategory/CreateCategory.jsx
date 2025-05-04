@@ -11,9 +11,9 @@ const CreateCategory = () => {
         dialogModel.current?.showModal();
     };
     const user = JSON.parse(localStorage.getItem('user'));
-   
 
-    const createCategory = async (name) => {
+
+    const createCategory = async () => {
         try {
             const response = await fetch(
                 `https://railwayserver-production-7692.up.railway.app/categories/create`,
@@ -54,36 +54,32 @@ const CreateCategory = () => {
         }
     };
 
-
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0]; // Obtiene el archivo seleccionado
         if (!file) return;
-    
+        // Validar tipo de archivo (solo imágenes)
         if (!file.type.startsWith('image/')) {
-            console.error("El archivo seleccionado no es una imagen.");
+            alert("Por favor, sube un archivo de imagen válido (JPEG, PNG, etc.)");
             return;
         }
-    
+
+        // Validar tamaño (ej: máximo 2MB)
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        if (file.size > maxSize) {
+            alert("La imagen no debe superar los 2MB");
+            return;
+        }
+
         const reader = new FileReader();
-        reader.onerror = (error) => {
-            console.error("Error al leer el archivo:", error);
+        reader.onloadend = () => {
+            // Convierte la imagen a Base64 (sin el prefijo "data:image/...")
+            const base64String = reader.result.split(',')[1];
+            setBackgroundImage(base64String); // Guarda el Base64 en el estado
         };
-        reader.onload = (event) => {
-            const arrayBuffer = event.target.result;
-            const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-    
-            const blobReader = new FileReader();
-            blobReader.onload = () => {
-                setBackgroundImage(blobReader.result);
-            };
-            blobReader.onerror = (error) => {
-                console.error("Error al leer el blob:", error);
-            };
-            blobReader.readAsDataURL(blob);
-        };
-    
-        reader.readAsArrayBuffer(file);
+        reader.readAsDataURL(file); // Inicia la lectura del archivo
     };
+
+
 
     const deleteCard = (cardId) => {
         setCards(prevCards => prevCards.filter(card => card.id !== cardId));
@@ -94,6 +90,13 @@ const CreateCategory = () => {
             ...newCard,
             id: prevCards.length > 0 ? Math.max(...prevCards.map(c => c.id)) + 1 : 1
         }]);
+    };
+    const closeDialog = () => {
+        dialogModel.current?.close();
+        // Limpiar estados
+        setCategoryName('');
+        setBackgroundImage('');
+        setCards([]);
     };
 
     return (
@@ -133,17 +136,18 @@ const CreateCategory = () => {
                     />
 
 
-                    {/* Input para cargar imagen con fondo */}
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={handleImageUpload}  // Cargar la imagen y establecer como fondo
+                        onChange={handleImageUpload}
                         className="w-full text-white text-lg mb-4 p-4 border-4 border-cyan-400 rounded bg-gray-800"
                         style={{
-                            backgroundImage: `url(${backgroundImage})`,  // Fondo de la imagen
-                            backgroundSize: 'cover',  // Asegura que la imagen ocupe todo el fondo
-                            backgroundPosition: 'center',  // Ajuste de la imagen al centro
-                            backgroundRepeat: 'no-repeat',  // Evita la repetición de la imagen
+                            backgroundImage: backgroundImage
+                                ? `url(data:image/jpeg;base64,${backgroundImage})`
+                                : 'none',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
                         }}
                     />
 
@@ -172,8 +176,9 @@ const CreateCategory = () => {
                                         </button>
 
                                         {/* Imagen que ocupa todo el espacio */}
+                                       
                                         <img
-                                            src={card.image}
+                                            src={`data:image/png;base64,`+card.image}
                                             alt={card.name}
                                             className="w-full h-full object-cover"
                                         />
@@ -198,7 +203,7 @@ const CreateCategory = () => {
 
                         <button
                             type="button"
-                            onClick={() => dialogModel.current?.close()}
+                            onClick={() => closeDialog()}
                             className="w-full px-4 py-2 bg-transparent border border-cyan-400 rounded"
                         >
                             Close
