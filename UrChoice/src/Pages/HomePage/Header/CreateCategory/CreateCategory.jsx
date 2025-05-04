@@ -54,15 +54,35 @@ const CreateCategory = () => {
         }
     };
 
+
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setBackgroundImage(reader.result);
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+    
+        if (!file.type.startsWith('image/')) {
+            console.error("El archivo seleccionado no es una imagen.");
+            return;
         }
+    
+        const reader = new FileReader();
+        reader.onerror = (error) => {
+            console.error("Error al leer el archivo:", error);
+        };
+        reader.onload = (event) => {
+            const arrayBuffer = event.target.result;
+            const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+    
+            const blobReader = new FileReader();
+            blobReader.onload = () => {
+                setBackgroundImage(blobReader.result);
+            };
+            blobReader.onerror = (error) => {
+                console.error("Error al leer el blob:", error);
+            };
+            blobReader.readAsDataURL(blob);
+        };
+    
+        reader.readAsArrayBuffer(file);
     };
 
     const deleteCard = (cardId) => {
