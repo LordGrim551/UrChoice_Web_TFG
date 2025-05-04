@@ -32,7 +32,7 @@ const TabView = () => {
   };
 
   return (
-    <div className="content w-full h-[calc(86vh-48px)] flex-grow p-4 border-red-600 border-5 rounded-lg overflow-hidden">
+    <div className=" PADRE content w-full h-[calc(86vh-48px)] flex-grow p-4 border-red-600 border-5 rounded-lg overflow-hidden">
       {/* TabView estilo Tailwind encapsulado */}
       <div className="flex border border-cyan-400 rounded-xl overflow-hidden mb-4 bg-cyan-500">
         <a

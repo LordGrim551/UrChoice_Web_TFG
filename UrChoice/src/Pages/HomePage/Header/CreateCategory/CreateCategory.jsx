@@ -1,4 +1,6 @@
 import React, { useRef, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AddCard from "../AddCard/AddCard";
 
 const CreateCategory = () => {
@@ -12,25 +14,52 @@ const CreateCategory = () => {
     };
     const user = JSON.parse(localStorage.getItem('user'));
 
-
     const createCategory = async () => {
-
-        
         try {
+            // Validaciones
             if (!categoryName || !cards || !backgroundImage) {
-                alert("Los campos son obligatorios");
+                toast.error("Todos los campos son obligatorios", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
                 return;
             }
 
             if (cards.length < 4) {
-                alert("Ponga mas de 4 Cartas");
+                toast.error("Debes agregar al menos 4 cartas", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
                 return;
             }
 
             if (!isPowerOfTwo(cards.length)) {
-                alert("El número de cartas tiene que ser potencia de 2");
+                toast.error("El número de cartas debe ser una potencia de 2 (4, 8, 16, etc.)", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
                 return;
             }
+
+            // Enviar datos al servidor
             const response = await fetch(
                 `https://railwayserver-production-7692.up.railway.app/categories/create`,
                 {
@@ -44,62 +73,101 @@ const CreateCategory = () => {
                             img_elem: card.image,
                         })),
                         id_user: user.id_user,
-
                     }),
                 }
-
-
             );
-            console.table({
-                "name category": categoryName,
-                "background image": backgroundImage,
-                "elements": cards
-
-            });
 
             const category = await response.json();
+            
             if (response.ok) {
-                console.log("Category created successfully:", category);
+                // Mostrar toast de éxito
+                toast.success("¡Categoría creada con éxito!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    style: {
+                        background: '#4CAF50',
+                        color: '#FFFFFF',
+                    },
+                });
                 closeDialog();
             } else {
-                console.error("Error creating category:", category);
-                console.warn("Error creating category:", category);
+                toast.error(`Error al crear categoría: ${category.message || "Intente nuevamente"}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
             }
         } catch (error) {
-            console.warn("Fetch error:", error);
+            console.error("Error:", error);
+            toast.error("Error de conexión con el servidor", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
         }
     };
+
     const isPowerOfTwo = (n) => {
         if (n <= 0) return false;
         return (n & (n - 1)) === 0;
     };
 
     const handleImageUpload = (e) => {
-        const file = e.target.files[0]; // Obtiene el archivo seleccionado
+        const file = e.target.files[0];
         if (!file) return;
-        // Validar tipo de archivo (solo imágenes)
+
         if (!file.type.startsWith('image/')) {
-            alert("Por favor, sube un archivo de imagen válido (JPEG, PNG, etc.)");
+            toast.warning("Por favor, sube un archivo de imagen válido", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
             return;
         }
 
-        // Validar tamaño (ej: máximo 2MB)
-        const maxSize = 2 * 1024 * 1024; // 2MB
+        const maxSize = 2 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert("La imagen no debe superar los 2MB");
+            toast.warning("La imagen no debe superar los 2MB", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
             return;
         }
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            // Convierte la imagen a Base64 (sin el prefijo "data:image/...")
             const base64String = reader.result.split(',')[1];
-            setBackgroundImage(base64String); // Guarda el Base64 en el estado
+            setBackgroundImage(base64String);
         };
-        reader.readAsDataURL(file); // Inicia la lectura del archivo
+        reader.readAsDataURL(file);
     };
-
-
 
     const deleteCard = (cardId) => {
         setCards(prevCards => prevCards.filter(card => card.id !== cardId));
@@ -111,9 +179,9 @@ const CreateCategory = () => {
             id: prevCards.length > 0 ? Math.max(...prevCards.map(c => c.id)) + 1 : 1
         }]);
     };
+
     const closeDialog = () => {
         dialogModel.current?.close();
-        // Limpiar estados
         setCategoryName('');
         setBackgroundImage('');
         setCards([]);
@@ -121,6 +189,19 @@ const CreateCategory = () => {
 
     return (
         <div>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
+
             <a
                 href="#"
                 onClick={(e) => {
@@ -131,18 +212,17 @@ const CreateCategory = () => {
             >
                 CREAR CATEGORIA
             </a>
+
             <dialog
                 ref={dialogModel}
-                id="create-category-dialog"
                 className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
                 <h2 className="text-white text-lg mb-4">Create Category</h2>
 
-
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        
+                    
                     }}
                     className="space-y-4"
                 >
@@ -154,7 +234,6 @@ const CreateCategory = () => {
                         value={categoryName}
                         onChange={(e) => setCategoryName(e.target.value)}
                     />
-
 
                     <input
                         type="file"
@@ -171,7 +250,6 @@ const CreateCategory = () => {
                         }}
                     />
 
-
                     <AddCard onAddCard={addCardToCategory} />
 
                     <div className="border-cyan-400 border-4 rounded mt-4 p-4">
@@ -187,23 +265,17 @@ const CreateCategory = () => {
                                         key={card.id}
                                         className="relative w-32 h-54 bg-transparent rounded-lg shadow-md overflow-hidden flex-shrink-0"
                                     >
-                                        {/* Botón X */}
                                         <button
                                             onClick={() => deleteCard(card.id)}
                                             className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center z-20"
                                         >
                                             X
                                         </button>
-
-                                         {/* Imagen que ocupa todo el espacio */}
-                                       
                                         <img
-                                            src={`data:image/png;base64,`+ card.image}
+                                            src={`data:image/png;base64,${card.image}`}
                                             alt={card.name}
                                             className="w-full h-full object-cover"
                                         />
-
-                                        {/* Nombre superpuesto en la parte inferior */}
                                         <div className="absolute bottom-0 left-0 right-0 z-10 bg-black bg-opacity-50 px-2 py-1">
                                             <p className="text-white text-xs font-bold text-center">{card.name}</p>
                                         </div>
@@ -217,15 +289,15 @@ const CreateCategory = () => {
                         <button
                             type="submit"
                             onClick={createCategory}
-                            className="w-full px-4 py-2 bg-cyan-400 text-white rounded hover:bg-gray-300"
+                            className="w-full px-4 py-2 bg-cyan-400 text-white rounded hover:bg-cyan-500 transition-colors"
                         >
                             Crear Categoria
                         </button>
 
                         <button
                             type="button"
-                            onClick={() => closeDialog()}
-                            className="w-full px-4 py-2 bg-transparent border border-cyan-400 rounded"
+                            onClick={closeDialog}
+                            className="w-full px-4 py-2 bg-transparent border border-cyan-400 rounded hover:bg-gray-800 transition-colors"
                         >
                             Close
                         </button>
