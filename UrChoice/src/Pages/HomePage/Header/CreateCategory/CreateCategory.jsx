@@ -10,6 +10,7 @@ const CreateCategory = () => {
     const openDialog = () => {
         dialogModel.current?.showModal();
     };
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const createCategory = async (name) => {
         try {
@@ -20,9 +21,24 @@ const CreateCategory = () => {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         name_cat: categoryName,
+                        img_cat: backgroundImage,
+                        elements: cards.map((card) => ({
+                            name_elem: card.name,
+                            img_elem: card.image,
+                        })),
+                        id_user: user.id_user,
+
                     }),
                 }
+
+
             );
+            console.table({
+                "name category": categoryName,
+                "background image": backgroundImage,
+                "elements": cards
+
+            });
 
             const category = await response.json();
             if (response.ok) {
@@ -30,9 +46,10 @@ const CreateCategory = () => {
                 dialogModel.current?.close();
             } else {
                 console.error("Error creating category:", category);
+                console.warn("Error creating category:", category);
             }
         } catch (error) {
-            console.error("Fetch error:", error);
+            console.warn("Fetch error:", error);
         }
     };
 
@@ -76,7 +93,7 @@ const CreateCategory = () => {
                 className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
                 <h2 className="text-white text-lg mb-4">Create Category</h2>
-             
+
 
                 <form
                     onSubmit={(e) => {
@@ -94,9 +111,9 @@ const CreateCategory = () => {
                         onChange={(e) => setCategoryName(e.target.value)}
                     />
 
-                  
-                       {/* Input para cargar imagen con fondo */}
-                       <input
+
+                    {/* Input para cargar imagen con fondo */}
+                    <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageUpload}  // Cargar la imagen y establecer como fondo
@@ -108,7 +125,7 @@ const CreateCategory = () => {
                             backgroundRepeat: 'no-repeat',  // Evita la repetición de la imagen
                         }}
                     />
-                  
+
 
                     <AddCard onAddCard={addCardToCategory} />
 
