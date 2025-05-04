@@ -12,12 +12,15 @@ const CreateCategory = () => {
     };
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const isPowerOfTwo = (n) => {
+        if (n <= 0) return false;
+        return (n & (n - 1)) === 0;
+    };
 
     const createCategory = async () => {
 
-        
         try {
-            if (!categoryName || !cards || !backgroundImage) {
+             if (!categoryName || !cards || !backgroundImage) {
                 alert("Los campos son obligatorios");
                 return;
             }
@@ -31,8 +34,8 @@ const CreateCategory = () => {
                 alert("El número de cartas tiene que ser potencia de 2");
                 return;
             }
-            const response = await fetch(
-                `https://railwayserver-production-7692.up.railway.app/categories/create`,
+
+            const response = await fetch(`https://railwayserver-production-7692.up.railway.app/categories/create`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -44,47 +47,32 @@ const CreateCategory = () => {
                             img_elem: card.image,
                         })),
                         id_user: user.id_user,
-
                     }),
                 }
-
-
-            );
-            console.table({
-                "name category": categoryName,
-                "background image": backgroundImage,
-                "elements": cards
-
-            });
-
-            const category = await response.json();
+            ); 
+           
+           const category = await response.json();
             if (response.ok) {
                 console.log("Category created successfully:", category);
-                closeDialog();
+                dialogModel.current?.close();
             } else {
                 console.error("Error creating category:", category);
-                console.warn("Error creating category:", category);
             }
         } catch (error) {
             console.warn("Fetch error:", error);
         }
     };
-    const isPowerOfTwo = (n) => {
-        if (n <= 0) return false;
-        return (n & (n - 1)) === 0;
-    };
 
     const handleImageUpload = (e) => {
-        const file = e.target.files[0]; // Obtiene el archivo seleccionado
-        if (!file) return;
-        // Validar tipo de archivo (solo imágenes)
+        const file = e.target.files[0];
+        if (!file) return; 
+        
         if (!file.type.startsWith('image/')) {
             alert("Por favor, sube un archivo de imagen válido (JPEG, PNG, etc.)");
             return;
         }
 
-        // Validar tamaño (ej: máximo 2MB)
-        const maxSize = 2 * 1024 * 1024; // 2MB
+        const maxSize = 2 * 1024 * 1024;
         if (file.size > maxSize) {
             alert("La imagen no debe superar los 2MB");
             return;
@@ -92,14 +80,11 @@ const CreateCategory = () => {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            // Convierte la imagen a Base64 (sin el prefijo "data:image/...")
             const base64String = reader.result.split(',')[1];
-            setBackgroundImage(base64String); // Guarda el Base64 en el estado
+            setBackgroundImage(base64String);
         };
-        reader.readAsDataURL(file); // Inicia la lectura del archivo
+        reader.readAsDataURL(file);
     };
-
-
 
     const deleteCard = (cardId) => {
         setCards(prevCards => prevCards.filter(card => card.id !== cardId));
@@ -111,9 +96,9 @@ const CreateCategory = () => {
             id: prevCards.length > 0 ? Math.max(...prevCards.map(c => c.id)) + 1 : 1
         }]);
     };
+
     const closeDialog = () => {
         dialogModel.current?.close();
-        // Limpiar estados
         setCategoryName('');
         setBackgroundImage('');
         setCards([]);
@@ -138,14 +123,7 @@ const CreateCategory = () => {
             >
                 <h2 className="text-white text-lg mb-4">Create Category</h2>
 
-
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        
-                    }}
-                    className="space-y-4"
-                >
+                <form  onSubmit={async(e) =>{e.preventDefault(); await createCategory();}} className="space-y-4">
                     <input
                         type="text"
                         name="categoryName"
@@ -154,7 +132,6 @@ const CreateCategory = () => {
                         value={categoryName}
                         onChange={(e) => setCategoryName(e.target.value)}
                     />
-
 
                     <input
                         type="file"
@@ -171,7 +148,6 @@ const CreateCategory = () => {
                         }}
                     />
 
-
                     <AddCard onAddCard={addCardToCategory} />
 
                     <div className="border-cyan-400 border-4 rounded mt-4 p-4">
@@ -187,15 +163,12 @@ const CreateCategory = () => {
                                         key={card.id}
                                         className="relative w-32 h-54 bg-transparent rounded-lg shadow-md overflow-hidden flex-shrink-0"
                                     >
-                                        {/* Botón X */}
                                         <button
                                             onClick={() => deleteCard(card.id)}
                                             className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center z-20"
                                         >
                                             X
                                         </button>
-
-                                         {/* Imagen que ocupa todo el espacio */}
                                        
                                         <img
                                             src={`data:image/png;base64,`+ card.image}
@@ -203,7 +176,6 @@ const CreateCategory = () => {
                                             className="w-full h-full object-cover"
                                         />
 
-                                        {/* Nombre superpuesto en la parte inferior */}
                                         <div className="absolute bottom-0 left-0 right-0 z-10 bg-black bg-opacity-50 px-2 py-1">
                                             <p className="text-white text-xs font-bold text-center">{card.name}</p>
                                         </div>
@@ -224,7 +196,7 @@ const CreateCategory = () => {
 
                         <button
                             type="button"
-                            onClick={() => closeDialog()}
+                            onClick={closeDialog}
                             className="w-full px-4 py-2 bg-transparent border border-cyan-400 rounded"
                         >
                             Close
