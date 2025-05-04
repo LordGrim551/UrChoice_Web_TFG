@@ -19,7 +19,7 @@ const CreateCategory = () => {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        name_cat: name,
+                        name_cat: categoryName,
                     }),
                 }
             );
