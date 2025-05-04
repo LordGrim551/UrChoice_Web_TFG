@@ -66,7 +66,7 @@ export default function Header() {
                         e.preventDefault();
                         setDropdownOpen(!dropdownOpen);
                       }}
-                      className="text-red-500 border border-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition text-xs"
+                      className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
                     >
                       Servicios
                     </a>
@@ -158,7 +158,7 @@ export default function Header() {
                   e.preventDefault();
                   setDropdownOpen(!dropdownOpen);
                 }}
-                className="block text-red-600 border border-red-500 px-3 py-2 rounded-md hover:bg-red-500 hover:text-white transition"
+                className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
               >
                 Servicios
               </a>

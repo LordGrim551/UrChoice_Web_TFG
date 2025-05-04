@@ -6,6 +6,7 @@ import RegisterPage from '../src/Pages/RegisterPage/RegisterPage';
 import HomePage from '../src/Pages/HomePage/HomePage';
 import Error from '../src/Pages/Error/Error';
 import Game from '../src/Pages/GamePage/Game';
+import Individual from '../src/Pages/GamePage/IndividualGame';
 import { BrowserRouter as Router, Route, Routes,  } from 'react-router-dom';
 
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/RegisterPage" element={<RegisterPage />} />
         <Route path="/HomePage" element={<HomePage />} />
         <Route path="/GamePage" element={<Game />} />
+        <Route path="/IndividualGame" element={<Individual />} />
         {/* <Route path="/GamePage/:id" element={<Game />} /> */}
         <Route path="/*" element={<Error />} />
       </Routes>

@@ -45,7 +45,7 @@ const HomeCategoryCard = ({ onCategoryClick }) => {
                 <div
                     key={category.id_cat}
                     className="category-card border  border-gray-300 rounded-lg shadow-md cursor-pointer"
-                    onClick={() => onCategoryClick(category.id_cat)}
+                    
                 >
 
                     <div className="card-header bg-red-500 text-white rounded-t-lg p-2 text-center">
@@ -56,6 +56,7 @@ const HomeCategoryCard = ({ onCategoryClick }) => {
                             src={category.img_cat}
                             alt={category.name_cat}
                             className="w-full h-full object-cover"
+                            onClick={() => onCategoryClick(category.id_cat)}
                         />
                     </div>
                     <div className="flex items-center justify-evenly card-footer bg-cyan-500 text-white rounded-b-lg p-2 text-center">

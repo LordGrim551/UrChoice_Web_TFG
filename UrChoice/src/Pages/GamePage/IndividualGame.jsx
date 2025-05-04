@@ -43,6 +43,22 @@ const GamePage = () => {
   const [usersInGame, setUsersInGame] = useState([]);
   const [hasResetVotes, setHasResetVotes] = useState(false);
   const [gamesPlayed, setGamesPlayed] = useState('');
+  const [userId, setUserId] = useState('');
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setUserId(parsedUser.id_user || '');
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
+
+
+
+
 
   // Efectos secundarios
   useEffect(() => {
@@ -153,45 +169,47 @@ const GamePage = () => {
     }
   };
 
-  const updateRanking = async (winnerElement, userId) => {
+  const updateRanking = async (winnerElement) => {
     try {
       if (!winnerElement || !userId) {
         console.error("Datos faltantes para actualizar ranking");
         return;
       }
-
+  
       console.log("Actualizando ranking para:", {
         elementId: winnerElement.id_elem,
         userId: userId,
         currentVictories: winnerElement.victories
       });
-
+  
+      // Actualizar GamesPlayed en el localStorage
       const user = localStorage.getItem('user');
-      const parsedUser = JSON.parse(user);
-      setGamesPlayed(parsedUser.GamesPlayed + 1);
-
-      const updatedUser = {
-        ...parsedUser,
-        GamesPlayed: parsedUser.GamesPlayed + 1,
-      };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        const updatedUser = {
+          ...parsedUser,
+          GamesPlayed: (parsedUser.GamesPlayed || 0) + 1,
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setGamesPlayed(updatedUser.GamesPlayed);
+      }
+  
       const response = await fetch(`${API_BASE_URL}/element/winner`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_elem: winnerElement.id_elem,
           victories: winnerElement.victories + 1,
-          id_user: userId,
+          id_user: userId, // Usar el userId del estado
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error del servidor:', errorData);
         throw new Error(errorData.message || 'Error al actualizar ranking');
       }
-
+  
       console.log("Ranking actualizado exitosamente");
     } catch (error) {
       console.error('Error en updateRanking:', error.message);
@@ -239,7 +257,7 @@ const GamePage = () => {
             victories: winnerElement.victories
           });
 
-          updateRanking(winnerElement, usersInGame[0]?.id_user);
+          updateRanking(winnerElement);
         } else {
           setShowNextRound(true);
          
@@ -315,9 +333,7 @@ const GamePage = () => {
     resetVotes(); // Resetear votos al pasar de ronda
   };
 
-  const openWaitingDialog = () => {
-    
-  }
+
 
   // Renderizado condicional
   if (showStartCountdown || elements.length === 0) {

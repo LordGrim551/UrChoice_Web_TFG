@@ -39,7 +39,7 @@ const Ranking = ({ categoryId, handleBack }) => {
 
   const StartGame = () => {
 
-    navigate('/GamePage', {
+    navigate('/IndividualGame', {
       state: { id_cat: categoryId },
     });
 
