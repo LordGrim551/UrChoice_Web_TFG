@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 const AddCard = ({ onAddCard }) => {
-  const dialogRef = useRef(null);
+  const addCardToCategory = useRef(null);
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [cardName, setCardName] = useState('');
@@ -11,11 +11,11 @@ const AddCard = ({ onAddCard }) => {
     setCardName('');
     setPreviewImage(null);
     setError('');
-    dialogRef.current?.showModal();
+    addCardToCategory.current?.showModal();
   };
 
   const closeDialog = () => {
-    dialogRef.current?.close();
+    addCardToCategory.current?.close();
   };
 
   const handleAddCard = () => {
@@ -76,7 +76,7 @@ const AddCard = ({ onAddCard }) => {
       </button>
 
       <dialog
-        ref={dialogRef}
+        ref={addCardToCategory}
         className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <h2 className="text-white text-lg mb-4">Add New Card</h2>
