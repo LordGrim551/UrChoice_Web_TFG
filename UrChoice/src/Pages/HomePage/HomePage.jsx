@@ -1,12 +1,14 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import Header from './Header/header';
 import FriendBar from './FriendBar/FriendBar';
-import TabView from './Tabview/tabview'; // Importar el nuevo componente TabView
+import TabView from './Tabview/tabview';
 
 function HomePage() {
   const [nick, setNick] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -30,8 +32,18 @@ function HomePage() {
       </aside>
 
       <main className="flex flex-grow gap-4">
-        {/* Usar el nuevo componente TabView */}
-        <TabView />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, x: location.pathname.includes('biblioteca') ? 50 : -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: location.pathname.includes('biblioteca') ? -50 : 50 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="flex-1"
+          >
+            <Outlet /> {/* Esto renderizará TabView o Biblioteca */}
+          </motion.div>
+        </AnimatePresence>
 
         <div className="hidden lg:flex w-1/5 max-h-[calc(86vh-48px)] overflow-y-auto">
           <FriendBar />

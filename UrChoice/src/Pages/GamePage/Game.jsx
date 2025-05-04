@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Game.css";
 import NextRound from "../GamePage/NextRoundDialog/NextRound";
@@ -191,31 +191,33 @@ const GamePage = () => {
     }
   };
 
-  // Función para obtener elementos de la categoría
   const fetchElements = async () => {
     if (!id_cat) return;
     try {
       console.log("🖼️ Obteniendo elementos de la categoría...");
-      const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
+      const response = await fetch(`${API_BASE_URL}/elements/${id_cat}`);
       const data = await response.json();
+
       if (response.ok) {
-        console.log(`🃏 Elementos obtenidos: ${data.length}`);
         const formattedElements = data.map((element) => ({
           id_elem: element.id_elem,
           name_elem: element.name_elem,
           victories: element.victories,
           img_elem: `data:image/png;base64,${element.img_elem}`,
         }));
-        setElements(formattedElements);
+
+        // Solo actualiza si los elementos son diferentes
+        setElements(prev => {
+          if (JSON.stringify(prev) !== JSON.stringify(formattedElements)) {
+            return formattedElements;
+          }
+          return prev;
+        });
       }
     } catch (error) {
       console.error("❌ Error fetching elements:", error);
     }
   };
-
   // Función para actualizar el ranking
   const updateRanking = async (winnerElement, userId) => {
     try {
@@ -420,7 +422,7 @@ const GamePage = () => {
       console.error('❌ Error al enviar el voto:', error);
     }
   };
-// a
+  // a
   // Función para obtener imágenes más votadas
   const fetchMostVotedGlobalImages = async () => {
     console.log("🌍 Calculando imágenes más votadas a nivel global...");
@@ -437,7 +439,7 @@ const GamePage = () => {
     }
 
     setUsersInGame(freshData);
-    
+
 
     const firstIndex = currentRound[currentMatchIndex];
     const secondIndex = currentRound[currentMatchIndex + 1];
@@ -543,13 +545,17 @@ const GamePage = () => {
     };
   }, [id_cat]);
 
-  useEffect(() => {
-    if (elements.length > 0) {
-      console.log("🃏 Elementos cargados, configurando ronda inicial");
-      const indices = Array.from({ length: elements.length }, (_, i) => i);
-      setCurrentRound(indices);
-    }
+
+  const initialRound = useMemo(() => {
+    return elements.length > 0 ? Array.from({ length: elements.length }, (_, i) => i) : [];
   }, [elements]);
+  // Y agrega este useEffect para la inicialización:
+  useEffect(() => {
+    if (elements.length > 0 && currentRound.length === 0) {
+      console.log("🃏 Configurando ronda inicial");
+      setCurrentRound(initialRound);
+    }
+  }, [elements, initialRound, currentRound]);
 
   useEffect(() => {
     if (vote_game && vote_game.trim() !== '') {

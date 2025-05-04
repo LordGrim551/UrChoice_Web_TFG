@@ -15,14 +15,14 @@ export default function Header() {
   setTimeout(() => {
     setIsLoading(false);
   }, 2000);
-  const Biblioteca = () => {
-
-    navigate('/Biblioteca');
-
-
-
+  const handleInicio = (e) => {
+    e.preventDefault();
+    navigate('/HomePage');
   };
-
+  const handleBiblioteca = (e) => {
+    e.preventDefault();
+    navigate('biblioteca'); // Navegación relativa al path actual
+  };
 
   return (
     <header className="bg-black border-5 border-red-600 backdrop-blur-md sticky top-0 z-50 rounded-2xl">
@@ -62,6 +62,13 @@ export default function Header() {
                 </div>
               ) : (
                 <>
+                  <a
+                    href="/HomePage"
+                    onClick={handleInicio}
+                    className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
+                  >
+                    Inicio
+                  </a>
                   <CreateCategory />
                   <CreateRoom />
                   <div
@@ -72,11 +79,7 @@ export default function Header() {
 
                     <a
                       href="/Biblioteca"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setDropdownOpen(!dropdownOpen);
-                        Biblioteca();
-                      }}
+                      onClick={handleBiblioteca}
                       className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
                     >
                       BIBLIOTECA
@@ -158,6 +161,13 @@ export default function Header() {
             </>
           ) : (
             <>
+              <a
+                href="/HomePage"
+                onClick={handleInicio}
+                className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
+              >
+                Inicio
+              </a>
               <ProfileHeader />
               <CreateCategory />
               <CreateRoom />
@@ -165,10 +175,7 @@ export default function Header() {
 
               <a
                 href="/Biblioteca"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setDropdownOpen(!dropdownOpen);
-                }}
+                onClick={handleBiblioteca}
                 className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
               >
                 BIBLIOTECA

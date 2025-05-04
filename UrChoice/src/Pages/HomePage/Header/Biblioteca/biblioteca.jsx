@@ -31,15 +31,6 @@ const Biblioteca = () => {
     }),
   };
 
-  const handleCategoryClick = (categoryId) => {
-    setSelectedCategory(categoryId);
-    setActiveComponent('ranking');
-  };
-
-  const handleBackToCategories = () => {
-    setActiveComponent('categories');
-  };
-
   return (
     <div className="PADRE content w-full h-[calc(86vh-48px)] flex-grow p-4 border-red-600 border-5 rounded-lg overflow-hidden">
       {/* TabView estilo Tailwind encapsulado */}
