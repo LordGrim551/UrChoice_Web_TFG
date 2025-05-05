@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Favoritos from './favoritos';
 import Guardados from './guardados'
 import { motion, AnimatePresence } from 'framer-motion';
