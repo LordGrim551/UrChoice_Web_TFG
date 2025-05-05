@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Bookmark } from 'lucide-react';
+import Altera from "./altera_final.gif"; // Asegúrate de que la ruta sea correcta
 
 const Guardados = () => {
   const guardadosData = [

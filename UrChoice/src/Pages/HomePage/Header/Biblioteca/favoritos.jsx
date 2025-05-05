@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
+import Altera from "./altera_final.gif"; // Asegúrate de que la ruta sea correcta
 const Favoritos = () => {
 
   const [favoritos, setFavoritos] = useState([]);
@@ -47,10 +48,22 @@ const Favoritos = () => {
     const interval = setInterval(fetchFavourites, 10000); // opcional: refrescar cada 10s
     return () => clearInterval(interval);
   }, [id_user]);
+  if (favoritos.length === 0) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center p-4">
+        <img
+          src={Altera}
+          alt="Altera"
+          className="w-48 h-48 object-contain"
+        />
+        <p className="text-2xl font-bold mt-4">¡Ve a jugar!</p>
+      </div>
+    );
+  }
 
 
   return (
-   
+
 
     <div className="w-full category-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  p-4 overflow-y-auto scrollbar-custom max-h-[70vh]">
       {favoritos.map((item) => (
@@ -74,7 +87,7 @@ const Favoritos = () => {
           <div className="flex items-center justify-evenly card-footer bg-cyan-500 text-white rounded-b-lg p-2 text-center">
             ID: {item.id_cat}
             <Heart size={24} />
-  
+
           </div>
         </div>
       ))}
