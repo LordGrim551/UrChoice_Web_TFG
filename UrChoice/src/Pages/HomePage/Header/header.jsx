@@ -21,7 +21,7 @@ export default function Header() {
   };
   const handleBiblioteca = (e) => {
     e.preventDefault();
-    navigate('biblioteca'); // Navegación relativa al path actual
+    navigate('Biblioteca'); // Navegación relativa al path actual
   };
 
   return (

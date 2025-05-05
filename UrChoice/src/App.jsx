@@ -8,6 +8,7 @@ import Error from '../src/Pages/Error/Error';
 import Game from '../src/Pages/GamePage/Game';
 import Individual from '../src/Pages/GamePage/IndividualGame';
 import Biblioteca from './Pages/HomePage/Header/Biblioteca/biblioteca';
+import Perfil from './Pages/HomePage/Header/Perfil/perfil';
 import TabView from './Pages/HomePage/Tabview/tabview'; // Añade esta importación
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -24,7 +25,8 @@ function App() {
         {/* Rutas anidadas para el layout de HomePage */}
         <Route path="/HomePage" element={<HomePage />}>
           <Route index element={<TabView />} /> {/* Usa el componente importado */}
-          <Route path="biblioteca" element={<Biblioteca />} />
+          <Route path="Biblioteca" element={<Biblioteca />} />
+          <Route path="Perfil" element={<Perfil/>}/>
         </Route>
         
         <Route path="/GamePage" element={<Game />} />
