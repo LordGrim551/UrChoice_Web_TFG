@@ -87,7 +87,7 @@ const Biblioteca = () => {
               exit="exit"
               className="absolute w-full"
             >
-              <div>Contenido de Guardados</div>
+        
               <Guardados/>
             </motion.div>
           )}
