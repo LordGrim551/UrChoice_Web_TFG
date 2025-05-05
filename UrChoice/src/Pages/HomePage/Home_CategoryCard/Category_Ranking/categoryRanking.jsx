@@ -106,7 +106,7 @@ const Ranking = ({ categoryId, handleBack }) => {
           {rankings.map((item, index) => (
             <div key={item.id} className="flex items-center border border-cyan-400 py-2 mb-4 m-5 rounded-2xl">
               <div className="w-10 text-center">{index + 1}</div>
-              <img src={item.image} alt={item.name} className="w-16 h-16 rounded-full object-cover" />
+              <img src={item.image} alt={item.name} className="w-8 h-8 rounded-full object-cover" />
               <div className="ml-4 font-semibold">{item.name}</div>
               <div className="ml-auto mr-2">Score: {item.score}</div>
             </div>
