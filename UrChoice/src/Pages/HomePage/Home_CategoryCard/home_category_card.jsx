@@ -1,14 +1,20 @@
 import "./home_category_card.css";
 import React, { useEffect, useState } from 'react';
 import { Heart, Bookmark } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+
+import Altera from "./altera_final.gif";
 
 const HomeCategoryCard = ({ onCategoryClick }) => {
     const [Categories, setCategories] = useState([]);
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch(`https://railwayserver-production-7692.up.railway.app/categories/all/`, {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.id_user) {
+                console.error('Usuario no encontrado en localStorage');
+                return;
+            }
+            const response = await fetch(`https://railwayserver-production-7692.up.railway.app/categories/${user.id_user}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -38,6 +44,18 @@ const HomeCategoryCard = ({ onCategoryClick }) => {
         const interval = setInterval(fetchCategories, 10000); // opcional: refrescar cada 10s
         return () => clearInterval(interval);
     }, []);
+    if (Categories.length === 0) {
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                <img
+                    src={Altera}
+                    alt="Altera"
+                    className="w-48 h-48 object-contain"
+                />
+                <p className="text-2xl font-bold mt-4">Has agregado todas las categorias disponible a tu biliblioteca</p>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full category-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  p-4 overflow-y-auto scrollbar-custom max-h-[70vh]">
@@ -45,7 +63,7 @@ const HomeCategoryCard = ({ onCategoryClick }) => {
                 <div
                     key={category.id_cat}
                     className="category-card border  border-gray-300 rounded-lg shadow-md cursor-pointer"
-                    
+
                 >
 
                     <div className="card-header bg-red-500 text-white rounded-t-lg p-2 text-center">
@@ -61,7 +79,7 @@ const HomeCategoryCard = ({ onCategoryClick }) => {
                     </div>
                     <div className="flex items-center justify-evenly card-footer bg-cyan-500 text-white rounded-b-lg p-2 text-center">
                         ID: {category.id_cat}
-                        <Heart size={24} />
+                        <Heart size={24}  />
                         <Bookmark size={24} />
                     </div>
                 </div>
