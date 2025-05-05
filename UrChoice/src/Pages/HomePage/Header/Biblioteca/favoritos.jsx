@@ -1,26 +1,18 @@
-javascript
 import React from 'react';
-import { AiFillHeart } from 'react-icons/ai';
 
+import { Heart } from 'lucide-react';
 const Favoritos = () => {
-  const favoritosData = [
-    { id: 1, name: 'Favorito 1', imageUrl: 'https://via.placeholder.com/150', isFavorite: true },
-    { id: 2, name: 'Favorito 2', imageUrl: 'https://via.placeholder.com/150', isFavorite: true },
-    { id: 3, name: 'Favorito 3', imageUrl: 'https://via.placeholder.com/150', isFavorite: true },
-    { id: 4, name: 'Favorito 4', imageUrl: 'https://via.placeholder.com/150', isFavorite: true },
-    { id: 5, name: 'Favorito 5', imageUrl: 'https://via.placeholder.com/150', isFavorite: true },
-  ];
+  
 
   return (
-    <div className="favoritos-container">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      
       {favoritosData.map((item) => (
-        <div key={item.id} className="favorito-item">
-          <img src={item.imageUrl} alt={item.name} className="favorito-image" />
-          <div className="favorito-details">
-            <span className="favorito-name">{item.name}</span>
-            {item.isFavorite && <AiFillHeart className="favorito-icon" />}
-          </div>
-        </div>
+        <div key={item.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
+        <img src={item.imagen} alt={item.nombre} className="w-full h-40 object-cover rounded-md mb-2" />
+        <h3 className="text-lg font-medium">{item.nombre}</h3>
+        <Heart className="text-blue-500 mt-2" />
+      </div>
       ))}
     </div>
   );

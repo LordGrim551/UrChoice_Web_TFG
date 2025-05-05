@@ -1,6 +1,6 @@
-javascript
+
 import React from 'react';
-import { FaBookmark } from 'react-icons/fa';
+import { Bookmark } from 'lucide-react';
 
 const Guardados = () => {
   const guardadosData = [
@@ -17,7 +17,7 @@ const Guardados = () => {
         <div key={item.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
           <img src={item.imagen} alt={item.nombre} className="w-full h-40 object-cover rounded-md mb-2" />
           <h3 className="text-lg font-medium">{item.nombre}</h3>
-          <FaBookmark className="text-blue-500 mt-2" />
+          <Bookmark className="text-blue-500 mt-2" />
         </div>
       ))}
     </div>

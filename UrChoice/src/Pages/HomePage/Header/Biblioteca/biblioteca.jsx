@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Favoritos from './favoritos';
+import Guardados from './guardados'
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Biblioteca = () => {
@@ -73,6 +75,7 @@ const Biblioteca = () => {
               className="absolute w-full"
             >
               <div>Contenido de Favoritos</div>
+              <Favoritos/>
             </motion.div>
           ) : (
             <motion.div
@@ -85,6 +88,7 @@ const Biblioteca = () => {
               className="absolute w-full"
             >
               <div>Contenido de Guardados</div>
+              <Guardados/>
             </motion.div>
           )}
         </AnimatePresence>

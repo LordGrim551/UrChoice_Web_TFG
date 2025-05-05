@@ -84,19 +84,7 @@ export default function Header() {
                     >
                       BIBLIOTECA
                     </a>
-                    {dropdownOpen && (
-                      <div className="absolute pt-6 top-7 left-0 bg-black/90 border border-cyan-500 shadow-lg rounded-md py-2 w-44 z-40">
-                        {["FAVORITOS", "GUARDADOS"].map((sub, idx) => (
-                          <a
-                            key={idx}
-                            href="#"
-                            className="block pt-5 px-4 py-2 text-sm border border-cyan-400 text-blue-600 hover:bg-cyan-400"
-                          >
-                            {sub}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+
                   </div>
 
 
@@ -180,22 +168,6 @@ export default function Header() {
               >
                 BIBLIOTECA
               </a>
-
-              {dropdownOpen && (
-                <div className="mt-2 border-l-2 border-cyan-400 space-y-1">
-                  {["FAVORITOS", "GUARDADOS"].map((sub, idx) => (
-                    <a
-                      key={idx}
-                      href="#"
-                      className="block text-sm text-blue-600 px-2 py-1 rounded hover:bg-cyan-400 hover:text-white transition"
-                    >
-                      {sub}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-
             </>
           )}
         </div>
