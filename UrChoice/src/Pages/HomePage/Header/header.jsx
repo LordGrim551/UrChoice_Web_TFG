@@ -19,6 +19,10 @@ export default function Header() {
     e.preventDefault();
     navigate('/HomePage');
   };
+  const handlePerfil = (e) => {
+    e.preventDefault();
+    navigate('Perfil')
+  }
   const handleBiblioteca = (e) => {
     e.preventDefault();
     navigate('Biblioteca'); // Navegación relativa al path actual
@@ -67,25 +71,27 @@ export default function Header() {
                     onClick={handleInicio}
                     className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
                   >
-                    Inicio
+                    INICIO
                   </a>
+                
                   <CreateCategory />
                   <CreateRoom />
-                  <div
-                    className="relative"
-                    onMouseEnter={() => setDropdownOpen(true)}
-                    onMouseLeave={() => setDropdownOpen(false)}
+
+
+                  <a
+                    href="/Biblioteca"
+                    onClick={handleBiblioteca}
+                    className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
                   >
-
-                    <a
-                      href="/Biblioteca"
-                      onClick={handleBiblioteca}
-                      className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
-                    >
-                      BIBLIOTECA
-                    </a>
-
-                  </div>
+                    BIBLIOTECA
+                  </a>
+                  <a
+                    href="/Perfil"
+                    onClick={handlePerfil}
+                    className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
+                  >
+                    PERFIL
+                  </a>
 
 
                 </>
@@ -149,14 +155,14 @@ export default function Header() {
             </>
           ) : (
             <>
+              <ProfileHeader />
               <a
                 href="/HomePage"
                 onClick={handleInicio}
                 className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
               >
-                Inicio
+                INICIO
               </a>
-              <ProfileHeader />
               <CreateCategory />
               <CreateRoom />
 
@@ -167,6 +173,13 @@ export default function Header() {
                 className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
               >
                 BIBLIOTECA
+              </a>
+              <a
+                href="/Perfil"
+                onClick={handlePerfil}
+                className="text-red-500 border border-red-600 hover:bg-red-500 hover:text-white text-xs md:width-full block px-3 py-2 rounded-md transition cursor-pointer"
+              >
+                PERFIL
               </a>
             </>
           )}
