@@ -215,7 +215,7 @@ const CreateCategory = () => {
 
             <dialog
                 ref={dialogModel}
-                className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-y-auto scrollbar-custom"
             >
                 <h2 className="text-white text-lg mb-4">Create Category</h2>
 
