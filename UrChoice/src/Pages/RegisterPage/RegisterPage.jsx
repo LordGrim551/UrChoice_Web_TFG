@@ -1,19 +1,21 @@
 import UrChoiceLogo from '../RegisterPage/LogoTodoSVG.svg';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { useState,  useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../RegisterPage/RegisterPage.css';
-import Logo from '../LoginPage/logo.png'; // Esto es para la imagen por defecto del logo
+import Logo from '../LoginPage/logo.png';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
   const [nick, setNick] = useState('');
-  const [img, setImg] = useState('');  // Asegúrate de cómo se maneja la imagen
+  const [img, setImg] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadImageAsBase64 = async () => {
@@ -23,7 +25,7 @@ function RegisterPage() {
   
         const reader = new FileReader();
         reader.onloadend = () => {
-          setImg(reader.result.split(',')[1]); // Quita el prefijo "data:image/..."
+          setImg(reader.result.split(',')[1]);
         };
         reader.readAsDataURL(blob);
       } catch (error) {
@@ -33,20 +35,38 @@ function RegisterPage() {
   
     loadImageAsBase64();
   }, []);
- 
+
+  // Función para validar el formato del correo electrónico
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleRegister = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError('');
 
+    // Validar el correo electrónico antes de continuar
+    if (!validateEmail(email)) {
+      toast.error('Por favor ingresa un correo electrónico válido', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setLoading(false);
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       setLoading(false);
       return;
     }
-
- 
 
     console.log('Datos enviados:', { email, nick, img, password });
 
@@ -68,20 +88,28 @@ function RegisterPage() {
 
       if (response.ok) {
         console.log('Cuenta creada con éxito:', data);
-        localStorage.setItem('token', data.token);  // Guarda el token
-        localStorage.setItem('user', JSON.stringify(data));  // Guarda el usuario como un objeto en localStorage
-        localStorage.setItem('id_user', data.id_user); // <-- Esta línea es clave
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('id_user', data.id_user);
        
         setImg(Logo);
         console.log(Logo);
-        navigate("/HomePage");  // Redirigir a la página de inicio
+        navigate("/HomePage");
       } else {
         console.log('Error al registrar', data);
         setError(data.message || 'Error al crear cuenta');
       }
     } catch (err) {
       console.error('Error de conexión', err);
-      setError('Hubo un error al conectarse al servidor');
+      toast.error('Hubo un error al conectarse al servidor', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } finally {
       setLoading(false);
     }
@@ -92,6 +120,19 @@ function RegisterPage() {
       {/* Animaciones de fondo */}
       <DotLottieReact className="absolute h-full w-screen" src="https://lottie.host/9ad2756e-5d0c-4e48-be43-d964c37daea0/lz10b4JsWT.lottie" loop autoplay />
       <DotLottieReact className="absolute h-full w-screen rotate-180" src="https://lottie.host/8f385097-1fd9-4e6b-8d84-ab7bb31d37db/nLLINWcew3.lottie" loop autoplay />
+      
+      {/* Contenedor de Toast */}
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       
       {/* Logo */}
       <img src={UrChoiceLogo} className="logo UrChoice" alt="UrChoice logo" />
@@ -166,17 +207,7 @@ function RegisterPage() {
             />
           </div>
           
-          <div className="flex items-center">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              className="h-3 w-3 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
-            />
-            <label htmlFor="terms" className="ml-2 block text-xs text-gray-300">
-              Acepto los <a href="#" className="text-cyan-500 hover:text-cyan-400">Términos y Condiciones</a>
-            </label>
-          </div>
+         
           
           <div>
             <button
