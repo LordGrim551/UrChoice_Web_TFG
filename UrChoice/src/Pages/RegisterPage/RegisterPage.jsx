@@ -70,6 +70,7 @@ function RegisterPage() {
         console.log('Cuenta creada con éxito:', data);
         localStorage.setItem('token', data.token);  // Guarda el token
         localStorage.setItem('user', JSON.stringify(data));  // Guarda el usuario como un objeto en localStorage
+        localStorage.setItem('id_user', data.id_user); // <-- Esta línea es clave
        
         setImg(Logo);
         console.log(Logo);

@@ -21,7 +21,7 @@ export default function Header() {
   };
   const handlePerfil = (e) => {
     e.preventDefault();
-    navigate('Perfil')
+    navigate('User')
   }
   const handleBiblioteca = (e) => {
     e.preventDefault();

@@ -56,7 +56,7 @@ const Profile = () => {
 
             <div className="profile-column profile-info flex flex-row md:flex-col gap-x-4 text-justify text-xs">
                 <h2 className="profile-name">{nick ? `${nick}` : 'DEFAULT'}</h2>
-                <p className="profile-games">{gamesPlayed ? `${gamesPlayed}` : 'Loading'}</p>
+                <p className="profile-games">{gamesPlayed ? `${gamesPlayed}` : '0'}</p>
             </div>
 
             {/* Botón solo visible en móviles */}
