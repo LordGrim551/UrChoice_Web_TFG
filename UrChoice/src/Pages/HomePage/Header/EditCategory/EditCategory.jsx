@@ -10,13 +10,11 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
     const [originalImage, setOriginalImage] = useState('');
     const dialogModel = useRef(null);
 
+
     useEffect(() => {
         if (categoryData) {
-            // Cargar datos básicos de la categoría
             setCategoryName(categoryData.name_cat);
             setOriginalImage(categoryData.img_cat);
-            
-            // Cargar elementos de la categoría
             fetchElements(categoryData.id_cat);
         }
     }, [categoryData]);
@@ -24,6 +22,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
     const openDialog = () => {
         dialogModel.current?.showModal();
     };
+
 
     useEffect(() => {
         if (categoryData) {
@@ -37,20 +36,18 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
-            
+
             if (!response.ok) {
                 throw new Error('Error al cargar elementos');
             }
-            
+
             const data = await response.json();
-            
-            // Formatear los elementos como cartas
             const formattedCards = data.map(element => ({
                 id: element.id_elem,
                 name: element.name_elem,
-                image: element.img_elem.split(',')[1] || element.img_elem // Asegurar que solo tenemos el base64
+                image: element.img_elem.split(',')[1] || element.img_elem
             }));
-            
+
             setCards(formattedCards);
         } catch (error) {
             console.error('Error al cargar elementos:', error);
@@ -63,6 +60,12 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
             // Validaciones
             if (!categoryName || !cards.length || !(backgroundImage || originalImage)) {
                 toast.error("Todos los campos son obligatorios");
+                return;
+            }
+
+            // Validación específica para 2 cartas
+            if (cards.length === 2) {
+                toast.error("No se puede hacer update con solo 2 cartas");
                 return;
             }
 
@@ -82,7 +85,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                 return;
             }
 
-            // Enviar datos al servidor para actualización
+            // Enviar datos al servidor
             const response = await fetch(
                 `https://railwayserver-production-7692.up.railway.app/categories/update`,
                 {
@@ -93,7 +96,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                         name_cat: categoryName,
                         img_cat: backgroundImage || originalImage.split(',')[1],
                         elements: cards.map((card) => ({
-                            id_elem: card.id, // Incluir ID si es una actualización
+                            id_elem: card.id,
                             name_elem: card.name,
                             img_elem: card.image,
                         })),
@@ -107,9 +110,12 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                 throw new Error(errorData.message || "Error al actualizar categoría");
             }
 
+            // Toast verde de éxito
             toast.success("¡Categoría actualizada con éxito!");
-            onUpdate();
-            closeDialog();
+            setTimeout(() => {
+                onUpdate();
+                closeDialog();
+            }, 5000);
         } catch (error) {
             console.error("Error:", error);
             toast.error(error.message || "Error de conexión con el servidor");
@@ -127,7 +133,6 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
         const reader = new FileReader();
         reader.onloadend = () => {
             const result = reader.result.toString();
-            // Extraer solo la parte base64
             const base64String = result.split(',')[1] || result;
             setBackgroundImage(base64String);
         };
@@ -140,7 +145,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
 
     const addCardToCategory = (newCard) => {
         setCards([...cards, {
-            id: Date.now(), // ID temporal para nuevas cartas
+            id: Date.now(),
             name: newCard.name,
             image: newCard.image.split(',')[1] || newCard.image
         }]);
@@ -154,6 +159,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
         setOriginalImage('');
         onClose();
     };
+  
 
     return (
         <div>
@@ -173,11 +179,10 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
             <dialog
                 ref={dialogModel}
                 className="w-2xl dialog bg-black border-1 border-cyan-400 p-4 rounded shadow-lg text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-y-auto scrollbar-custom"
-                onClose={closeDialog}
             >
                 <h2 className="text-white text-lg mb-4">Editar Categoría</h2>
 
-                <form onSubmit={(e) => { e.preventDefault(); updateCategory(); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); }} className="space-y-4">
                     <input
                         type="text"
                         name="categoryName"
@@ -195,7 +200,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                             onChange={handleImageUpload}
                             className="w-full text-white text-lg mb-4 p-4 border-4 border-cyan-400 rounded bg-gray-800 opacity-0 absolute z-10"
                         />
-                        <div 
+                        <div
                             className="w-full h-40 bg-gray-800 border-4 border-cyan-400 rounded mb-4 flex items-center justify-center"
                             style={{
                                 backgroundImage: `url(${backgroundImage ? `data:image/jpeg;base64,${backgroundImage}` : originalImage})`,
@@ -247,6 +252,7 @@ const EditCategory = ({ categoryData, onClose, onUpdate }) => {
                     <div className="flex flex-col md:flex-row md:justify-between gap-2">
                         <button
                             type="submit"
+                            onClick={updateCategory}
                             className="w-full px-4 py-2 bg-cyan-400 text-white rounded hover:bg-cyan-500 transition-colors"
                         >
                             Actualizar Categoría
