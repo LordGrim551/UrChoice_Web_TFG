@@ -187,9 +187,9 @@ const Perfil = () => {
     };
 
     return (
-        <div className="PADRE relative w-full h-[calc(75vh-48px)] flex-grow p-4 border-[5px] border-red-600 rounded-lg overflow-hidden">
+        <div className="PADRE relative w-full h-[calc(75vh-48px)] flex-grow p-4 border-[5px] border-red-600 rounded-lg overflow-hidden overflow-y-auto scrollbar-custom max-h-[70vh]">
             <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+                className="absolute w-full inset-0 bg-cover bg-center bg-no-repeat opacity-70"
                 style={{
                     backgroundImage: `url(${profileImg || '/default-background.jpg'})`,
                     backgroundColor: !profileImg ? '#cccccc' : 'transparent'
@@ -273,17 +273,17 @@ const Perfil = () => {
 
                 </div>
                 {/* SECCIÓN FUERA DEL RECTÁNGULO - GAMES PLAYED */}
-                <div className="w-full flex justify-around mt-4">
+                <div className="w-full flex justify-around ">
                     {/* Primer dato gamesPlayed */}
                     <div className="text-center">
-                        <p className="text-white text-xl">{gamesPlayed}</p>
-                        <p className="text-white font-bold text-2xl">GAMES PLAYED</p>
+                        <p className="text-white text-l">{gamesPlayed}</p>
+                        <p className="text-white font-bold text-xl">GAMES PLAYED</p>
                     </div>
 
                     {/* Segundo dato gamesPlayed */}
                     <div className="text-center">
-                        <p className="text-white  text-xl">{numberFriends}</p>
-                        <p className="text-white font-bold text-2xl">AMIGOS</p>
+                        <p className="text-white  text-l">{numberFriends}</p>
+                        <p className="text-white font-bold text-xl">AMIGOS</p>
                     </div>
                 </div>
             </div>
