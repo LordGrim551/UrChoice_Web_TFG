@@ -229,7 +229,7 @@ function RegisterPage() {
         
         <div className="mt-4 text-center text-xs text-gray-400">
           ¿Ya tienes una cuenta?{' '}
-          <a href="/login" className="font-medium text-cyan-500 hover:text-cyan-400">
+          <a href="/LoginPage" className="font-medium text-cyan-500 hover:text-cyan-400">
             Iniciar Sesión
           </a>
         </div>

@@ -6,7 +6,7 @@ const Rooms = () => {
     const [rooms, setRooms] = useState([]);
     const [id_user, setIdUser] = useState('');
     const [selectedRoom, setSelectedRoom] = useState(null); // Estado para la sala seleccionada
-    
+
     const roomDialogRef = useRef(null);
     const passwordDialogRef = useRef(null);
 
@@ -40,16 +40,18 @@ const Rooms = () => {
         setSelectedRoom(room); // Guardar la sala seleccionada
         if (room.pass_room === "") {
             // Si no hay contraseña, unirse directamente
-            setRooms('');
+            setRooms([]);
+
             joinRoom(room);
         } else {
             // Si hay contraseña, abrir PasswordDialog
-            setRooms('');
+            setRooms([]);
+
             passwordDialogRef.current?.showModal();
         }
     };
 
-    const closeDialog = () => { 
+    const closeDialog = () => {
         if (dialogRef.current) {
             dialogRef.current.close();
             setValidationStatus(null); // Reiniciar el estado al cerrar el diálogo
@@ -139,7 +141,7 @@ const Rooms = () => {
             <PasswordDialog dialogRef={passwordDialogRef} selectedRoom={selectedRoom} roomDialogRef={roomDialogRef} />
 
             {/* Dialog para la sala */}
-            <RoomDialog dialogRef={roomDialogRef} selectedRoom={selectedRoom}  />
+            <RoomDialog dialogRef={roomDialogRef} selectedRoom={selectedRoom} />
         </div>
     );
 };
