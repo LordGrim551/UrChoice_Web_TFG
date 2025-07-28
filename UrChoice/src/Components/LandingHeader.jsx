@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import Logo from '../assets/logo.svg'
-import { Home, Gamepad, Wrench } from 'lucide-react';
+import { Home, Gamepad, Menu, X, Wrench } from 'lucide-react';
 
 function LandingHeader() {
+    const [menuToggle, setMenuToggle] = useState(false);
+    const handleClick = () => {
+
+        setMenuToggle(!menuToggle);
+        
+    };
 
     return (
         <header className="bg-gradient-to-b
@@ -10,9 +16,9 @@ function LandingHeader() {
         to-black
         flex items-center 
         ">
-            <div className="image-logo w-24 m-2">
+            <div className="image-logo w-20 min-w-[64px] sm:w-24 sm:min-w-[96px] m-2 flex">
                 <picture>
-                    <img srcSet={Logo} alt="Logo" />
+                    <img srcSet={Logo} alt="Logo" className="w-full h-auto" />
                 </picture>
             </div>
             <nav className='navbar w-full'>
@@ -37,6 +43,13 @@ function LandingHeader() {
                     </li>
                 </ul>
             </nav>
+            <button className="flex items-center space-x-2 sm:hidden"
+                onClick={handleClick}
+            >
+           {menuToggle ? <X /> : <Menu />}
+
+            </button>
+
 
         </header>
     )
