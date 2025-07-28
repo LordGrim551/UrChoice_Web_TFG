@@ -10,25 +10,28 @@ import Individual from '../src/Pages/GamePage/IndividualGame';
 import Biblioteca from './Pages/HomePage/Header/Biblioteca/biblioteca';
 import User from './Pages/HomePage/Header/User/User';
 import TabView from './Pages/HomePage/Tabview/tabview'; // Añade esta importación
+import LandingPage from './Pages/LandingPage/LandingPage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Preloader />} />
+        {/* <Route path="/" element={<Preloader />} />
+         */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/Tap_to_start" element={<TapToStart />} />
         <Route path="/InitialPage" element={<InitialPage />} />
         <Route path="/LogInPage" element={<LogInPage />} />
         <Route path="/RegisterPage" element={<RegisterPage />} />
-        
+
         {/* Rutas anidadas para el layout de HomePage */}
         <Route path="/HomePage" element={<HomePage />}>
           <Route index element={<TabView />} /> {/* Usa el componente importado */}
           <Route path="Biblioteca" element={<Biblioteca />} />
-          <Route path="User" element={<User/>}/>
+          <Route path="User" element={<User />} />
         </Route>
-        
+
         <Route path="/GamePage" element={<Game />} />
         <Route path="/IndividualGame" element={<Individual />} />
         <Route path="/*" element={<Error />} />
