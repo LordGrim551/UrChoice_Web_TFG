@@ -1,7 +1,7 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 html, body {
     min-height: 200vh;
-    background: #000; /* o usa bg-black de Tailwind en el contenedor principal */
+    background: #000; 
     margin: 0;
     padding: 0;
 }
@@ -10,4 +10,4 @@ html, body {
     html, body {
         min-height: 400vh;
     }
-}
+} */
