@@ -1,3 +1,7 @@
+import FutbolImg from '../assets/Futbol.jpg';
+import AiImg from '../assets/ai.jpg';
+import DavinciImg from '../assets/davinci.jpg';
+
 class Card {
     constructor(categoryName, categoryDescription, imagePath) {
         this.categoryName = categoryName;
@@ -8,9 +12,9 @@ class Card {
 
 function CategoryCards() {
     const categories = [
-        new Card("Football", "Choose your favourite football team", "src/assets/Futbol.jpg"),
-        new Card("Fate", "Choose the best servant", "src/assets/ai.jpg"),
-        new Card("Anime", "Choose the best anime in 2025", "src/assets/davinci.jpg"),
+        new Card("Football", "Choose your favourite football team", FutbolImg),
+        new Card("Fate", "Choose the best servant", AiImg),
+        new Card("Anime", "Choose the best anime in 2025", DavinciImg),
     ];
 
     return (
@@ -25,8 +29,12 @@ function CategoryCards() {
                                 className="rounded-lg w-full h-full object-cover transition duration-300 group-hover:brightness-50"
                             />
                             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                <span className="text-xl font-bold mb-2 text-white drop-shadow">{category.categoryName}</span>
-                                <p className="text-gray-200 mb-4 text-center px-2">{category.categoryDescription}</p>
+                                <span className="text-xl font-bold mb-2 text-white drop-shadow">
+                                    {category.categoryName}
+                                </span>
+                                <p className="text-gray-200 mb-4 text-center px-2">
+                                    {category.categoryDescription}
+                                </p>
                             </div>
                         </div>
                     </div>
