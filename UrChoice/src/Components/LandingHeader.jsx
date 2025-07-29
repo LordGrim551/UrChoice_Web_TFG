@@ -1,28 +1,23 @@
 import { useState } from 'react'
 import Logo from '../assets/logo.svg'
 import { Home, Gamepad, Menu, X, Wrench } from 'lucide-react';
+import '../Components/css/LandingHeader.css';
 
 function LandingHeader() {
-    const [menuToggle, setMenuToggle] = useState(false);
-    const handleClick = () => {
-
-        setMenuToggle(!menuToggle);
-        
-    };
+    const [mobileMenu, setMobileMenu] = useState(false);
 
     return (
-        <header className="bg-gradient-to-b
-        from-red-500 
-        to-black
-        flex items-center 
-        ">
-            <div className="image-logo w-20 min-w-[64px] sm:w-24 sm:min-w-[96px] m-2 flex">
+        <header className="bg-gradient-to-b from-red-500 to-black flex items-center  absolute inset-x-0 top-0">
+            {/* Logo */}
+            <div className="image-logo w-20 min-w-[64px] sm:w-16 sm:min-w-[64px] m-2 flex-shrink-0">
                 <picture>
                     <img srcSet={Logo} alt="Logo" className="w-full h-auto" />
                 </picture>
             </div>
-            <nav className='navbar w-full'>
-                <ul className='flex justify-center space-x-12'>
+
+            {/* Nav desktop */}
+            <nav className="navbar w-full hidden sm:flex">
+                <ul className="flex justify-center space-x-12 w-full">
                     <li>
                         <button className="flex items-center space-x-2">
                             <Home />
@@ -43,14 +38,32 @@ function LandingHeader() {
                     </li>
                 </ul>
             </nav>
-            <button className="flex items-center space-x-2 sm:hidden"
-                onClick={handleClick}
-            >
-           {menuToggle ? <X /> : <Menu />}
 
+            {/* Botón menú móvil */}
+            <button
+                className="flex items-center space-x-2 sm:hidden ml-auto mr-4 text-white z-20"
+                onClick={() => setMobileMenu(!mobileMenu)}
+            >
+                {mobileMenu ? <X /> : <Menu />}
             </button>
 
-
+            {/* Mobile menu */}
+            {mobileMenu && (
+                <div className="absolute top-full left-0 w-full bg-black/90 backdrop-blur-md shadow-lg px-4 pt-4 pb-6 flex flex-col space-y-4 sm:hidden z-10">
+                    <button className="flex items-center space-x-2 text-white w-full justify-start">
+                        <Home />
+                        <span>Inicio</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-white w-full justify-start">
+                        <Gamepad />
+                        <span>Categories</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-white w-full justify-start">
+                        <Wrench />
+                        <span>Tools</span>
+                    </button>
+                </div>
+            )}
         </header>
     )
 }

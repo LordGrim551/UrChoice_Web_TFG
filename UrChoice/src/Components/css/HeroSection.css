@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+section {
+    margin-bottom: 54px;
+}
+/*All except the last element of the section part*/
+section > *:not(:last-child) {
+    margin-bottom: 20px; 
+}
+section > button > span{
+    margin-left : 15px ;
+}

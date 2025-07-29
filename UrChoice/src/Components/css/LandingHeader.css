@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+picture > img{
+    margin: 15px;
+}
+ul>li>button>span{
+    margin-left: 15px;
+}

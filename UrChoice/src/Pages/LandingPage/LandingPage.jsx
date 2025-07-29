@@ -1,7 +1,12 @@
 import LandingHeader from "../../Components/LandingHeader";
+import HeroSection from "../../Components/HeroSection";
 function LandingPage() {
-    return(
-        <LandingHeader></LandingHeader>
+    return (
+        <>
+            <LandingHeader></LandingHeader>
+            <HeroSection></HeroSection>
+        </>
+
     )
 }
 
