@@ -3,6 +3,7 @@ import { Gamepad2 } from 'lucide-react';
 import '../Components/css/HeroSection.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
+
 function HeroSection() {
     return (
         <div className='bg-gradient-to-t from-cyan-300 via-transparent to-black flex absolute inset-x-0 top-36'>
