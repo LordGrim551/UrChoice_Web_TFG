@@ -6,9 +6,9 @@ function Description() {
     <>
       <div id="testimonial" className="flex flex-col items-center justify-center absolute inset-x-0 top-114 ">
 
-        <span className="text-white font-bold text-2xl w-114 ">
+        <span className="text-white font-bold text-l w-auto ml-16 mr-16 sm:text-2xl">
           “In UrChoice, create your own deck of cards with custom categories, play with friends, and discover the community’s favorite cards.”</span>
-        <span className="w-full text-white font-extralight font-stretch-ultra-expanded">"Development team"</span>
+        <span className="w-full text-white font-extralight">"Development team"</span>
       </div>
 
 

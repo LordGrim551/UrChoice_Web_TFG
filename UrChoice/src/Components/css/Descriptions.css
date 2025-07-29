@@ -4,3 +4,9 @@
 #testimonial > span:not(:last-child) {
     margin-bottom: 20px; 
 }
+
+#testimonial > span:last-child {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-style: italic;
+    opacity: calc(60%);
+}
