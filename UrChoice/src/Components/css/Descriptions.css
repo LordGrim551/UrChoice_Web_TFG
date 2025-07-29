@@ -10,3 +10,7 @@
     font-style: italic;
     opacity: calc(60%);
 }
+#testimonial > span:first-child {
+    margin-left: 25px;
+    margin-right: 25px;
+}

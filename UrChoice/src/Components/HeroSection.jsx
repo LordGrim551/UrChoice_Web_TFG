@@ -6,6 +6,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 function HeroSection() {
     return (
         <div className='bg-gradient-to-t from-cyan-300 via-transparent to-black flex absolute inset-x-0 top-36'>
+            
             <div
                 className="relative bg-contain bg-top bg-no-repeat w-full  flex items-center justify-center"
                 style={{
