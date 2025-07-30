@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 function LandingHeader() {
     const [mobileMenu, setMobileMenu] = useState(false);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const handleClick = () => {
-        navigate('/'); 
+        navigate('/');
     };
 
     // Función para scroll suave a un id
@@ -22,9 +22,21 @@ function LandingHeader() {
     return (
         <header className="bg-gradient-to-b from-red-500 to-black flex items-center  ">
             {/* Logo */}
-            <div className="image-logo w-20 min-w-[64px] sm:w-16 sm:min-w-[64px] m-2 flex-shrink-0">
+            <div
+                className="image-logo w-20 min-w-[64px] sm:w-16 sm:min-w-[64px] m-2 flex-shrink-0 cursor-pointer active:scale-95 transition-transform duration-150"
+                onClick={handleClick}
+                role="button"
+                tabIndex={0}
+                aria-label="Ir al inicio"
+                onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
+            >
                 <picture>
-                    <img srcSet={Logo} alt="Logo" className="w-full h-auto" onClick={handleClick} />
+                    <img
+                        srcSet={Logo}
+                        alt="Logo"
+                        className="w-full h-auto select-none pointer-events-none"
+                        draggable={false}
+                    />
                 </picture>
             </div>
 
