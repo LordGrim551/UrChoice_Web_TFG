@@ -1,6 +1,6 @@
-import FutbolImg from '../assets/Futbol.jpg';
-import AiImg from '../assets/ai.jpg';
-import DavinciImg from '../assets/davinci.jpg';
+import FutbolImg from '../assets/Futbol.webp';
+import AiImg from '../assets/ai.webp';
+import DavinciImg from '../assets/davinci.webp';
 
 class Card {
     constructor(categoryName, categoryDescription, imagePath) {
@@ -20,13 +20,13 @@ function CategoryCards() {
     return (
         <div className="absolute inset-x-0 top-168 w-full flex flex-col gap-8 items-center mt-8 md:flex-row md:justify-center md:items-start">
             {categories.map((category, index) => (
-                <div key={index} className="w-11/12 max-w-md md:w-72 mx-auto">
+                <div key={index} className="w-11/12  md:w-164 mx-auto">
                     <div className="rounded-lg shadow-lg p-0 flex flex-col items-center overflow-hidden">
-                        <div className="relative w-full h-56 group">
+                        <div className="relative w-full h-81 group">
                             <img
                                 src={category.imagePath}
                                 alt={category.categoryName}
-                                className="rounded-lg w-full h-full object-cover transition duration-300 group-hover:brightness-50"
+                                className="rounded-lg w-full h-full object-cover object-top transition duration-300 group-hover:brightness-50"
                             />
                             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
                                 <span className="text-xl font-bold mb-2 text-white drop-shadow">
