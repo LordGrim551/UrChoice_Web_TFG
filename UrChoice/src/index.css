@@ -70,15 +70,43 @@ button:focus-visible {
 body{
   background-color: black;
 }
+.scrollbar-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #36b6cc #e53935; /* Firefox */
+}
+
 .scrollbar-custom::-webkit-scrollbar {
-  width: 8px; /* Ancho del scrollbar */
+  width: 10px;
+  background: #e53935;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #06b6d4; /* Cyan */
-  border-radius: 4px; /* Bordes redondeados */
+  background: linear-gradient(180deg, #36b6cc, #e53935);
+  border-radius: 8px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-track {
-  background-color: transparent; /* Fondo transparente */
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e53935, #36b6cc);
 }
+/* src/index.css o src/global.css */
+/* Scrollbar con degradado cyan-300 a red-500 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: black;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #67e8f9, #ef4444); /* cyan-300 → red-500 */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #22d3ee, #dc2626); /* tonos más intensos al pasar */
+}
+

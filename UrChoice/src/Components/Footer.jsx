@@ -17,7 +17,7 @@ function Footer() {
                     <span className="text-gray-400 text-sm font-semibold">@urchoice</span>
                 </div>
                 {/* Enlaces de navegación en 3 columnas */}
-                <div className="flex flex-col sm:flex-row gap-8 w-full md:w-auto justify-center">
+                <div className="flex flex-row sm:flex-row gap-8 w-full md:w-auto justify-center">
                     <div className="flex flex-col items-center md:items-start">
                         <span className="text-white font-bold mb-2">Navegación</span>
                         <a href="#background" className="text-gray-400 text-sm hover:text-cyan-300">Inicio</a>
