@@ -50,7 +50,7 @@ function Features() {
                         <img
                             src={feature.features_image}
                             alt={feature.features_title}
-                            className="w-full h-56 object-cover rounded-lg mb-4 md:mb-0 md:w-128 md:h-81"
+                            className="w-full h-56 object-cover rounded-lg  md:mb-0 md:w-128 md:h-81"
                         />
                         <div className="flex-1 text-center md:text-left md:px-4">
                             <h3 className="text-2xl font-bold text-white mb-2 m-8">{feature.features_title}</h3>

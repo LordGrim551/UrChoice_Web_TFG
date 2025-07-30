@@ -5,7 +5,7 @@ import LandingHeader from "../../Components/LandingHeader";
 import HeroSection from "../../Components/HeroSection";
 import Description from "../../Components/Description";
 import CategoryCards from "../../Components/CategoryCards";
-
+import Footer from "../../Components/Footer";
 function LandingPage() {
     return (
         <>
@@ -23,6 +23,7 @@ function LandingPage() {
                 <Description />
                 <CategoryCards />
                 <Features />
+                <Footer />
             {/* </div> */}
         </>
     );
