@@ -14,20 +14,23 @@ function Features() {
     const features = [
         new Features_type(
             "Multiplayer",
-            "Play with friends online by voting for your favorite cards across different fun and creative categories. The game system offers a variety of unique themes—from the funniest to the most imaginative—where you and other players can vote for the cards you like the most. Join online voting rounds with friends or random players, discover the most popular cards, and watch the results unfold in real-time through the game's dynamic ranking system. Will your card make it to the top? Find out as you compete, vote, and climb the ranks in this fun and social experience!",
+            "Disfruta de una experiencia multijugador única donde puedes jugar con amigos o jugadores de todo el mundo votando por tus cartas favoritas en diversas categorías divertidas y creativas. El sistema del juego presenta una amplia variedad de temas únicos, que van desde los más cómicos hasta los más imaginativos, permitiéndote votar y competir en rondas online emocionantes. Cada partida es una oportunidad para descubrir cuáles cartas se destacan en la comunidad y ver cómo evolucionan las clasificaciones en tiempo real gracias al dinámico sistema de ranking del juego. ¿Podrá tu carta llegar a la cima? Participa en esta experiencia social y competitiva, crea alianzas o rivalidades con otros jugadores, y demuestra tu habilidad para elegir y defender tus cartas preferidas. Además, las votaciones en tiempo real garantizan que cada sesión sea diferente y emocionante, haciendo que la interacción con otros sea constante y atractiva.",
             Friends_game
         ),
+
         new Features_type(
             "Custom Decks",
-            "Design unique card collections by choosing from a wide variety of cards, each with different themes, visuals, or abilities (depending on the game type). Personalize your decks with names, colors, icons, and more to make them truly your own. Whether you're building the ultimate competitive lineup or a fun, themed deck for friends to vote on, the creative possibilities are endless.",
+            "Crea mazos personalizados y únicos eligiendo entre una amplia selección de cartas que varían en temática, apariencia y habilidades según el tipo de juego. Personaliza cada detalle de tu mazo, desde el nombre hasta los colores y los iconos, para que refleje tu estilo y estrategia personal. Puedes diseñar mazos competitivos para dominar las partidas o mazos temáticos divertidos que tus amigos puedan votar y disfrutar. La creatividad es el límite: combina cartas para crear sinergias poderosas o simplemente para divertirte con combinaciones originales. Además, el sistema permite guardar y modificar tus creaciones fácilmente, facilitando la experimentación y la evolución de tu estilo de juego. Así, cada jugador puede tener una experiencia única y totalmente adaptada a sus preferencias, fomentando la innovación y la personalización profunda.",
             Add_create
         ),
+
         new Features_type(
             "Card Collection",
-            "Discover rare, themed, or limited-edition cards as you play and vote. Build your ultimate collection by unlocking new cards through achievements, events, or rewards. Want something specific? Trade with friends or other players to get the cards you love most. Every card is a chance to express your personality and strategy—will you collect them all?",
+            "Explora una vasta colección de cartas, incluyendo rarezas, temas especiales y ediciones limitadas que puedes descubrir mientras juegas y votas. Construye tu colección definitiva desbloqueando nuevas cartas a través de logros, eventos especiales y recompensas diarias. Si buscas alguna carta en particular, puedes intercambiar con amigos o con otros jugadores para completar tu conjunto ideal. Cada carta representa una oportunidad para expresar tu personalidad, tus gustos y tu estrategia dentro del juego. La colección no solo es un elemento estético, sino que también influye en la forma en que juegas y compites, permitiendo diversas combinaciones y tácticas. Además, las cartas limitadas o de eventos especiales hacen que la colección sea dinámica y siempre en expansión, incentivando a los jugadores a mantenerse activos y participativos para no perder ninguna novedad.",
             Game
         ),
     ];
+
     return (
         <section id='features' className="w-full py-8">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">Game Features</h2>
