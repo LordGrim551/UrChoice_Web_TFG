@@ -4,7 +4,7 @@ function Description() {
 
   return (
     <>
-      <div id="testimonial" className="flex flex-col items-center justify-center absolute inset-x-0 top-114 ">
+      <div id="testimonial" className="flex flex-col items-center justify-center absolute inset-x-0 top-136 ">
 
         <span className="text-white font-bold text-l w-auto ml-16 mr-16 sm:text-2xl">
           “In UrChoice, create your own deck of cards with custom categories, play with friends, and discover the community’s favorite cards.”</span>

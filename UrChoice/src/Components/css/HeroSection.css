@@ -10,3 +10,6 @@ section > *:not(:last-child) {
 section > button > span{
     margin-left : 15px ;
 }
+#background{
+    padding-bottom: 48px;
+}
