@@ -18,7 +18,7 @@ function CategoryCards() {
     ];
 
     return (
-        <div className="absolute inset-x-0 top-168 w-full flex flex-col gap-8 items-center mt-8 md:flex-row md:justify-center md:items-start">
+        <div className=" w-full flex flex-col gap-8 items-center mt-8 md:flex-row md:justify-center md:items-start">
             {categories.map((category, index) => (
                 <div key={index} className="w-11/12  md:w-164 mx-auto">
                     <div className="rounded-lg shadow-lg p-0 flex flex-col items-center overflow-hidden">

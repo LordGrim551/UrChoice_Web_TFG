@@ -7,7 +7,7 @@ function LandingHeader() {
     const [mobileMenu, setMobileMenu] = useState(false);
 
     return (
-        <header className="bg-gradient-to-b from-red-500 to-black flex items-center  absolute inset-x-0 top-0">
+        <header className="bg-gradient-to-b from-red-500 to-black flex items-center  ">
             {/* Logo */}
             <div className="image-logo w-20 min-w-[64px] sm:w-16 sm:min-w-[64px] m-2 flex-shrink-0">
                 <picture>

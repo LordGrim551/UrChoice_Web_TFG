@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-
+import Features from "../../Components/Features";
 import LandingHeader from "../../Components/LandingHeader";
 import HeroSection from "../../Components/HeroSection";
 import Description from "../../Components/Description";
@@ -17,12 +17,13 @@ function LandingPage() {
                 />
             </Helmet>
 
-            <div className="min-h-[200vh] bg-black m-0 p-0 sm:min-h-[400vh]">
+            {/* <div className="min-h-[100vh] bg-black m-0 p-0 sm:min-h-[200vh]"> */}
                 <LandingHeader />
                 <HeroSection />
                 <Description />
                 <CategoryCards />
-            </div>
+                <Features />
+            {/* </div> */}
         </>
     );
 }
