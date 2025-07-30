@@ -20,9 +20,10 @@ function Features() {
 
         new Features_type(
             "Custom Decks",
-            "Crea mazos personalizados y únicos eligiendo entre una amplia selección de cartas que varían en temática, apariencia y habilidades según el tipo de juego. Personaliza cada detalle de tu mazo, desde el nombre hasta los colores y los iconos, para que refleje tu estilo y estrategia personal. Puedes diseñar mazos competitivos para dominar las partidas o mazos temáticos divertidos que tus amigos puedan votar y disfrutar. La creatividad es el límite: combina cartas para crear sinergias poderosas o simplemente para divertirte con combinaciones originales. Además, el sistema permite guardar y modificar tus creaciones fácilmente, facilitando la experimentación y la evolución de tu estilo de juego. Así, cada jugador puede tener una experiencia única y totalmente adaptada a sus preferencias, fomentando la innovación y la personalización profunda.",
+            "Crea mazos personalizados y únicos eligiendo entre una amplia selección de cartas que varían en temática, apariencia y habilidades según el tipo de juego. Personaliza cada detalle de tu mazo, desde el nombre hasta los colores y los iconos, para que refleje tu estilo y estrategia personal. Puedes diseñar mazos competitivos para dominar las partidas o mazos temáticos divertidos que tus amigos puedan votar y disfrutar. La creatividad es el límite: combina cartas para crear sinergias poderosas o simplemente para divertirte con combinaciones originales. Además, el sistema permite guardar y modificar tus creaciones fácilmente, facilitando la experimentación y la evolución de tu estilo de juego. Así, cada jugador puede tener una experiencia única y totalmente adaptada a sus preferencias, fomentando la innovación y la personalización profunda. El juego también ofrece herramientas intuitivas para reorganizar cartas y previsualizar cómo funcionarán tus mazos en diferentes escenarios, asegurando que cada elección estratégica tenga impacto en la partida. Los diseñadores de mazos pueden compartir sus creaciones con la comunidad, permitiendo que otros jugadores descubran y voten por los mazos más originales y efectivos. Esta dinámica social y creativa enriquece la experiencia y mantiene el juego siempre fresco y desafiante.",
             Add_create
         ),
+
 
         new Features_type(
             "Card Collection",
@@ -30,6 +31,7 @@ function Features() {
             Game
         ),
     ];
+
 
     return (
         <section id='features' className="w-full py-8">
