@@ -71,7 +71,7 @@ function LandingHeader() {
 
             {/* Mobile menu */}
             {mobileMenu && (
-                <div className="absolute top-full left-0 w-full bg-black/90 backdrop-blur-md shadow-lg px-4 pt-4 pb-6 flex flex-col space-y-4 sm:hidden z-15">
+                <div className="absolute top-25 left-0 w-full bg-black/90 backdrop-blur-md shadow-lg px-4 pt-4 pb-6 flex flex-col space-y-4 sm:hidden z-15">
                     <button
                         className="flex items-center space-x-2 text-white w-full justify-start"
                         onClick={() => { scrollToSection('background'); setMobileMenu(false); }}
