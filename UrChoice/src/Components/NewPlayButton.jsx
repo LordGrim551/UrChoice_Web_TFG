@@ -1,8 +1,21 @@
 import Logo from '../assets/logoOpacity.svg'
 import { Gamepad2 } from 'lucide-react';
 import '../Components/css/NewPlayButton.css';
+import { useNavigate } from 'react-router-dom';
 
 function NewPlayButton() {
+    const navigate = useNavigate(); // Inicializa el hook de navegación
+
+    const handleClick = () => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            // Si el usuario está logueado, redirigir a la HomePage
+            navigate('/HomePage');
+        } else {
+            // Si no está logueado, redirigir a la InitialPage
+            navigate('/Preloader');
+        }
+    };
     return (
         <section
             id='background-section'
@@ -25,7 +38,8 @@ function NewPlayButton() {
                     <p className="mt-2 text-lg sm:text-xl md:text-2xl font-semibold text-cyan-200 drop-shadow text-center mb-5" >
                         Which will be your choice ?
                     </p>
-                    <button className='flex w-64 justify-center items-center bg-white text-black' type="button">
+                    <button className='flex w-64 justify-center items-center bg-white text-black' type="button"
+                        onClick={handleClick}>
                         <Gamepad2 />
                         <span className='ml-5'>Play now</span>
                     </button>

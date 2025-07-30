@@ -29,7 +29,7 @@ function Features() {
         ),
     ];
     return (
-        <section className="w-full py-8">
+        <section id='features' className="w-full py-8">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">Game Features</h2>
             <div className="flex flex-col md:flex items-center justify-center gap-6 w-full">
                 {features.map((feature, index) => (

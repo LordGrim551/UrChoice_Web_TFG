@@ -2,18 +2,30 @@ import Logo from '../assets/logoOpacity.svg'
 import { Gamepad2 } from 'lucide-react';
 import '../Components/css/HeroSection.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
+import { useNavigate } from 'react-router-dom';
 
 function HeroSection() {
+    const navigate = useNavigate(); // Inicializa el hook de navegación
+
+    const handleClick = () => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            // Si el usuario está logueado, redirigir a la HomePage
+            navigate('/HomePage');
+        } else {
+            // Si no está logueado, redirigir a la InitialPage
+            navigate('/Preloader');
+        }
+    };
     return (
         <div id='background' className='bg-gradient-to-t from-cyan-300 via-transparent to-black flex '>
-            
+
             <div
                 className="relative bg-contain bg-top bg-no-repeat w-full h-72  flex items-center justify-center"
                 style={{
                     backgroundImage: `url(${Logo})`,
                     backgroundPosition: `center top(80%)`,
-                    
+
                 }}
             >
                 {/* Lottie fondo, capa inferior */}
@@ -34,7 +46,8 @@ function HeroSection() {
                 <section className="relative z-10 w-full flex flex-col items-center">
                     <h1 className="text-2xl font-bold text-white drop-shadow-lg">UrChoice</h1>
                     <p className='opacity-70 text-xl font-bold text-white drop-shadow-2xl'>Which will be your choice?</p>
-                    <button className='flex w-64 justify-center items-center bg-white text-black' type="button">
+                    <button className='flex w-64 justify-center items-center bg-white text-black' type="button"
+                        onClick={handleClick}>
                         <Gamepad2 />
                         <span>Play now</span>
                     </button>

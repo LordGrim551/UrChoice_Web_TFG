@@ -17,9 +17,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<Preloader />} />
-         */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/Preloader" element={<Preloader />} />
         <Route path="/Tap_to_start" element={<TapToStart />} />
         <Route path="/InitialPage" element={<InitialPage />} />
         <Route path="/LogInPage" element={<LogInPage />} />

@@ -2,7 +2,7 @@ import Logo from '../assets/logo.svg';
 
 function Footer() {
     return (
-        <footer className="w-full rounded-2xl py-8 px-4" style={{
+        <footer id='footer' className="w-full rounded-2xl py-8 px-4" style={{
             background: 'linear-gradient(90deg, #e53935 0%, #000 50%, #36b6cc 100%)'
         }}>
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
