@@ -44,7 +44,7 @@ function HeroSection() {
 
                 {/* Contenido principal, capa superior */}
                 <section className="relative z-10 w-full flex flex-col items-center">
-                    <h1 className="text-2xl font-bold text-white drop-shadow-lg">UrChoice</h1>
+                    <span className="text-2xl font-bold text-white drop-shadow-lg">UrChoice</span>
                     <p className='opacity-70 text-xl font-bold text-white drop-shadow-2xl'>Which will be your choice?</p>
                     <button className='flex w-64 justify-center items-center bg-white text-black' type="button"
                         onClick={handleClick}>
