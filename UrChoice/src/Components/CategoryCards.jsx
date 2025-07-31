@@ -26,11 +26,20 @@ function CategoryCards() {
         >
           <div className="rounded-lg shadow-lg overflow-hidden flex flex-col items-center">
             <div className="relative w-full h-64 group">
-              <img
-                src={category.imagePath}
-                alt={category.categoryName}
-                className="w-full h-full object-cover object-top rounded-lg transition duration-300 group-hover:brightness-50"
-              />
+              <picture>
+                <source
+                  srcSet={category.imagePath}
+                  type="image/webp"
+                />
+                <img
+                  src={category.imagePath}
+                  alt={category.categoryName}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-top rounded-lg transition duration-300 group-hover:brightness-50"
+                />
+              </picture>
+
               <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black bg-opacity-50 p-4 text-center">
                 <span className="text-xl font-bold text-white drop-shadow mb-2">
                   {category.categoryName}

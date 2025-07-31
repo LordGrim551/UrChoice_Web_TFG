@@ -50,10 +50,17 @@ function Features() {
                             ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}
                         `}
                     >
-                        <img
-                            src={feature.features_image}
-                            alt={feature.features_title}
-                            className={`
+                        <picture>
+                            <source
+                                srcSet={feature.features_image}
+                                type="image/webp"
+                            />
+                            <img
+                                src={feature.features_image}
+                                alt={feature.features_title}
+                                loading="lazy"
+                                decoding="async"
+                                className={`
                                 w-full
                                 h-56 sm:h-64 md:h-72
                                 object-cover
@@ -62,7 +69,9 @@ function Features() {
                                 lg:w-1/2
                                 object-top
                             `}
-                        />
+
+                            />
+                        </picture>
                         <div className="flex-1 text-center md:text-left px-4 py-2">
                             <h3 className="text-2xl font-bold text-white mb-2">{feature.features_title}</h3>
                             <p className="text-gray-300 mb-6">{feature.features_description}</p>
