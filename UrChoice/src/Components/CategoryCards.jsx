@@ -32,9 +32,9 @@ function CategoryCards() {
                 className="w-full h-full object-cover object-top rounded-lg transition duration-300 group-hover:brightness-50"
               />
               <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black bg-opacity-50 p-4 text-center">
-                <h3 className="text-xl font-bold text-white drop-shadow mb-2">
+                <span className="text-xl font-bold text-white drop-shadow mb-2">
                   {category.categoryName}
-                </h3>
+                </span>
                 <p className="text-gray-200 text-sm">
                   {category.categoryDescription}
                 </p>

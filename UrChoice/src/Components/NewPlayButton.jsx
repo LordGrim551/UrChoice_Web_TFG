@@ -28,9 +28,9 @@ function NewPlayButton() {
         }}
       >
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-4 py-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg text-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg text-center">
             UrChoice
-          </h1>
+          </span>
           <p className="mt-2 text-lg sm:text-xl md:text-2xl font-semibold text-cyan-200 drop-shadow text-center mb-5">
             Which will be your choice?
           </p>
