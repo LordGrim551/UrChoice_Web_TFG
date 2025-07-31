@@ -1,18 +1,16 @@
 @import "tailwindcss";
 
-
 #testimonial > span:not(:last-child) {
-    margin-bottom: 20px; 
+    margin-bottom: 1.25rem; /* 20px = 1.25rem */
 }
 
 #testimonial > span:last-child {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-style: italic;
-    opacity: calc(60%);
-}
-#testimonial > span:first-child {
-    margin-left: 25px;
-    margin-right: 25px;
+    opacity: 0.6; /* mejor usar valor decimal en lugar de calc */
 }
 
-/* asda */
+#testimonial > span:first-child {
+    margin-left: 1.5625rem; /* 25px = 1.5625rem */
+    margin-right: 1.5625rem;
+}

@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 section {
-    margin-bottom: 54px;
+    margin-bottom: 3.375rem; /* 54px ≈ 3.375rem */
 }
-/*All except the last element of the section part*/
+
+/* All except the last element of the section part */
 section > *:not(:last-child) {
-    margin-bottom: 20px; 
+    margin-bottom: 1.25rem; /* 20px = 1.25rem */
 }
-section > button > span{
-    margin-left : 15px ;
+
+section > button > span {
+    margin-left: 0.9375rem; /* 15px = 0.9375rem */
 }
-#background{
-    padding-bottom: 48px;
+
+#background {
+    padding-bottom: 3rem; /* 48px = 3rem */
 }

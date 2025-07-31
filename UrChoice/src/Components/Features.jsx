@@ -17,13 +17,11 @@ function Features() {
             "Disfruta de una experiencia multijugador única donde puedes jugar con amigos o jugadores de todo el mundo votando por tus cartas favoritas en diversas categorías divertidas y creativas. El sistema del juego presenta una amplia variedad de temas únicos, que van desde los más cómicos hasta los más imaginativos, permitiéndote votar y competir en rondas online emocionantes. Cada partida es una oportunidad para descubrir cuáles cartas se destacan en la comunidad y ver cómo evolucionan las clasificaciones en tiempo real gracias al dinámico sistema de ranking del juego. ¿Podrá tu carta llegar a la cima? Participa en esta experiencia social y competitiva, crea alianzas o rivalidades con otros jugadores, y demuestra tu habilidad para elegir y defender tus cartas preferidas. Además, las votaciones en tiempo real garantizan que cada sesión sea diferente y emocionante, haciendo que la interacción con otros sea constante y atractiva.",
             Friends_game
         ),
-
         new Features_type(
             "Custom Decks",
             "Crea mazos personalizados y únicos eligiendo entre una amplia selección de cartas que varían en temática, apariencia y habilidades según el tipo de juego. Personaliza cada detalle de tu mazo, desde el nombre hasta los colores y los iconos, para que refleje tu estilo y estrategia personal. Puedes diseñar mazos competitivos para dominar las partidas o mazos temáticos divertidos que tus amigos puedan votar y disfrutar. La creatividad es el límite: combina cartas para crear sinergias poderosas o simplemente para divertirte con combinaciones originales. Además, el sistema permite guardar y modificar tus creaciones fácilmente, facilitando la experimentación y la evolución de tu estilo de juego. Así, cada jugador puede tener una experiencia única y totalmente adaptada a sus preferencias, fomentando la innovación y la personalización profunda. El juego también ofrece herramientas intuitivas para reorganizar cartas y previsualizar cómo funcionarán tus mazos en diferentes escenarios, asegurando que cada elección estratégica tenga impacto en la partida. Los diseñadores de mazos pueden compartir sus creaciones con la comunidad, permitiendo que otros jugadores descubran y voten por los mazos más originales y efectivos. Esta dinámica social y creativa enriquece la experiencia y mantiene el juego siempre fresco y desafiante.",
             Add_create
         ),
-
         new Features_type(
             "Card Collection",
             "Explora una vasta colección de cartas, incluyendo rarezas, temas especiales y ediciones limitadas que puedes descubrir mientras juegas y votas. Construye tu colección definitiva desbloqueando nuevas cartas a través de logros, eventos especiales y recompensas diarias. Si buscas alguna carta en particular, puedes intercambiar con amigos o con otros jugadores para completar tu conjunto ideal. Cada carta representa una oportunidad para expresar tu personalidad, tus gustos y tu estrategia dentro del juego. La colección no solo es un elemento estético, sino que también influye en la forma en que juegas y compites, permitiendo diversas combinaciones y tácticas. Además, las cartas limitadas o de eventos especiales hacen que la colección sea dinámica y siempre en expansión, incentivando a los jugadores a mantenerse activos y participativos para no perder ninguna novedad.",
@@ -40,16 +38,14 @@ function Features() {
                         key={index}
                         className={`
                             w-full
-                            flex
-                            flex-col        /* Móvil y tablet: columna */
-                            md:flex-col     /* Tablet sigue columna */
-                            lg:flex-row     /* PC: fila */
+                            flex flex-col
+                            lg:flex-row
                             items-center
                             rounded-xl
                             border-4
                             ${index % 2 === 0 ? 'border-cyan-300' : 'border-red-500'}
                             bg-black
-                            min-h-[220px]
+                            min-h-[14rem]
                             transition
                             ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}
                         `}
@@ -59,19 +55,17 @@ function Features() {
                             alt={feature.features_title}
                             className={`
                                 w-full
-                                h-56
+                                h-56 sm:h-64 md:h-72
                                 object-cover
                                 rounded-lg
-                                mb-4          /* margen debajo en móvil/tablet */
-                                lg:mb-0       /* quitar margen en PC */
-                                lg:w-[512px]  /* ancho fijo en PC */
-                                lg:h-[324px]
+                                mb-4 lg:mb-0
+                                lg:w-1/2
                                 object-top
                             `}
                         />
-                        <div className="flex-1 text-center md:text-left px-4">
+                        <div className="flex-1 text-center md:text-left px-4 py-2">
                             <h3 className="text-2xl font-bold text-white mb-2">{feature.features_title}</h3>
-                            <p className="text-gray-300 mb-8">{feature.features_description}</p>
+                            <p className="text-gray-300 mb-6">{feature.features_description}</p>
                         </div>
                     </div>
                 ))}
