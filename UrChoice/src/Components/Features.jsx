@@ -9,7 +9,6 @@ class Features_type {
         this.features_image = features_image;
     }
 }
-
 function Features() {
     const features = [
         new Features_type(
@@ -32,17 +31,18 @@ function Features() {
         ),
     ];
 
-
     return (
         <section id='features' className="w-full py-8">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">Game Features</h2>
-            <div className="flex flex-col md:flex items-center justify-center gap-6 w-full">
+            <div className="flex flex-col items-center justify-center gap-6 w-full">
                 {features.map((feature, index) => (
                     <div
                         key={index}
                         className={`
-                            w-full md:flex flex-col md:flex-row
-                            ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}
+                            w-full
+                            flex
+                            flex-col        /* POR DEFECTO: en móvil y tablet, columnas */
+                            lg:flex-row     /* En PC (lg) fila horizontal */
                             items-center
                             rounded-xl
                             border-4
@@ -50,16 +50,27 @@ function Features() {
                             bg-black
                             min-h-[220px]
                             transition
+                            ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}
                         `}
                     >
                         <img
                             src={feature.features_image}
                             alt={feature.features_title}
-                            className="w-full h-56 object-cover rounded-lg  md:mb-0 md:w-128 md:h-81"
+                            className="
+                                w-full 
+                                h-56
+                                object-cover 
+                                rounded-lg
+                                mb-4          /* espacio abajo para tablet/móvil */
+                                lg:mb-0       /* quitar margen en PC */
+                                lg:w-128      /* ancho fijo en PC */
+                                lg:h-81
+                                object-top
+                            "
                         />
-                        <div className="flex-1 text-center md:text-left md:px-4">
-                            <h3 className="text-2xl font-bold text-white mb-2 m-8">{feature.features_title}</h3>
-                            <p className="text-gray-300 m-8">{feature.features_description}</p>
+                        <div className="flex-1 text-center md:text-left px-4">
+                            <h3 className="text-2xl font-bold text-white mb-2">{feature.features_title}</h3>
+                            <p className="text-gray-300 mb-8">{feature.features_description}</p>
                         </div>
                     </div>
                 ))}
@@ -67,6 +78,7 @@ function Features() {
         </section>
     );
 }
+
 
 export default Features;
 
