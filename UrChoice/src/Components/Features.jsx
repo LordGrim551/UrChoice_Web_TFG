@@ -9,6 +9,7 @@ class Features_type {
         this.features_image = features_image;
     }
 }
+
 function Features() {
     const features = [
         new Features_type(
@@ -23,7 +24,6 @@ function Features() {
             Add_create
         ),
 
-
         new Features_type(
             "Card Collection",
             "Explora una vasta colección de cartas, incluyendo rarezas, temas especiales y ediciones limitadas que puedes descubrir mientras juegas y votas. Construye tu colección definitiva desbloqueando nuevas cartas a través de logros, eventos especiales y recompensas diarias. Si buscas alguna carta en particular, puedes intercambiar con amigos o con otros jugadores para completar tu conjunto ideal. Cada carta representa una oportunidad para expresar tu personalidad, tus gustos y tu estrategia dentro del juego. La colección no solo es un elemento estético, sino que también influye en la forma en que juegas y compites, permitiendo diversas combinaciones y tácticas. Además, las cartas limitadas o de eventos especiales hacen que la colección sea dinámica y siempre en expansión, incentivando a los jugadores a mantenerse activos y participativos para no perder ninguna novedad.",
@@ -32,17 +32,18 @@ function Features() {
     ];
 
     return (
-        <section id='features' className="w-full py-8">
+        <section id='features' className="w-full py-8 px-4 sm:px-6 md:px-8">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">Game Features</h2>
-            <div className="flex flex-col items-center justify-center gap-6 w-full">
+            <div className="flex flex-col items-center justify-center gap-6 w-full max-w-7xl mx-auto">
                 {features.map((feature, index) => (
                     <div
                         key={index}
                         className={`
                             w-full
                             flex
-                            flex-col        /* POR DEFECTO: en móvil y tablet, columnas */
-                            lg:flex-row     /* En PC (lg) fila horizontal */
+                            flex-col        /* Móvil y tablet: columna */
+                            md:flex-col     /* Tablet sigue columna */
+                            lg:flex-row     /* PC: fila */
                             items-center
                             rounded-xl
                             border-4
@@ -56,17 +57,17 @@ function Features() {
                         <img
                             src={feature.features_image}
                             alt={feature.features_title}
-                            className="
-                                w-full 
+                            className={`
+                                w-full
                                 h-56
-                                object-cover 
+                                object-cover
                                 rounded-lg
-                                mb-4          /* espacio abajo para tablet/móvil */
+                                mb-4          /* margen debajo en móvil/tablet */
                                 lg:mb-0       /* quitar margen en PC */
-                                lg:w-128      /* ancho fijo en PC */
-                                lg:h-81
+                                lg:w-[512px]  /* ancho fijo en PC */
+                                lg:h-[324px]
                                 object-top
-                            "
+                            `}
                         />
                         <div className="flex-1 text-center md:text-left px-4">
                             <h3 className="text-2xl font-bold text-white mb-2">{feature.features_title}</h3>
@@ -79,6 +80,4 @@ function Features() {
     );
 }
 
-
 export default Features;
-
