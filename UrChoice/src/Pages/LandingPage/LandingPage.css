@@ -1,13 +1,8 @@
-/* @import "tailwindcss";
-html, body {
-    min-height: 200vh;
-    background: #000; 
-    margin: 0;
-    padding: 0;
-}
+@import "tailwindcss";
+
 
 @media (max-width: 640px) {
     html, body {
         min-height: 400vh;
     }
-} */
+}

@@ -7,6 +7,7 @@ import Description from "../../Components/Description";
 import CategoryCards from "../../Components/CategoryCards";
 import NewPlayButton from "../../Components/NewPlayButton";
 import Footer from "../../Components/Footer";
+import '../LandingPage/LandingPage.css';
 function LandingPage() {
     return (
         <>
