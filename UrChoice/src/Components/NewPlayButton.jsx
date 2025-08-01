@@ -20,13 +20,17 @@ function NewPlayButton() {
       id="background-section"
       className="w-full bg-gradient-to-r from-red-500 via-black to-cyan-300 rounded-2xl flex flex-col items-center justify-center relative"
     >
-      <div
-        className="relative bg-contain bg-top bg-no-repeat w-full h-72 flex items-center justify-center"
-        style={{
-          backgroundImage: `url(${Logo})`,
-          backgroundPosition: 'center top',
-        }}
-      >
+      <div className="relative w-full max-w-5xl min-h-[175px] sm:min-h-[250px] md:min-h-[350px] flex flex-col items-center justify-center overflow-visible">
+
+        {/* Imagen SVG responsiva */}
+        <img
+          src={Logo}
+          alt="Logo background"
+          className="absolute p-8 top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+               w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] 
+               opacity-30 pointer-events-none object-contain h-auto"
+        />
+
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-4 py-12">
           <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg text-center">
             UrChoice
